@@ -1416,8 +1416,8 @@ function abrirAula(idAula) {
   } else if (idAula === 'aula_1_3') {
     stepsAlvo = SIMULATION_STEPS_AULA1_3;
   }
-  const tmplId = 'template-' + idAula.replace('_', '-');
-  const tmpl = document.getElementById(tmplId) || document.getElementById('template-aula-1-2');
+  const tmplId = 'template-' + idAula.replace(/_/g, '-');
+  const tmpl = document.getElementById(tmplId);
   const aulaContainer = document.getElementById('dynamic-lesson-content');
 
   // Troca instantânea SPA em 0ms caso o template esteja no HTML (seja em produção no Apps Script ou no preview local)
