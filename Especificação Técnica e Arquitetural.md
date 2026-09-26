@@ -313,3 +313,185 @@ Cada arquivo de aula (ex: `Aula1_2.html`) deve estruturar o aprendizado através
 >       ├── resolvido_aula_1_2_ex1_1727289000.png
 >       └── ...
 > ```
+
+---
+
+## 8. Guia Canônico e Checklist para Criação de Novas Aulas ("Padrão de Fábrica")
+
+Este guia estabelece o **contrato técnico e pedagógico obrigatório** para criar qualquer nova aula no ecossistema PythonLab (ex.: Aula 1.4, Aula 1.5, Módulo 2, etc.), garantindo consistência visual, interoperabilidade no Google Apps Script, sincronização com o Google Sheets/Drive e suporte a testes offline.
+
+### 8.1. Convenção Estrita de Nomenclatura
+
+| Entidade | Padrão de Nomenclatura | Exemplo (Aula 1.4) |
+| :--- | :--- | :--- |
+| **Identificador da Aula (`id_aula`)** | `aula_X_Y` (minúsculo, separado por underline) | `aula_1_4` |
+| **Documento Pedagógico Canônico** | `aulas/aulaX_Y.md` | `aulas/aula1_4.md` |
+| **Componente Visual HTML** | `AulaX_Y.html` (PascalCase, sem underline) | `Aula1_4.html` |
+| **ID do Template SPA (Client-side)** | `template-aula-X-Y` (hífen minúsculo) | `template-aula-1-4` |
+| **Constante de Simulação JS** | `SIMULATION_STEPS_AULAX_Y` | `SIMULATION_STEPS_AULA1_4` |
+| **Slot de Imagem da Questão** | `data-img-aula="aula_X_Y"` e `data-img-exercicio="..."` | `data-img-aula="aula_1_4"` e `data-img-exercicio="secao_1_atv_1"` |
+
+---
+
+### 8.2. Checklist dos 6 Arquivos Obrigatórios por Nova Aula
+
+Ao criar uma nova aula, **exatamente 6 pontos no projeto** devem ser implementados/atualizados:
+
+```text
+[ ] 1. aulas/aulaX_Y.md        -> Fonte primária da verdade (conteúdo pedagógico, enunciados, gabaritos e desafios)
+[ ] 2. AulaX_Y.html            -> Interface visual completa montada com as classes do Design System
+[ ] 3. Index.html              -> Inclusão do <template id="template-aula-X-Y"><?!= include('AulaX_Y'); ?></template>
+[ ] 4. Code.gs                 -> Registro no auto-sync (sincronizarAulasPadraoNoCatalogo) e no mapaFallback
+[ ] 5. Script.html             -> Constante de simulação, switch de abas, funções do Desafio Mestre e abrirAula()
+[ ] 6. preview_local.html      -> Inclusão do template e rotinas JS para validação local offline em 2 cliques
+```
+
+---
+
+### 8.3. Anatomia Padronizada do Arquivo `AulaX_Y.html`
+
+Todo arquivo `AulaX_Y.html` deve seguir rigidamente a seguinte hierarquia visual:
+
+```html
+<div class="view-section" id="view-aula">
+
+  <!-- 1. CABEÇALHO DA AULA -->
+  <!-- Breadcrumbs (Módulo > Aula), Badges de Dificuldade, Tempo e XP Base -->
+  <!-- 3 Botões de Gestão pelo Aluno:
+       - 📍 Marcar Onde Parei: onclick="marcarOndeParei('aula_X_Y', 'Título da Aula')"
+       - ❓ Tenho Dúvidas: onclick="abrirModalDuvida('aula_X_Y', 'topico_principal')"
+       - 🏆 Concluir Aula (+XP Base): onclick="concluirAulaAtual(xpBase)" -->
+
+  <!-- 2. DIVISOR DIDÁTICO NO TOPO (Bifurcação Fast-Track vs Deep-Dive) -->
+  <div class="bifurcador-container">
+    <!-- Botão 1: 📖 Explicações & Fundamentos (onclick="aplicarModoVisualizacaoAula('explicacoes')") -->
+    <!-- Botão 2: 🛠️ Exercícios Propostos & Prática (onclick="aplicarModoVisualizacaoAula('exercicios')") -->
+  </div>
+
+  <!-- ======================================================================
+       BLOCO A: EXPLICAÇÕES & FUNDAMENTOS CONCEITUAIS (.secao-explicacoes)
+       ====================================================================== -->
+  <div class="secao-explicacoes">
+    
+    <!-- A.1 Alerta de Ambiente (Jupyter Notebook / Google Colab) -->
+    
+    <!-- A.2 Infográficos de Lógica e Decomposição Algorítmica -->
+    <!-- Cards visuais destacando os conceitos fundamentais da aula -->
+    
+    <!-- A.3 Tabela Sintática / Operadores / Regras de Precedência -->
+    <!-- Tabelas estilizadas (.trace-table) com exemplos, tipos resultantes e pegadinhas -->
+    
+    <!-- A.4 Simulador de Memória CPython (Stack vs Heap) -->
+    <!-- Representação visual de Call Stack (Frames e identificadores locais) vs Heap Space -->
+    <!-- Evidenciar imutabilidade de tipos primitivos e ponteiros de endereços -->
+    
+    <!-- A.5 Player Interativo de Linha Ativa + Console Stdout + Teste de Mesa (Trace Table) -->
+    <!-- Visor de código com linha ativa destacada, botões de passo e tabela sincronizada -->
+    
+    <!-- A.6 Exercício Resolvido de Demonstração -->
+    <!-- Decomposição passo a passo, código comentado e:
+         Slot de Imagem do Professor: class="exercicio-resolvido-slot"
+         com data-img-aula="aula_X_Y" e data-img-exercicio="resolvido_ex1" -->
+
+  </div>
+
+  <!-- ======================================================================
+       BLOCO B: OFICINAS & EXERCÍCIOS PRÁTICOS (.secao-exercicios)
+       ====================================================================== -->
+  <div class="secao-exercicios">
+    
+    <!-- B.1 Navegador de Abas por Seções ou Blocos Temáticos -->
+    <!-- Botões: .tab-btn com onclick="switchOficinaBloco('secao-1')", etc. -->
+    
+    <!-- B.2 Paineis de Exercícios Propostos -->
+    <!-- Para CADA questão proposta:
+         1. Enunciado claro com especificações de entradas e saídas esperadas
+         2. SLOT DE IMAGEM DIDÁTICA DO PROFESSOR (Obrigatório em 100% das questões):
+            <div class="questao-imagem-slot" data-img-aula="aula_X_Y" data-img-exercicio="secao_1_atv_1"></div>
+         3. Gabarito comentado expansível com toggle individual
+         4. Botão de feedback/conclusão de etapa (+XP) -->
+         
+    <!-- B.3 Desafios Temáticos Intermediários -->
+    <!-- Problemas abertos com casos de teste e slot de imagem didática -->
+    
+    <!-- B.4 Desafio Mestre Integrador (Clímax da Aula) -->
+    <!-- 1. Enunciado contextualizado com regras de negócio realistas
+         2. Slot de Imagem Didática Opcional (data-img-exercicio="desafio_mestre")
+         3. Tabela de Casos de Validação I/O (mínimo de 2 cenários completos)
+         4. Botão com 1 clique para Copiar Template Python para Área de Transferência
+         5. Gabarito comentado expansível
+         6. Checklist interativo de autoavaliação (mínimo de 4 itens checkbox)
+         7. Botão reativo "Homologar Desafio Mestre (+60 XP)" habilitado apenas com o checklist 100% marcado -->
+
+  </div>
+
+  <!-- 3. GUIA DE AMBIENTE NO RODAPÉ -->
+  <!-- Instruções claras de como instalar Anaconda3 (Jupyter) ou usar Google Colab -->
+
+</div>
+```
+
+---
+
+### 8.4. Regras Obrigatórias para Imagens Didáticas do Professor
+
+1. **Onipresença dos Slots**:
+   - Todo exercício resolvido deve conter o container com classe `exercicio-resolvido-slot`.
+   - **Toda e qualquer questão prática** (propostas e desafios) deve conter o container com classe `questao-imagem-slot`.
+2. **Atributos Obrigatórios**:
+   - `data-img-aula="aula_X_Y"`
+   - `data-img-exercicio="identificador_unico"` (ex.: `secao_1_atv_1`, `secao_2_atv_5`, `desafio_1`, `desafio_mestre`).
+3. **Comportamento Opcional Limpo**:
+   - O slot começa vazio. Se o professor não tiver feito upload de imagem para aquele exercício, o container não exibe espaços em branco ou bordas vazias para o estudante.
+   - Quando o professor está conectado, o sistema injeta automaticamente o botão discreto *"📷 Anexar Imagem [Professor]"*.
+
+---
+
+### 8.5. Regras Obrigatórias para o Desafio Mestre Integrador
+
+Cada aula deve culminar em um **Desafio Mestre**:
+1. **Casos de Teste Concretos**: No mínimo 2 casos com valores explícitos de entrada e saídas formatadas (com arredondamentos, unidades e booleanos esperados).
+2. **Botão de 1 Clique**: Função `copiarTemplateX()` que transfere o script com docstrings e chamadas de teste diretamente para a área de transferência do aluno.
+3. **Checklist Reativo de Autoavaliação**: Mínimo de 4 checkboxes (`chk-reforma-1`, `chk-reforma-2`, etc.) que acionam a função `atualizarChecklistX()`.
+4. **Proteção de Submissão**: O botão de conclusão só fica habilitado (`disabled = false`, opacidade 100%) quando **todos os checkboxes estiverem marcados**, concedendo a pontuação de XP formativa.
+
+---
+
+### 8.6. Contrato de Código no Backend ([Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs))
+
+Em [Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs), incluir a nova aula em **4 funções**:
+
+1. **`sincronizarAulasPadraoNoCatalogo(sheetCat)`**:
+   Adicionar a linha da nova aula no array `aulasObrigatorias` para auto-provisionamento em 0 cliques.
+2. **`setupDatabase(forcarRecriacao)`**:
+   Adicionar no array `aulasSementes` para inicialização limpa de novas planilhas.
+3. **`limparCatalogoParaAulasExistentes()`**:
+   Adicionar no menu de manutenção da planilha.
+4. **`carregarConteudoAula(idAula)`**:
+   Adicionar no `mapaFallback` (`'aula_X_Y': 'AulaX_Y'`) como garantia de carregamento dinâmico.
+
+---
+
+### 8.7. Contrato de Código no Shell e Script ([Index.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Index.html) e [Script.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Script.html))
+
+1. **Em [Index.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Index.html)**:
+   ```html
+   <template id="template-aula-X-Y">
+     <?!= include('AulaX_Y'); ?>
+   </template>
+   ```
+2. **Em [Script.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Script.html)**:
+   - Declarar `const SIMULATION_STEPS_AULAX_Y = [ ... ];` com no mínimo 5 a 8 passos contendo: `line`, `codeHighlight`, `title`, `desc`, `stack` e `stdout`.
+   - Atualizar a função `abrirAula(idAula)` para selecionar os passos correspondentes e carregar o template instantâneo.
+   - Atualizar a função `switchOficinaBloco(blocoId)` para incluir os IDs das abas da nova aula.
+   - Implementar as funções auxiliares do Desafio Mestre: `copiarTemplateX()`, `toggleGabaritoX()`, `atualizarChecklistX()` e `validarEConcluirX()`.
+   - Adicionar o item correspondente no array do catálogo mock de fallback.
+
+---
+
+### 8.8. Contrato de Código no Preview Offline ([preview_local.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/preview_local.html))
+
+Para permitir que a nova aula seja testada no Windows com **dois cliques** sem precisar do Google Apps Script:
+1. Embutir o código completo de `AulaX_Y.html` dentro de um `<template id="template-aula-X-Y">` no corpo do [preview_local.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/preview_local.html).
+2. Adicionar as rotinas JS do Desafio Mestre e a constante `SIMULATION_STEPS_AULAX_Y` na tag `<script>` do preview.
+3. Testar a troca de aula pelo Dashboard local confirmando que a alternância ocorre com sucesso.
