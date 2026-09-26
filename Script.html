@@ -877,44 +877,47 @@ function copiarTemplateReforma() {
   const codigoReforma = `# ============================================================
 # PYTHONLAB — DESAFIO MESTRE: SIMULADOR DE REFORMA E PINTURA (AULA 1.3)
 # Execute esta célula diretamente no Google Colab ou Jupyter Notebook
+# Conteúdo permitido: Variáveis, input(), float(), int(),
+# Operadores Aritméticos, Precedência com () e Operador Relacional <=
+# (Sem uso de funções 'def' e sem condicionais 'if')
 # ============================================================
 
-def simular_reforma(comp, larg, alt, teto_orcamento):
-    # 1. Área total das 4 paredes
-    area_total = 2 * (comp * alt) + 2 * (larg * alt)
-    
-    # 2. Litros de tinta (6 m² por litro)
-    litros = area_total / 6.0
-    
-    # 3. Decomposição em latas de 18L e sobra
-    latas_cheias = int(litros // 18)
-    litros_sobra = litros % 18
-    
-    # 4. Custo total com taxa fixa de R$ 45
-    custo_total = latas_cheias * 85.0
-    custo_total += 45.0
-    
-    # 5. Validação relacional sem if
-    orcamento_ok = custo_total <= teto_orcamento
-    
-    print(f"Área total: {area_total:.1f} m²")
-    print(f"Litros necessários: {litros:.2f} L")
-    print(f"Latas cheias (18L): {latas_cheias}")
-    print(f"Litros avulsos restantes: {litros_sobra:.2f} L")
-    print(f"Custo com taxa: R$ {custo_total:.2f}")
-    print(f"Orçamento suficiente: {orcamento_ok}")
-    return orcamento_ok
+# 1. ENTRADA DE DADOS VIA INPUT() COM TYPE CASTING (FLOAT)
+print("=== SIMULADOR DE REFORMA E PINTURA DO LABORATÓRIO ===")
+comp = float(input("Digite o comprimento da sala em metros (ex: 8.0): "))
+larg = float(input("Digite a largura da sala em metros (ex: 6.0): "))
+alt = float(input("Digite a altura/pé-direito das paredes em metros (ex: 3.0): "))
+teto_orcamento = float(input("Digite o teto de orçamento da escola em R$ (ex: 200.00): "))
 
-# --- TESTES DE VALIDAÇÃO LOCAL ---
-print("--- CASO 1: SALA PADRÃO ---")
-simular_reforma(8.0, 6.0, 3.0, 200.0)
+# 2. CÁLCULO DA ÁREA TOTAL DAS 4 PAREDES (PRECEDÊNCIA COM PARÊNTESES)
+area_total = 2 * (comp * alt) + 2 * (larg * alt)
 
-print("\\n--- CASO 2: GALPÃO MAIOR ---")
-simular_reforma(12.0, 10.0, 4.0, 150.0)
+# 3. CONSUMO TOTAL DE TINTA (RENDIMENTO: 6 M² POR LITRO)
+litros = area_total / 6.0
+
+# 4. DECOMPOSIÇÃO EM LATAS DE 18L (//) E SOBRA AVULSA DE LITROS (%)
+latas_cheias = int(litros // 18)
+litros_sobra = litros % 18
+
+# 5. CUSTO TOTAL (R$ 85/LATA) E TAXA AUXILIAR COM ATRIBUIÇÃO COMPOSTA (+=)
+custo_total = latas_cheias * 85.0
+custo_total += 45.0  # Adiciona taxa fixa de materiais auxiliares (R$ 45.00)
+
+# 6. VALIDAÇÃO RELACIONAL DE ORÇAMENTO (BOOLEANO PRODUZIDO SEM IF)
+orcamento_ok = custo_total <= teto_orcamento
+
+# 7. SAÍDA FORMATADA NO CONSOLE (STDOUT)
+print("\\n--- RELATÓRIO DE CUSTOS E VIABILIDADE ---")
+print(f"Área total: {area_total:.1f} m²")
+print(f"Litros necessários: {litros:.2f} L")
+print(f"Latas cheias (18L): {latas_cheias}")
+print(f"Litros avulsos restantes: {litros_sobra:.2f} L")
+print(f"Custo com taxa: R$ {custo_total:.2f}")
+print(f"Orçamento suficiente: {orcamento_ok}")
 `;
 
   navigator.clipboard.writeText(codigoReforma).then(() => {
-    showToast('Template do Simulador de Reforma copiado com sucesso!', 'success');
+    showToast('Template sequencial da Reforma copiado com sucesso!', 'success');
   }).catch(() => {
     showToast('Não foi possível copiar automaticamente para a área de transferência.', 'info');
   });

@@ -965,6 +965,57 @@
       <!-- Corpo do Desafio Mestre -->
       <div style="padding: 1.5rem; background: var(--color-surface-lowest);">
         
+        <!-- Comando de Texto da Questão (Enunciado Completo e Detalhado) -->
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-primary-container); border-left: 5px solid var(--color-primary); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.5rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 1.3rem;">📋</span>
+              <h4 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 800; color: var(--color-primary); margin: 0;">
+                Comando da Questão (Enunciado do Problema)
+              </h4>
+            </div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-secondary); background: var(--color-surface-container); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Script Sequencial (Sem def / Sem if)
+            </span>
+          </div>
+
+          <p style="font-size: 0.9rem; line-height: 1.6; color: var(--color-on-surface); margin-bottom: 0.75rem;">
+            A diretoria da escola aprovou a reforma e pintura das 4 paredes do laboratório de informática e solicitou que você construa um programa em Python para automatizar o cálculo da quantidade de tinta necessária e apurar a viabilidade financeira do orçamento antes da compra dos materiais.
+          </p>
+
+          <p style="font-size: 0.88rem; line-height: 1.6; color: var(--color-on-surface); margin-bottom: 0.75rem;">
+            <strong>Atenção às Restrições de Aprendizagem:</strong> Como estruturas de repetição, desvios condicionais (<code>if/else</code>) e criação de funções (<code>def</code>) ainda <strong>não</strong> foram estudadas, este programa deve ser implementado como um <strong>script puramente sequencial</strong>, aplicando exclusivamente o conteúdo estudado até esta aula (coleta de dados com <code>input()</code>, conversão com <code>float()</code> e <code>int()</code>, operadores aritméticos, precedência com parênteses <code>()</code>, atribuição composta <code>+=</code> e operador relacional <code>&lt;=</code>).
+          </p>
+
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-top: 0.75rem;">
+            <div style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.03em;">
+              Instruções Passo a Passo de Implementação:
+            </div>
+            <ol style="font-size: 0.85rem; line-height: 1.7; color: var(--color-on-surface-variant); padding-left: 1.25rem; margin: 0;">
+              <li><strong>Entrada de Dados:</strong> Solicite via teclado (usando <code>input()</code> e convertendo para <code>float</code>) o <strong>comprimento</strong> da sala em metros, a <strong>largura</strong> da sala em metros, a <strong>altura (pé-direito)</strong> das paredes em metros e o <strong>teto de orçamento</strong> disponibilizado pela escola em Reais.</li>
+              <li><strong>Cálculo da Área das Paredes:</strong> Calcule a área total de pintura das 4 paredes somando os dois pares de paredes opostas, utilizando parênteses para garantir que as multiplicações tenham precedência sobre a adição:
+                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 600;">area_total = 2 * (comprimento * altura) + 2 * (largura * altura)</code>.
+              </li>
+              <li><strong>Consumo de Tinta:</strong> Sabendo que <strong>1 litro de tinta cobre exatamente 6 m²</strong> de parede, calcule o volume total de litros dividindo a área total por <code>6.0</code>:
+                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 600;">litros = area_total / 6.0</code>.
+              </li>
+              <li><strong>Decomposição em Latas Fechadas e Litros Avulsos:</strong> A tinta é comercializada em latas fechadas de 18 litros.
+                <ul>
+                  <li>Utilize a <strong>divisão inteira (<code>//</code>)</strong> com conversão para <code>int</code> para apurar quantas latas cheias de 18L serão adquiridas: <code>latas_cheias = int(litros // 18)</code>;</li>
+                  <li>Utilize o <strong>operador de resto/módulo (<code>%</code>)</strong> para apurar os litros avulsos que sobram fora das latas cheias: <code>litros_sobra = litros % 18</code>.</li>
+                </ul>
+              </li>
+              <li><strong>Custo Total e Atribuição Composta (<code>+=</code>):</strong> Cada lata de 18L custa <strong>R$ 85,00</strong>. Inicialize a variável de custo com o valor das latas cheias (<code>custo_total = latas_cheias * 85.0</code>) e acrescente a taxa fixa de materiais auxiliares (pincéis, rolos e fitas) de <strong>R$ 45,00</strong> utilizando obrigatoriamente a atribuição composta:
+                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 600;">custo_total += 45.0</code>.
+              </li>
+              <li><strong>Validação Relacional sem if:</strong> Avalie se o custo total calculado cabe dentro do teto orçamentário da escola através do operador relacional <code>&lt;=</code>:
+                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 600;">orcamento_ok = custo_total &lt;= teto_orcamento</code> (gerando o valor booleano <code>True</code> ou <code>False</code> no console sem usar <code>if</code>).
+              </li>
+              <li><strong>Saída de Dados Formatada:</strong> Exiba no terminal o relatório consolidado com mensagens descritivas e valores decimais formatados através de f-strings, seguindo o padrão exato da tabela de I/O abaixo.</li>
+            </ol>
+          </div>
+        </div>
+
         <!-- Fórmulas Chave do Negócio -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
           <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
