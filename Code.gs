@@ -124,26 +124,57 @@ function include(filename) {
 }
 
 /**
- * Retorna o conteúdo HTML de uma aula requisitada dinamicamente pelo frontend
+ * Sincroniza automaticamente aulas obrigatórias e arquivos desenvolvidos na aba Catalogo_Aulas.
+ * Evita a necessidade de inserção manual de linhas pelo usuário na planilha.
  */
-function carregarConteudoAula(idAula) {
+function sincronizarAulasPadraoNoCatalogo(sheetCat) {
+  if (!sheetCat) return;
   try {
-    var mapaAulas = {
-      'aula_1_2': 'Aula1_2',
-      'aula_1_3': 'Aula1_3'
-    };
-    var arquivoHtml = mapaAulas[idAula] || 'Aula1_2';
-    var html = include(arquivoHtml);
-    return {
-      sucesso: true,
-      idAula: idAula,
-      html: html
-    };
+    var data = sheetCat.getDataRange().getValues();
+    var idsExistentes = {};
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][0]) {
+        idsExistentes[data[i][0].toString().trim()] = true;
+      }
+    }
+
+    var aulasObrigatorias = [
+      [
+        'aula_1_2',
+        'Módulo 1: Fundamentos de CPython',
+        1,
+        'Variáveis, Tipos de Dados e Entrada/Saída',
+        'Aula1_2',
+        1,
+        'publicado',
+        150,
+        '45 min',
+        'Ciclo elementar entrada/processamento/saída, tipos primitivos, Stack vs Heap, teste de mesa e Totem de Bilhetagem.'
+      ],
+      [
+        'aula_1_3',
+        'Módulo 1: Fundamentos de CPython',
+        1,
+        'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
+        'Aula1_3',
+        2,
+        'publicado',
+        180,
+        '50 min',
+        'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
+      ]
+    ];
+
+    for (var j = 0; j < aulasObrigatorias.length; j++) {
+      var idAlvo = aulasObrigatorias[j][0];
+      if (!idsExistentes[idAlvo]) {
+        sheetCat.appendRow(aulasObrigatorias[j]);
+        idsExistentes[idAlvo] = true;
+        Logger.log('Aula sincronizada automaticamente no catálogo: ' + idAlvo);
+      }
+    }
   } catch (e) {
-    return {
-      sucesso: false,
-      mensagem: 'Erro ao carregar conteúdo da aula: ' + e.message
-    };
+    Logger.log('Erro ao sincronizar aulas padrão no catálogo: ' + e.message);
   }
 }
 
@@ -161,6 +192,7 @@ function getSpreadsheet() {
 /**
  * Garante que a estrutura do banco de dados (abas, cabeçalhos e configurações)
  * exista na planilha. Se alguma aba não existir, ela é criada automaticamente no primeiro acesso.
+ * Também sincroniza novas aulas publicadas na aba Catalogo_Aulas sem apagar dados existentes.
  */
 function ensureDatabase() {
   try {
@@ -175,7 +207,14 @@ function ensureDatabase() {
     // Se qualquer uma das abas essenciais não existir, provisiona automaticamente
     if (!sheetUsers || !sheetCat || !sheetProg || !sheetImg) {
       setupDatabase(false);
+      sheetCat = ss.getSheetByName(CONFIG.SHEET_CATALOG);
     }
+    
+    // Auto-sincronização de catálogo para novas aulas (ex: Aula 1.3)
+    if (sheetCat && sheetCat.getLastRow() > 0) {
+      sincronizarAulasPadraoNoCatalogo(sheetCat);
+    }
+    
     return ss;
   } catch (e) {
     Logger.log('Aviso em ensureDatabase: ' + e.message);
@@ -525,6 +564,9 @@ function getCatalogoAulas(emailParam) {
     var sheet = ss ? ss.getSheetByName(CONFIG.SHEET_CATALOG) : null;
     if (!sheet) return [];
     
+    // Auto-sincronização de catálogo para novas aulas (ex: Aula 1.3)
+    sincronizarAulasPadraoNoCatalogo(sheet);
+
     var data = sheet.getDataRange().getValues();
     var userSession = getUserSessionData(emailParam);
     var isProfessor = userSession.isProfessor;
@@ -587,6 +629,15 @@ function carregarConteudoAula(idAula) {
         tituloAula = rows[i][3];
         break;
       }
+    }
+    
+    // Fallback de segurança para aulas padrão
+    if (!arquivoHtmlAlvo) {
+      var mapaFallback = {
+        'aula_1_2': 'Aula1_2',
+        'aula_1_3': 'Aula1_3'
+      };
+      arquivoHtmlAlvo = mapaFallback[idAula];
     }
     
     if (!arquivoHtmlAlvo) {
