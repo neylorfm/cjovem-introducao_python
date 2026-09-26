@@ -129,6 +129,124 @@ const DEFAULT_SIMULATION_STEPS = [
   }
 ];
 
+const SIMULATION_STEPS_AULA1_3 = [
+  {
+    step: 0,
+    line: null,
+    insightTitle: "Passo 0: Preparação da Call Stack (Aula 1.3)",
+    insightDesc: "Inicie o simulador para acompanhar a resolução da expressão '100 - 4 ** 2 * 3 + 24 // (2 + 4)' decomposta passo a passo de acordo com as regras de precedência.",
+    stack: [],
+    heap: [],
+    stdout: "> (Aguardando início...)"
+  },
+  {
+    step: 1,
+    line: 1,
+    insightTitle: "Passo 1: Resolução de Parênteses (bloco_par = 2 + 4)",
+    insightDesc: "Regra 1: Parênteses possuem a maior precedência de todos! O CPython calcula (2 + 4) = 6 antes de qualquer outra operação. O valor 6 é alocado no Heap em 0x7FA11.",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" }
+    ],
+    stdout: "> (Calculando bloco dos parênteses...)"
+  },
+  {
+    step: 2,
+    line: 2,
+    insightTitle: "Passo 2: Exponenciação (bloco_pot = 4 ** 2)",
+    insightDesc: "Regra 2: A exponenciação (**) tem prioridade superior à multiplicação e divisão. CPython eleva 4 ao quadrado resultando em 16 (0x7FA12).",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" }
+    ],
+    stdout: "> (Calculando exponenciação: 4 ** 2 = 16)"
+  },
+  {
+    step: 3,
+    line: 3,
+    insightTitle: "Passo 3: Multiplicação (bloco_mult = bloco_pot * 3)",
+    insightDesc: "Regra 3: Multiplicação entre 16 e 3 resulta em 48 (0x7FA13). O termo multiplicativo intermediário está resolvido.",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
+      { name: "bloco_mult", type: "int", addr: "0x7FA13" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" },
+      { addr: "0x7FA13", val: "48", type: "int" }
+    ],
+    stdout: "> (Calculando multiplicação: 16 * 3 = 48)"
+  },
+  {
+    step: 4,
+    line: 4,
+    insightTitle: "Passo 4: Divisão Inteira (bloco_div = 24 // bloco_par)",
+    insightDesc: "Regra 4: Divisão inteira (//) entre 24 e 6 (resultado do parêntese). Quociente inteiro exato é 4 (0x7FA14).",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
+      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
+      { name: "bloco_div", type: "int", addr: "0x7FA14" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" },
+      { addr: "0x7FA13", val: "48", type: "int" },
+      { addr: "0x7FA14", val: "4", type: "int" }
+    ],
+    stdout: "> (Calculando divisão inteira: 24 // 6 = 4)"
+  },
+  {
+    step: 5,
+    line: 5,
+    insightTitle: "Passo 5: Adições e Subtrações da Esquerda para a Direita",
+    insightDesc: "Regra 5: Com multiplicativos e potências resolvidos, avaliamos 100 - 48 + 4 da esquerda para a direita: (100 - 48 = 52) + 4 = 56 (0x7FA15).",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
+      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
+      { name: "bloco_div", type: "int", addr: "0x7FA14" },
+      { name: "resultado", type: "int", addr: "0x7FA15" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" },
+      { addr: "0x7FA13", val: "48", type: "int" },
+      { addr: "0x7FA14", val: "4", type: "int" },
+      { addr: "0x7FA15", val: "56", type: "int" }
+    ],
+    stdout: "> (Expressão resolvida: resultado = 56)"
+  },
+  {
+    step: 6,
+    line: 6,
+    insightTitle: "Passo 6: Saída Formatada no Console",
+    insightDesc: "Instrução print exibe a mensagem final 'Resultado final: 56' no terminal STDOUT.",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
+      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
+      { name: "bloco_div", type: "int", addr: "0x7FA14" },
+      { name: "resultado", type: "int", addr: "0x7FA15" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" },
+      { addr: "0x7FA13", val: "48", type: "int" },
+      { addr: "0x7FA14", val: "4", type: "int" },
+      { addr: "0x7FA15", val: "56", type: "int" }
+    ],
+    stdout: "> Resultado final: 56"
+  }
+];
+
 // Inicialização do documento
 document.addEventListener('DOMContentLoaded', function() {
   initSimulation(DEFAULT_SIMULATION_STEPS);
@@ -217,7 +335,7 @@ function loadCatalog() {
       })
       .getCatalogoAulas(currentEmail);
   } else {
-    // Mock local do catálogo: apenas a aula que de fato existe (Aula 1.2)
+    // Mock local do catálogo: aulas desenvolvidas no projeto (Aula 1.2 e Aula 1.3)
     onCatalogSuccess([
       {
         id_aula: 'aula_1_2',
@@ -230,6 +348,18 @@ function loadCatalog() {
         xp_base: 150,
         tempo_estimado: '45 min',
         descricao: 'Ciclo elementar entrada/processamento/saída, tipos primitivos, Stack vs Heap, teste de mesa e Totem de Bilhetagem.'
+      },
+      {
+        id_aula: 'aula_1_3',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        titulo: 'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
+        arquivo_html: 'Aula1_3',
+        ordem: 2,
+        status: 'publicado',
+        xp_base: 180,
+        tempo_estimado: '50 min',
+        descricao: 'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
       }
     ]);
   }
@@ -583,10 +713,11 @@ investigar_identidade_inteiros(257, 257)
 }
 
 /**
- * Alternância de abas do Caderno de Oficinas (Blocos A, B e C)
+ * Alternância de abas do Caderno de Oficinas (Blocos A, B e C ou Seções 1, 2, 3 e 4)
  */
 function switchOficinaBloco(blocoId) {
-  ['bloco-a', 'bloco-b', 'bloco-c'].forEach(id => {
+  const todasAbas = ['bloco-a', 'bloco-b', 'bloco-c', 'secao-1', 'secao-2', 'secao-3', 'secao-4'];
+  todasAbas.forEach(id => {
     const btn = document.getElementById(`btn-tab-${id}`);
     const panel = document.getElementById(`panel-${id}`);
     if (btn) {
@@ -602,6 +733,110 @@ function switchOficinaBloco(blocoId) {
       panel.style.display = (id === blocoId) ? 'block' : 'none';
     }
   });
+}
+
+/**
+ * Cópia do template do Desafio Mestre: Simulador de Reforma e Pintura (Aula 1.3)
+ */
+function copiarTemplateReforma() {
+  const codigoReforma = `# ============================================================
+# PYTHONLAB — DESAFIO MESTRE: SIMULADOR DE REFORMA E PINTURA (AULA 1.3)
+# Execute esta célula diretamente no Google Colab ou Jupyter Notebook
+# ============================================================
+
+def simular_reforma(comp, larg, alt, teto_orcamento):
+    # 1. Área total das 4 paredes
+    area_total = 2 * (comp * alt) + 2 * (larg * alt)
+    
+    # 2. Litros de tinta (6 m² por litro)
+    litros = area_total / 6.0
+    
+    # 3. Decomposição em latas de 18L e sobra
+    latas_cheias = int(litros // 18)
+    litros_sobra = litros % 18
+    
+    # 4. Custo total com taxa fixa de R$ 45
+    custo_total = latas_cheias * 85.0
+    custo_total += 45.0
+    
+    # 5. Validação relacional sem if
+    orcamento_ok = custo_total <= teto_orcamento
+    
+    print(f"Área total: {area_total:.1f} m²")
+    print(f"Litros necessários: {litros:.2f} L")
+    print(f"Latas cheias (18L): {latas_cheias}")
+    print(f"Litros avulsos restantes: {litros_sobra:.2f} L")
+    print(f"Custo com taxa: R$ {custo_total:.2f}")
+    print(f"Orçamento suficiente: {orcamento_ok}")
+    return orcamento_ok
+
+# --- TESTES DE VALIDAÇÃO LOCAL ---
+print("--- CASO 1: SALA PADRÃO ---")
+simular_reforma(8.0, 6.0, 3.0, 200.0)
+
+print("\\n--- CASO 2: GALPÃO MAIOR ---")
+simular_reforma(12.0, 10.0, 4.0, 150.0)
+`;
+
+  navigator.clipboard.writeText(codigoReforma).then(() => {
+    showToast('Template do Simulador de Reforma copiado com sucesso!', 'success');
+  }).catch(() => {
+    showToast('Não foi possível copiar automaticamente para a área de transferência.', 'info');
+  });
+}
+
+function toggleGabaritoReforma() {
+  const body = document.getElementById('gabarito-reforma-body');
+  const icon = document.getElementById('gabarito-reforma-icon');
+  if (body) {
+    const isHidden = (body.style.display === 'none' || body.style.display === '');
+    body.style.display = isHidden ? 'block' : 'none';
+    if (icon) icon.textContent = isHidden ? '▲' : '▼';
+  }
+}
+
+function atualizarChecklistReforma() {
+  const c1 = document.getElementById('chk-reforma-1');
+  const c2 = document.getElementById('chk-reforma-2');
+  const c3 = document.getElementById('chk-reforma-3');
+  const c4 = document.getElementById('chk-reforma-4');
+  const btn = document.getElementById('btn-concluir-reforma');
+  
+  const todosConcluidos = c1 && c1.checked && c2 && c2.checked && c3 && c3.checked && c4 && c4.checked;
+  if (btn) {
+    btn.disabled = !todosConcluidos;
+    btn.style.opacity = todosConcluidos ? '1' : '0.5';
+    btn.style.cursor = todosConcluidos ? 'pointer' : 'not-allowed';
+  }
+}
+
+function validarEConcluirReforma(xp) {
+  const user = AppState.user;
+  if (user.perfil === 'visitante' || !user.autenticado) {
+    openVisitorModal();
+    return;
+  }
+
+  const idAula = AppState.currentLessonId || 'aula_1_3';
+  const xpGanho = Number(xp) || 60;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(resp) {
+        if (resp && resp.sucesso) {
+          AppState.user.xpTotal += xpGanho;
+          renderHeaderUser();
+          showToast(`🏆 Excelente! Desafio Mestre da Reforma homologado com sucesso! +${xpGanho} XP`, 'success');
+        } else {
+          showToast(resp.mensagem || 'Erro ao registrar progresso', 'info');
+        }
+      })
+      .salvarProgresso(idAula, 'desafio_mestre_reforma', 'concluido', true, true, true, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
+  } else {
+    AppState.user.xpTotal += xpGanho;
+    renderHeaderUser();
+    showToast(`🏆 Modo Mock: Desafio Mestre da Reforma concluído! +${xpGanho} XP adicionados.`, 'success');
+  }
 }
 
 /**
@@ -916,27 +1151,16 @@ function concluirEtapaAtual() {
 }
 
 function abrirAula(idAula) {
-  // Apenas a Aula 1.2 está desenvolvida no momento
-  if (idAula === 'aula_1_2') {
-    AppState.currentLessonId = idAula;
-    navigateTo('view-aula');
-    const aulaAtual = document.getElementById('view-aula');
-    if (aulaAtual) {
-      aulaAtual.classList.add('active');
-    }
-    aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
-    carregarImagensAula(idAula);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return;
-  }
+  if (!idAula) idAula = 'aula_1_2';
+  AppState.currentLessonId = idAula;
 
-  // Para aulas futuras adicionadas dinamicamente
+  const stepsAlvo = (idAula === 'aula_1_3') ? SIMULATION_STEPS_AULA1_3 : DEFAULT_SIMULATION_STEPS;
+
   if (typeof google !== 'undefined' && google.script && google.script.run) {
     showToast('Carregando conteúdo da aula...', 'info');
     google.script.run
       .withSuccessHandler(function(res) {
         if (res && res.sucesso && res.html) {
-          AppState.currentLessonId = idAula;
           const aulaContainer = document.getElementById('dynamic-lesson-content');
           if (aulaContainer) {
             aulaContainer.innerHTML = res.html;
@@ -946,8 +1170,10 @@ function abrirAula(idAula) {
               novaSec.classList.add('active');
             }
             if (typeof initSimulation === 'function') {
-              initSimulation(DEFAULT_SIMULATION_STEPS);
+              initSimulation(stepsAlvo);
             }
+            aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+            carregarImagensAula(idAula);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         } else {
@@ -959,7 +1185,26 @@ function abrirAula(idAula) {
       })
       .carregarConteudoAula(idAula);
   } else {
-    showToast('Apenas a Aula 1.2 possui arquivo HTML desenvolvido até o momento.', 'info');
+    // Modo de Desenvolvimento Local / Preview
+    const tmplId = (idAula === 'aula_1_3') ? 'template-aula-1-3' : 'template-aula-1-2';
+    const tmpl = document.getElementById(tmplId);
+    const aulaContainer = document.getElementById('dynamic-lesson-content');
+    
+    if (tmpl && aulaContainer) {
+      aulaContainer.innerHTML = tmpl.innerHTML;
+    }
+    
+    navigateTo('view-aula');
+    const aulaAtual = document.getElementById('view-aula');
+    if (aulaAtual) {
+      aulaAtual.classList.add('active');
+    }
+    if (typeof initSimulation === 'function') {
+      initSimulation(stepsAlvo);
+    }
+    aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+    carregarImagensAula(idAula);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 

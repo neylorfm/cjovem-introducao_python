@@ -79,7 +79,7 @@ function limparCatalogoParaAulasExistentes() {
     .setFontColor('#ffffff')
     .setFontWeight('bold');
     
-  // Registra unicamente a aula real que existe no momento: Aula 1.2
+  // Registra as aulas reais desenvolvidas no projeto: Aula 1.2 e Aula 1.3
   sheetCatalogo.appendRow([
     'aula_1_2',
     'Módulo 1: Fundamentos de CPython',
@@ -92,9 +92,21 @@ function limparCatalogoParaAulasExistentes() {
     '45 min',
     'Ciclo elementar entrada/processamento/saída, tipos primitivos, Stack vs Heap, teste de mesa e Totem de Bilhetagem.'
   ]);
+  sheetCatalogo.appendRow([
+    'aula_1_3',
+    'Módulo 1: Fundamentos de CPython',
+    1,
+    'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
+    'Aula1_3',
+    2,
+    'publicado',
+    180,
+    '50 min',
+    'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
+  ]);
   sheetCatalogo.setFrozenRows(1);
   try {
-    SpreadsheetApp.getUi().alert('Catálogo redefinido com sucesso! Apenas a Aula 1.2 está ativa na planilha.');
+    SpreadsheetApp.getUi().alert('Catálogo redefinido com sucesso! Aulas 1.2 e 1.3 estão ativas na planilha.');
   } catch (e) {}
 }
 
@@ -215,7 +227,7 @@ function setupDatabase(forcarRecriacao) {
       .setFontColor('#ffffff')
       .setFontWeight('bold');
 
-    // Semente do catálogo de aulas: Apenas aulas reais com arquivo HTML existente (Aula 1.2)
+    // Semente do catálogo de aulas: Aulas reais desenvolvidas no projeto (Aula 1.2 e Aula 1.3)
     var aulasSementes = [
       [
         'aula_1_2',
@@ -228,6 +240,18 @@ function setupDatabase(forcarRecriacao) {
         150,
         '45 min',
         'Ciclo elementar entrada/processamento/saída, tipos primitivos, Stack vs Heap, teste de mesa e Totem de Bilhetagem.'
+      ],
+      [
+        'aula_1_3',
+        'Módulo 1: Fundamentos de CPython',
+        1,
+        'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
+        'Aula1_3',
+        2,
+        'publicado',
+        180,
+        '50 min',
+        'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
       ]
     ];
     for (var i = 0; i < aulasSementes.length; i++) {

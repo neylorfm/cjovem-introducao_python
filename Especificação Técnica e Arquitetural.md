@@ -3,12 +3,13 @@
 > [!IMPORTANT]
 > ### PREMISSAS ARQUITETURAIS & FILOSOFIA PEDAGÓGICA
 > 1. **Zero Execução de Código Python no Sistema**: A plataforma é **100% informativa, rica em modelos visuais conceituais e interativa**. A prática real de código ocorre no **Google Colab** ou **Jupyter Notebook**.
-> 2. **Bifurcação Didática Imediata no Topo da Aula (Fast-Track vs. Deep-Dive)**: Logo no cabeçalho inicial de cada aula, o aluno visualiza uma divisão clara entre **"Explicações & Fundamentos"** e **"Exercícios Propostos & Prática"**. O aluno decide de imediato se precisa consolidar a teoria (simulação passo a passo, memória Stack x Heap, trace tables e exercício resolvido) ou se prefere saltar diretamente para os desafios práticos no Colab/Jupyter.
-> 3. **Suporte a Imagens Didáticas Opcionais do Professor em Cada Questão**: Toda e qualquer questão da plataforma (exercícios resolvidos de exemplo, atividades práticas propostas em cada bloco temático ou desafios integradores) possui suporte nativo para o professor anexar uma imagem explicativa (diagramas conceituais, anotações de lousa, esquemas mentais, ilustrações de apoio, tabelas I/O ou mapas de fluxo). O anexo de imagem é **estritamente opcional**: se o professor não cadastrar imagem, o aluno/visitante visualiza a questão com diagramação limpa sem espaços vazios. Essas imagens são salvas automaticamente em uma pasta do Google Drive denominada **`imagens`**, localizada exatamente no mesmo diretório pai que contém a planilha-mestre do projeto, com metadados persistidos na aba **`Imagens_Exercicios`**.
-> 4. **Autorresponsabilidade na Gestão da Aprendizagem**: Não existe juiz automático punitivo ou bloqueio artificial. O **próprio aluno é o responsável por sinalizar sua evolução**, com dois propósitos fundamentais:
+> 2. **Onde Estão as Orientações Pedagógicas para as Aulas**: As orientações completas, diretrizes curriculares, enunciados, gabaritos e planejamentos de cada aula **residem estritamente dentro da pasta `aulas/`, em formato Markdown (`.md`)** (ex.: `aulas/aula1_2.md`, `aulas/aula1_3.md`, etc.). O arquivo `.md` é a **fonte primária e oficial da verdade** para a implementação dos componentes modulares `AulaX_Y.html` da aplicação.
+> 3. **Bifurcação Didática Imediata no Topo da Aula (Fast-Track vs. Deep-Dive)**: Logo no cabeçalho inicial de cada aula, o aluno visualiza uma divisão clara entre **"Explicações & Fundamentos"** e **"Exercícios Propostos & Prática"**. O aluno decide de imediato se precisa consolidar a teoria (simulação passo a passo, memória Stack x Heap, trace tables e exercício resolvido) ou se prefere saltar diretamente para os desafios práticos no Colab/Jupyter.
+> 4. **Suporte a Imagens Didáticas Opcionais do Professor em Cada Questão**: Toda e qualquer questão da plataforma (exercícios resolvidos de exemplo, atividades práticas propostas em cada bloco temático ou desafios integradores) possui suporte nativo para o professor anexar uma imagem explicativa (diagramas conceituais, anotações de lousa, esquemas mentais, ilustrações de apoio, tabelas I/O ou mapas de fluxo). O anexo de imagem é **estritamente opcional**: se o professor não cadastrar imagem, o aluno/visitante visualiza a questão com diagramação limpa sem espaços vazios. Essas imagens são salvas automaticamente em uma pasta do Google Drive denominada **`imagens`**, localizada exatamente no mesmo diretório pai que contém a planilha-mestre do projeto, com metadados persistidos na aba **`Imagens_Exercicios`**.
+> 5. **Autorresponsabilidade na Gestão da Aprendizagem**: Não existe juiz automático punitivo ou bloqueio artificial. O **próprio aluno é o responsável por sinalizar sua evolução**, com dois propósitos fundamentais:
 >    - **Saber onde parou e dar prosseguimento**: Retomar os estudos com 1 clique exatamente do tópico onde interrompeu sua sessão anterior;
 >    - **Identificar no que precisa tirar dúvidas com o professor**: Sinalizar conceitos ou exercícios difíceis, registrar perguntas no "Caderno de Dúvidas" e chegar à aula/monitoria com foco cirúrgico no que precisa destravar.
-> 5. **Ponte Didática para o Colab/Jupyter**: Códigos iniciais copiáveis com 1 clique, especificações detalhadas de I/O (entradas vs saídas esperadas), gabaritos comentados para comparação e autoavaliação formativa.
+> 6. **Ponte Didática para o Colab/Jupyter**: Códigos iniciais copiáveis com 1 clique, especificações detalhadas de I/O (entradas vs saídas esperadas), gabaritos comentados para comparação e autoavaliação formativa.
 
 ---
 
@@ -288,15 +289,17 @@ Cada arquivo de aula (ex: `Aula1_2.html`) deve estruturar o aprendizado através
 ## 7. Estrutura de Arquivos no Apps Script e Repositório
 
 ```text
-├── aulas/                  # Diretório de especificações pedagógicas em Markdown (.md)
+├── aulas/                  # Diretório de especificações pedagógicas canônicas em Markdown (.md)
 │   ├── aula1_2.md          # Orientações, teoria, diagrama de memória, oficinas e desafios da Aula 1.2
+│   ├── aula1_3.md          # Orientações, teoria, operadores, precedência e desafios da Aula 1.3
 │   └── aulaX_Y.md          # Próximas aulas adicionadas continuamente no mesmo padrão
 ├── Code.gs                 # Backend: doGet(), setupDatabase(), API RPC, DriveApp helper (pasta imagens)
 ├── Style.html              # Folha de estilo: Design System, divisor de topo, imagens e modais
 ├── Script.html             # Frontend: SPA, bifurcação didática, motor de passos, zoom e upload de imagem
 ├── Index.html              # Shell HTML unificado que inclui as parciais com <?!= include() ?>
 ├── Dashboard.html          # Painel do estudante com progresso, streak e catálogo dinâmico
-├── Aula1_2.html            # Aula modelo gerada a partir de aulas/aula1_2.md (com bifurcador e slot de imagem)
+├── Aula1_2.html            # Componente modular gerado a partir de aulas/aula1_2.md
+├── Aula1_3.html            # Componente modular gerado a partir de aulas/aula1_3.md
 ├── appsscript.json         # Manifesto com runtime V8 e escopos de autorização (Drive e Sheets)
 └── preview_local.html      # Ambiente de pré-visualização no navegador local sem deploy
 ```

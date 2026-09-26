@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
@@ -2375,6 +2375,1187 @@ body {
 
     </div>
 
+    <!-- Template Aula 1.3 para Preview Local -->
+    <template id="template-aula-1-3">
+<!-- ============================================================================
+     PYTHONLAB — AULA 1.3: PLANEJAMENTO DE ALGORITMOS, OPERADORES E PRECEDÊNCIA (Aula1_3.html)
+     Alinhada integralmente às diretrizes pedagógicas de aulas/aula1_3.md
+     ============================================================================ -->
+
+<div class="view-section" id="view-aula">
+
+  <!-- ========================================================================
+       CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
+       ======================================================================== -->
+  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+    <div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
+        <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 1: Fundamentos</span>
+        <span style="color: var(--color-outline);">›</span>
+        <span style="font-weight: 600; color: var(--color-on-surface-variant);">Aula 1.3</span>
+        <span style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          Iniciante • 50 min
+        </span>
+        <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          +180 XP
+        </span>
+      </div>
+      <h1 style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+        Planejamento de Algoritmos, Operadores Aritméticos e Precedência
+      </h1>
+      <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
+        Prática no <strong>Jupyter Notebook</strong> (Anaconda3) ou <strong>Google Colab</strong> (Tablet/Navegador).
+      </p>
+    </div>
+
+    <!-- 3 Ações de Gestão pelo Próprio Aluno -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_1_3', 'Aula 1.3: Operadores e Precedência')">
+        📌 Onde Parei
+      </button>
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_1_3', 'Operadores e Precedência')">
+        ❓ Tenho Dúvidas
+      </button>
+      <button class="btn btn-success" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+        ✓ Compreendi e Concluí (+180 XP)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       DIVISOR DIDÁTICO NO TOPO: ESCOLHA DA TRILHA DE ESTUDO
+       ======================================================================== -->
+  <div class="lesson-mode-bifurcator" id="lesson-mode-bifurcator">
+    <div class="bifurcator-header">
+      <div>
+        <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary);">
+          🧭 Como você deseja estudar esta aula hoje?
+        </div>
+        <div style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.2rem;">
+          Decida se prefere reforçar os conceitos ou ir direto para a prática no Google Colab/Jupyter.
+        </div>
+      </div>
+      <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+        Fast-Track ou Deep-Dive
+      </span>
+    </div>
+    <div class="bifurcator-nav">
+      <button class="bifurcator-btn active" id="btn-mode-explicacoes" onclick="setModoVisualizacaoAula('explicacoes')">
+        <span class="btn-mode-icon">📖</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">1. Explicações & Fundamentos</span>
+          <span class="btn-mode-subtitle">Operadores • Mutabilidade Stack/Heap • Player Passo a Passo • Precedência</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-pratica" onclick="setModoVisualizacaoAula('pratica')">
+        <span class="btn-mode-icon">🛠️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">2. Exercícios Propostos & Prática</span>
+          <span class="btn-mode-subtitle">29 Atividades • Desafio Reforma do Lab • Validação I/O</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-tudo" onclick="setModoVisualizacaoAula('tudo')">
+        <span class="btn-mode-icon">👁️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">Visualização Completa</span>
+          <span class="btn-mode-subtitle">Exibir tudo em sequência linear contínua</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTAINER TRILHA 1: EXPLICAÇÕES & FUNDAMENTOS -->
+  <div id="bloco-aula-explicacoes">
+
+  <!-- ========================================================================
+       1. VISÃO GERAL E FUNDAMENTOS TEÓRICOS
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Fundamentos Conceituais
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          1. Visão Geral e a Decomposição de Algoritmos Complexos
+        </h2>
+      </div>
+    </div>
+
+    <!-- Diagrama Visual da Decomposição Algorítmica -->
+    <div style="margin-bottom: 1.5rem; background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+      <div style="font-family: var(--font-headline); font-size: 0.9rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1rem; text-align: center;">
+        As Três Fases Essenciais no Planejamento de Algoritmos Matemáticos
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: center;">
+        
+        <!-- Bloco Entrada -->
+        <div style="background: var(--color-surface-lowest); border: 2px solid var(--color-secondary); border-radius: var(--radius-md); padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📥</div>
+          <div style="font-family: var(--font-headline); font-weight: 800; color: var(--color-secondary); font-size: 1rem;">1. ENTRADA DE DADOS</div>
+          <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0; background: var(--color-secondary-fixed); padding: 0.2rem 0.4rem; border-radius: 4px;">float(input())</div>
+          <p style="font-size: 0.78rem; color: var(--color-on-surface-variant); margin-top: 0.35rem;">
+            Coleta dos coeficientes ou grandezas com conversão explícita de tipos.
+          </p>
+        </div>
+
+        <div style="text-align: center; font-size: 1.5rem; color: var(--color-secondary); font-weight: bold;">➔</div>
+
+        <!-- Bloco Processamento Decomposto -->
+        <div style="background: var(--color-surface-lowest); border: 2px solid var(--color-primary); border-radius: var(--radius-md); padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">⚙️</div>
+          <div style="font-family: var(--font-headline); font-weight: 800; color: var(--color-primary); font-size: 1rem;">2. PROCESSAMENTO DECOMPOSTO</div>
+          <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0; background: var(--color-primary-fixed); padding: 0.2rem 0.4rem; border-radius: 4px;">Variáveis Intermediárias</div>
+          <p style="font-size: 0.78rem; color: var(--color-on-surface-variant); margin-top: 0.35rem;">
+            Resolução por etapas compreensíveis (ex.: delta, raiz, frações), evitando linhas monolíticas.
+          </p>
+        </div>
+
+        <div style="text-align: center; font-size: 1.5rem; color: var(--color-primary); font-weight: bold;">➔</div>
+
+        <!-- Bloco Saída -->
+        <div style="background: var(--color-surface-lowest); border: 2px solid var(--color-success); border-radius: var(--radius-md); padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📤</div>
+          <div style="font-family: var(--font-headline); font-weight: 800; color: var(--color-success); font-size: 1rem;">3. SAÍDA FORMATADA</div>
+          <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0; background: var(--color-success-container); padding: 0.2rem 0.4rem; border-radius: 4px;">f-strings / print()</div>
+          <p style="font-size: 0.78rem; color: var(--color-on-surface-variant); margin-top: 0.35rem;">
+            Apresentação clara, rotulada e amigável ao usuário com arredondamento adequado.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tabela Completa de Operadores Aritméticos -->
+    <div style="margin-bottom: 1.5rem;">
+      <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+        Famílias de Operadores Aritméticos em Python
+      </h3>
+      <div class="trace-table-container">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th style="width: 85px;">Operador</th>
+              <th>Nome da Operação</th>
+              <th>Exemplo Prático</th>
+              <th>Resultado</th>
+              <th>Comportamento do Interpretador</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">+</code></td>
+              <td><strong>Adição</strong></td>
+              <td><code>10 + 5</code></td>
+              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">15</span></td>
+              <td>Soma dois valores numéricos inteiros ou de ponto flutuante.</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">-</code></td>
+              <td><strong>Subtração</strong></td>
+              <td><code>20 - 8</code></td>
+              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">12</span></td>
+              <td>Subtrai o operando à direita do operando à esquerda.</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">*</code></td>
+              <td><strong>Multiplicação</strong></td>
+              <td><code>4 * 3</code></td>
+              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">12</span></td>
+              <td>Multiplica dois operandos numéricos.</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-secondary);">/</code></td>
+              <td><strong>Divisão Real</strong></td>
+              <td><code>7 / 2</code></td>
+              <td><span class="badge" style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed);">3.5 (float)</span></td>
+              <td>Devolve <strong>sempre</strong> um número de ponto flutuante (<code>float</code>), mesmo em divisões exatas (ex: <code>4 / 2 = 2.0</code>).</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: #b45309;">//</code></td>
+              <td><strong>Divisão Inteira</strong></td>
+              <td><code>7 // 2</code></td>
+              <td><span class="badge" style="background: #fef3c7; color: #b45309;">3 (int)</span></td>
+              <td>Trunca as casas decimais e retorna apenas o quociente inteiro (útil para pacotes, cédulas e caixas).</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: #b45309;">%</code></td>
+              <td><strong>Módulo / Resto</strong></td>
+              <td><code>7 % 2</code></td>
+              <td><span class="badge" style="background: #fef3c7; color: #b45309;">1 (int)</span></td>
+              <td>Devolve o resto da divisão euclidiana. Essencial para verificar paridade (<code>n % 2</code>) e sobras.</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">**</code></td>
+              <td><strong>Exponenciação</strong></td>
+              <td><code>2 ** 3</code> ou <code>9 ** 0.5</code></td>
+              <td><span class="badge" style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark);">8 e 3.0</span></td>
+              <td>Eleva a base à potência do expoente. Usar <code>** 0.5</code> equivale à raiz quadrada!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Grid de Atribuição Composta e Precedência -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="grid-teoria-2col">
+      <!-- Coluna 1: Atribuição Composta -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+          Atribuição Composta (Abreviada)
+        </h3>
+        <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+          Permite ler o valor atual de uma variável, aplicar um cálculo e regravar nela mesma de maneira concisa:
+        </p>
+        <div style="font-family: var(--font-code); font-size: 0.8rem; background: var(--color-code-bg); color: #e2e8f0; padding: 0.85rem; border-radius: var(--radius-md); line-height: 1.8;">
+          <span style="color: #38bdf8;">saldo += 150</span>   <span style="color: #64748b;"># saldo = saldo + 150</span><br>
+          <span style="color: #38bdf8;">saldo -= 45</span>    <span style="color: #64748b;"># saldo = saldo - 45</span><br>
+          <span style="color: #38bdf8;">pontos *= 2</span>    <span style="color: #64748b;"># pontos = pontos * 2</span><br>
+          <span style="color: #38bdf8;">valor /= 2</span>     <span style="color: #64748b;"># valor = valor / 2</span><br>
+          <span style="color: #38bdf8;">caixas //= 12</span>  <span style="color: #64748b;"># caixas = caixas // 12</span><br>
+          <span style="color: #38bdf8;">minutos %= 60</span>  <span style="color: #64748b;"># minutos = minutos % 60</span><br>
+          <span style="color: #38bdf8;">base **= 3</span>     <span style="color: #64748b;"># base = base ** 3</span>
+        </div>
+      </div>
+
+      <!-- Coluna 2: Hierarquia de Precedência -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+          Ordem Rigorosa de Precedência (PEMDAS)
+        </h3>
+        <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+          Quando uma instrução tem múltiplos operadores, o CPython avalia na seguinte hierarquia:
+        </p>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.7; padding-left: 1.25rem;">
+          <li><strong>1º Parênteses:</strong> <code>( )</code> — Forçam e alteram a prioridade de qualquer cálculo.</li>
+          <li><strong>2º Exponenciação:</strong> <code>**</code> — Avaliada da direita para a esquerda.</li>
+          <li><strong>3º Multiplicativos:</strong> <code>*</code>, <code>/</code>, <code>//</code>, <code>%</code> — Avaliados da esquerda para a direita.</li>
+          <li><strong>4º Aditivos:</strong> <code>+</code>, <code>-</code> — Avaliados da esquerda para a direita.</li>
+          <li><strong>5º Relacionais:</strong> <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code> — Produzem <code>True</code> ou <code>False</code>.</li>
+        </ol>
+        
+        <div style="margin-top: 0.75rem; background: #fee2e2; border-left: 3px solid #dc2626; padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.78rem; color: #991b1b;">
+          ⚠️ <strong>Armadilha Comum:</strong> Em <code>media = n1 + n2 / 2</code>, a divisão de <code>n2 / 2</code> ocorre primeiro! O correto é <code>(n1 + n2) / 2</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. DIAGRAMA DE MEMÓRIA CPYTHON: MUTABILIDADE E ATRIBUIÇÃO COMPOSTA
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Arquitetura Interna CPython
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          2. Como a Memória Opera na Atribuição Composta (Imutabilidade Numérica)
+        </h2>
+      </div>
+      <span style="font-size: 0.75rem; font-family: var(--font-code); color: var(--color-outline);">
+        Stack Frame & Heap Objects
+      </span>
+    </div>
+
+    <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1.25rem;">
+      No Python, números inteiros e decimais são <strong>objetos imutáveis</strong>. Ao executar <code>saldo += 150.0</code>, o Python não altera o número original na RAM: ele cria um novo objeto <code>650.0</code> em outro endereço de memória e redireciona o ponteiro da Call Stack!
+    </p>
+
+    <!-- Diagrama Visual de Memória -->
+    <div class="memory-stage">
+      <!-- Coluna Call Stack -->
+      <div>
+        <div class="memory-column-title">
+          <span>📚</span>
+          <span>CALL STACK (Frame Local - Ponteiro Atualizado)</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+          <div class="memory-box updated">
+            <div>
+              <div class="memory-var-name">saldo</div>
+              <div class="memory-var-desc">float (aponta para novo objeto)</div>
+            </div>
+            <div class="memory-pointer-badge"><span>0x7FA09</span> <span>→</span></div>
+          </div>
+          <div class="memory-box">
+            <div>
+              <div class="memory-var-name">taxa_servico</div>
+              <div class="memory-var-desc">float (constante)</div>
+            </div>
+            <div class="memory-pointer-badge"><span>0x7FA02</span> <span>→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna Heap Space -->
+      <div>
+        <div class="memory-column-title">
+          <span>🧠</span>
+          <span>HEAP SPACE (Objetos Alocados na RAM)</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.65rem;">
+          <div class="heap-object-cell" style="opacity: 0.55; border: 1px dashed var(--color-outline);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="heap-addr">0x7FA01</span>
+              <span class="heap-type-badge">float</span>
+            </div>
+            <div class="heap-val">500.0</div>
+            <div style="font-size: 0.68rem; color: #dc2626; font-weight: 700; margin-top: 0.25rem;">(Objeto Descartado)</div>
+          </div>
+          <div class="heap-object-cell" style="border: 2px solid var(--color-success); background: #f0fdf4;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="heap-addr" style="color: var(--color-success);">0x7FA09</span>
+              <span class="heap-type-badge" style="background: var(--color-success); color: #fff;">float</span>
+            </div>
+            <div class="heap-val" style="color: var(--color-success);">650.0</div>
+            <div style="font-size: 0.68rem; color: var(--color-success); font-weight: 700; margin-top: 0.25rem;">(Novo Objeto Ativo)</div>
+          </div>
+          <div class="heap-object-cell">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="heap-addr">0x7FA02</span>
+              <span class="heap-type-badge">float</span>
+            </div>
+            <div class="heap-val">15.0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       3. PLAYER INTERATIVO PASSO A PASSO & TESTE DE MESA (TRACE TABLE)
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <!-- Barra de Controle do Stepper -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); margin-bottom: 1.25rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Player Passo a Passo Sincronizado
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          3. Simulação de Execução: Expressão Aritmética com Precedência
+        </h2>
+      </div>
+
+      <!-- Controles de Stepper -->
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <button class="btn btn-outline" id="btn-step-prev" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="prevStep()">
+          ◀ Anterior
+        </button>
+        <div id="step-buttons-container" style="display: flex; gap: 0.25rem;"></div>
+        <button class="btn btn-secondary" id="btn-step-next" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="nextStep()">
+          Próximo ▶
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid: Visor de Código + Diagrama Dinâmico de Memória -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="grid-dual-stage">
+      <!-- Visor de Código CPython -->
+      <div class="code-engine-card">
+        <div class="code-header">
+          <div class="code-window-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <span class="code-filename">precedencia_expressoes.py</span>
+          </div>
+          <span style="font-size: 0.7rem; font-family: var(--font-code); color: #94a3b8; background: #1e293b; padding: 0.15rem 0.5rem; border-radius: 4px;">
+            CPython 3.12
+          </span>
+        </div>
+        <div class="code-body">
+          <div class="code-line" id="code-line-1">
+            <span class="line-num">1</span>
+            <span class="code-text"><span class="syn-fn">bloco_par</span> = <span class="syn-num">2</span> + <span class="syn-num">4</span>  <span class="syn-comment"># 1º: Parênteses (2+4 = 6)</span></span>
+          </div>
+          <div class="code-line" id="code-line-2">
+            <span class="line-num">2</span>
+            <span class="code-text"><span class="syn-fn">bloco_pot</span> = <span class="syn-num">4</span> ** <span class="syn-num">2</span>  <span class="syn-comment"># 2º: Potência (4² = 16)</span></span>
+          </div>
+          <div class="code-line" id="code-line-3">
+            <span class="line-num">3</span>
+            <span class="code-text"><span class="syn-fn">bloco_mult</span> = <span class="syn-fn">bloco_pot</span> * <span class="syn-num">3</span>  <span class="syn-comment"># 3º: Multiplicação (16*3 = 48)</span></span>
+          </div>
+          <div class="code-line" id="code-line-4">
+            <span class="line-num">4</span>
+            <span class="code-text"><span class="syn-fn">bloco_div</span> = <span class="syn-num">24</span> // <span class="syn-fn">bloco_par</span>  <span class="syn-comment"># 4º: Divisão inteira (24//6 = 4)</span></span>
+          </div>
+          <div class="code-line" id="code-line-5">
+            <span class="line-num">5</span>
+            <span class="code-text"><span class="syn-fn">resultado</span> = <span class="syn-num">100</span> - <span class="syn-fn">bloco_mult</span> + <span class="syn-fn">bloco_div</span>  <span class="syn-comment"># 5º: Adições da esq. p/ dir.</span></span>
+          </div>
+          <div class="code-line" id="code-line-6">
+            <span class="line-num">6</span>
+            <span class="code-text"><span class="syn-kw">print</span>(<span class="syn-str">"Resultado final:"</span>, <span class="syn-fn">resultado</span>)</span>
+          </div>
+        </div>
+
+        <!-- Terminal Stdout Simulado -->
+        <div class="terminal-console">
+          <div class="console-title">
+            <span>Terminal STDOUT</span>
+            <span style="width: 6px; height: 6px; background: #10b981; border-radius: 50%;"></span>
+          </div>
+          <div class="console-output" id="terminal-stdout-output" style="white-space: pre-wrap;">
+            > (Aguardando execução...)
+          </div>
+        </div>
+      </div>
+
+      <!-- Palco Dinâmico de Memória com Insight -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Card de Insight Pedagógico Contextual -->
+        <div style="background-color: var(--color-surface-container); border-left: 4px solid var(--color-secondary); padding: 0.85rem 1rem; border-radius: var(--radius-md);">
+          <div style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem;" id="insight-title">
+            Passo 0: Preparação da Call Stack
+          </div>
+          <div style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.45;" id="insight-desc">
+            Inicie a simulação pelo botão Próximo Passo para inspecionar a memória a cada linha.
+          </div>
+        </div>
+
+        <!-- Palco Dinâmico de Memória -->
+        <div class="memory-stage">
+          <div>
+            <div class="memory-column-title">
+              <span>📚</span>
+              <span>Call Stack (Escopo Local)</span>
+            </div>
+            <div id="stack-frame-vars">
+              <!-- Preenchido via Script.html -->
+            </div>
+          </div>
+          <div>
+            <div class="memory-column-title">
+              <span>🧠</span>
+              <span>Heap Space (Objetos RAM)</span>
+            </div>
+            <div id="heap-objects-grid">
+              <!-- Preenchido via Script.html -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela de Rastreio (Trace Table / Teste de Mesa) Sincronizada -->
+    <div style="margin-top: 1.75rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+          Tabela de Rastreio (Trace Table / Teste de Mesa)
+        </h3>
+        <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full);">
+          Sincronizada em Tempo Real
+        </span>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
+        Acompanhe como cada bloco da expressão aritmética complexa altera o estado interno da memória:
+      </p>
+
+      <div class="trace-table-container">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th>Passo</th>
+              <th>Linha do Código</th>
+              <th>Variável</th>
+              <th>Operação Avaliada</th>
+              <th>Valor Gravado</th>
+              <th>STDOUT (Terminal)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="trace-row-0">
+              <td><strong>00</strong></td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>(Vazio)</td>
+              <td>(Aguardando início)</td>
+            </tr>
+            <tr id="trace-row-1">
+              <td><strong>01</strong></td>
+              <td>Linha 1</td>
+              <td><code>bloco_par</code></td>
+              <td><code>2 + 4</code> (Parênteses)</td>
+              <td><code>6</code></td>
+              <td><em>(Nenhum)</em></td>
+            </tr>
+            <tr id="trace-row-2">
+              <td><strong>02</strong></td>
+              <td>Linha 2</td>
+              <td><code>bloco_pot</code></td>
+              <td><code>4 ** 2</code> (Exponenciação)</td>
+              <td><code>16</code></td>
+              <td><em>(Nenhum)</em></td>
+            </tr>
+            <tr id="trace-row-3">
+              <td><strong>03</strong></td>
+              <td>Linha 3</td>
+              <td><code>bloco_mult</code></td>
+              <td><code>16 * 3</code> (Multiplicação)</td>
+              <td><code>48</code></td>
+              <td><em>(Nenhum)</em></td>
+            </tr>
+            <tr id="trace-row-4">
+              <td><strong>04</strong></td>
+              <td>Linha 4</td>
+              <td><code>bloco_div</code></td>
+              <td><code>24 // 6</code> (Divisão inteira)</td>
+              <td><code>4</code></td>
+              <td><em>(Nenhum)</em></td>
+            </tr>
+            <tr id="trace-row-5">
+              <td><strong>05</strong></td>
+              <td>Linha 5</td>
+              <td><code>resultado</code></td>
+              <td><code>100 - 48 + 4</code></td>
+              <td><code>56</code></td>
+              <td><em>(Nenhum)</em></td>
+            </tr>
+            <tr id="trace-row-6">
+              <td><strong>06</strong></td>
+              <td>Linha 6</td>
+              <td>—</td>
+              <td><code>print(...)</code></td>
+              <td>—</td>
+              <td><span style="color: var(--color-success); font-weight: 700;">Resultado final: 56</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div> <!-- FIM DO BLOCO DE EXPLICAÇÕES & FUNDAMENTOS -->
+
+  <!-- CONTAINER TRILHA 2: EXERCÍCIOS PROPOSTOS & PRÁTICA -->
+  <div id="bloco-aula-pratica">
+
+  <!-- ========================================================================
+       4. CADERNO DE ATIVIDADES E PRÁTICAS DE CÓDIGO (SEÇÕES 1 A 4)
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Treinamento Gradual
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          4. Caderno de Oficinas Práticas (29 Atividades com Resoluções)
+        </h2>
+      </div>
+
+      <!-- Abas das 4 Seções -->
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button class="btn btn-primary" id="btn-tab-secao-1" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('secao-1')">
+          Seção 1: Algoritmos
+        </button>
+        <button class="btn btn-outline" id="btn-tab-secao-2" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('secao-2')">
+          Seção 2: Divisão & Resto
+        </button>
+        <button class="btn btn-outline" id="btn-tab-secao-3" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('secao-3')">
+          Seção 3: Atribuição +=
+        </button>
+        <button class="btn btn-outline" id="btn-tab-secao-4" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('secao-4')">
+          Seção 4: Precedência
+        </button>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         PAINEL: SEÇÃO 1 - PLANEJAMENTO E ALGORITMOS COMPLEXOS
+         ==================================================================== -->
+    <div id="panel-secao-1" style="display: block;">
+      <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
+            Seção 1: Planejamento e Algoritmos Complexos (Fórmula de Bhaskara e Decomposição)
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+            Atividades 1 a 9
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1rem;">
+          Aprenda a dividir problemas matemáticos em etapas ordenadas (Entrada ➔ Processamento Decomposto ➔ Saída).
+        </p>
+
+        <!-- Atividade 1 (Resolvida) -->
+        <div style="background: var(--color-surface-lowest); border-left: 4px solid var(--color-secondary); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-secondary); font-size: 0.9rem;">
+              ⭐ Atividade 1 (Modelo Resolvido): Raízes Reais por Bhaskara (ax² + bx + c = 0)
+            </strong>
+            <span style="font-size: 0.7rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Resolvido</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Cálculo das raízes reais decompondo em discriminante (<code>Δ = b² - 4ac</code>), raiz de delta (<code>Δ**0.5</code>) e determinação de <code>x1</code> e <code>x2</code>.
+          </p>
+          <div style="background: var(--color-code-bg); padding: 0.85rem; border-radius: var(--radius-sm); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+            <span class="syn-comment"># 1. Entrada de Dados com conversão para float</span><br>
+            a = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o coeficiente a: "</span>))<br>
+            b = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o coeficiente b: "</span>))<br>
+            c = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o coeficiente c: "</span>))<br><br>
+            <span class="syn-comment"># 2. Processamento decomposto em etapas intermediárias</span><br>
+            delta = (b ** <span class="syn-num">2</span>) - (<span class="syn-num">4</span> * a * c)<br>
+            raiz_delta = delta ** <span class="syn-num">0.5</span><br>
+            x1 = (-b + raiz_delta) / (<span class="syn-num">2</span> * a)<br>
+            x2 = (-b - raiz_delta) / (<span class="syn-num">2</span> * a)<br><br>
+            <span class="syn-comment"># 3. Saída formatada</span><br>
+            <span class="syn-kw">print</span>(<span class="syn-str">"--- Resultados ---"</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Valor de Delta: {delta}"</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Raiz x1: {x1}"</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Raiz x2: {x2}"</span>)
+          </div>
+
+          <!-- Slot de Imagem Didática do Professor (Opcional) -->
+          <div class="exercicio-resolvido-slot" id="slot-img-aula_1_3_sec1_atv_1" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_1" data-titulo="Seção 1: Atividade 1 (Bhaskara)"></div>
+        </div>
+
+        <!-- Lista de Atividades Propostas (2 a 9) -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 2:</strong> Área superficial total de um paralelepípedo reto-retângulo. Receba base <code>A</code>, largura <code>B</code> e altura <code>C</code>, calcule as faces intermediárias (<code>AB</code>, <code>AC</code> e <code>BC</code>) e aplique <code>A_total = 2 * (AB + AC + BC)</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec1_atv_2" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_2" data-titulo="Seção 1: Atividade 2"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 3:</strong> Índice de Massa Corporal (IMC) decomposto. Solicite peso (kg) e altura (m), calcule o quadrado da altura numa variável separada e em seguida o <code>IMC = peso / (altura ** 2)</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec1_atv_3" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_3" data-titulo="Seção 1: Atividade 3"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 4:</strong> Área de circunferência. Peça o raio e calcule <code>A = π * r²</code> utilizando o operador de exponenciação (<code>**</code>) com <code>π = 3.14159</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec1_atv_4" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_4" data-titulo="Seção 1: Atividade 4"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 5:</strong> Média ponderada de 3 notas com pesos 2, 3 e 5: <code>(n1*2 + n2*3 + n3*5) / (2 + 3 + 5)</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec1_atv_5" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_5" data-titulo="Seção 1: Atividade 5"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 6:</strong> Conversor de medidas métricas. Receba metros (<code>float</code>) e calcule os valores equivalentes em centímetros (<code>m * 100</code>) e milímetros (<code>m * 1000</code>).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec1_atv_6" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_6" data-titulo="Seção 1: Atividade 6"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 7:</strong> Autonomia veicular: leia distância em km e combustível consumido em litros, exibindo a média de consumo em <code>km/l</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec1_atv_7" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_7" data-titulo="Seção 1: Atividade 7"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 8:</strong> Juros simples em compras parceladas: solicite valor à vista (<code>C</code>), taxa mensal em % (<code>i</code>) e parcelas (<code>t</code>), calculando <code>J = C * (i / 100) * t</code> e o montante final.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec1_atv_8" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_8" data-titulo="Seção 1: Atividade 8"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 9:</strong> Folha de pagamento técnica: valor da hora e horas trabalhadas no mês. Calcule o salário bruto e deduza imposto fixo de 8% (<code>0.08</code>), exibindo bruto, desconto e salário líquido.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec1_atv_9" data-aula="aula_1_3" data-exercicio="aula_1_3_sec1_atv_9" data-titulo="Seção 1: Atividade 9"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         PAINEL: SEÇÃO 2 - OPERADORES ARITMÉTICOS (DIVISÃO INTEIRA E MÓDULO)
+         ==================================================================== -->
+    <div id="panel-secao-2" style="display: none;">
+      <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
+            Seção 2: Divisão Inteira (//) e Módulo (%)
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+            Atividades 10 a 13
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1rem;">
+          Entenda a matemática discreta no CPython: quocientes inteiros e cálculo exato de sobras.
+        </p>
+
+        <!-- Atividade 10 (Resolvida) -->
+        <div style="background: var(--color-surface-lowest); border-left: 4px solid var(--color-secondary); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-secondary); font-size: 0.9rem;">
+              ⭐ Atividade 10 (Modelo Resolvido): Embalagem de Ovos em Dúzias
+            </strong>
+            <span style="font-size: 0.7rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Resolvido</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Uma granja embala ovos em caixas de 12 unidades. Calcule caixas completas com <code>// 12</code> e sobras com <code>% 12</code>.
+          </p>
+          <div style="background: var(--color-code-bg); padding: 0.85rem; border-radius: var(--radius-sm); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+            total_ovos = <span class="syn-kw">int</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite a quantidade total de ovos colhidos: "</span>))<br><br>
+            <span class="syn-comment"># Divisão inteira (//) para as embalagens completas</span><br>
+            caixas_completas = total_ovos // <span class="syn-num">12</span><br><br>
+            <span class="syn-comment"># Módulo/Resto (%) para as sobras</span><br>
+            ovos_restantes = total_ovos % <span class="syn-num">12</span><br><br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Caixas completas preenchidas: {caixas_completas}"</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Ovos que sobraram: {ovos_restantes}"</span>)
+          </div>
+
+          <!-- Slot de Imagem Didática do Professor (Opcional) -->
+          <div class="exercicio-resolvido-slot" id="slot-img-aula_1_3_sec2_atv_10" data-aula="aula_1_3" data-exercicio="aula_1_3_sec2_atv_10" data-titulo="Seção 2: Atividade 10 (Dúzias de Ovos)"></div>
+        </div>
+
+        <!-- Lista de Atividades Propostas (11 a 13) -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 11:</strong> Solicite dois inteiros. Exiba na mesma saída a divisão exata com casas decimais (<code>/</code>), a divisão inteira truncada (<code>//</code>) e o resto (<code>%</code>).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec2_atv_11" data-aula="aula_1_3" data-exercicio="aula_1_3_sec2_atv_11" data-titulo="Seção 2: Atividade 11"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 12:</strong> Identificação de Paridade sem if: peça um número inteiro e exiba o resultado de <code>numero % 2</code> (lembrando que 0 indica par e 1 indica ímpar).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec2_atv_12" data-aula="aula_1_3" data-exercicio="aula_1_3_sec2_atv_12" data-titulo="Seção 2: Atividade 12"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 13 (Decompositor Temporal):</strong> Receba um total de segundos e decomponha em Dias, Horas, Minutos e Segundos no formato <code>D:H:M:S</code> utilizando <code>//</code> e <code>%</code> consecutivos. (1 dia = 86.400s, 1 hora = 3.600s, 1 min = 60s).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec2_atv_13" data-aula="aula_1_3" data-exercicio="aula_1_3_sec2_atv_13" data-titulo="Seção 2: Atividade 13"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         PAINEL: SEÇÃO 3 - OPERADORES DE ATRIBUIÇÃO COMPOSTA
+         ==================================================================== -->
+    <div id="panel-secao-3" style="display: none;">
+      <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
+            Seção 3: Operadores de Atribuição Composta (+=, -=, *=, /=, //=, %=, **=)
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+            Atividades 14 a 21
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1rem;">
+          Pratique a atualização direta de variáveis acumuladoras e contadores no código.
+        </p>
+
+        <!-- Atividade 14 (Resolvida) -->
+        <div style="background: var(--color-surface-lowest); border-left: 4px solid var(--color-secondary); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-secondary); font-size: 0.9rem;">
+              ⭐ Atividade 14 (Modelo Resolvido): Fluxo Financeiro com += e -=
+            </strong>
+            <span style="font-size: 0.7rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Resolvido</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Saldo base inicial de R$ 500,00 atualizado com depósito (<code>+=</code>) e pagamento de boleto (<code>-=</code>).
+          </p>
+          <div style="background: var(--color-code-bg); padding: 0.85rem; border-radius: var(--radius-sm); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+            saldo = <span class="syn-num">500.00</span><br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Saldo inicial: R$ {saldo:.2f}"</span>)<br><br>
+            deposito = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o valor do depósito: "</span>))<br>
+            saldo += deposito  <span class="syn-comment"># Equivalente a: saldo = saldo + deposito</span><br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Saldo após depósito: R$ {saldo:.2f}"</span>)<br><br>
+            pagamento = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o valor da conta a pagar: "</span>))<br>
+            saldo -= pagamento  <span class="syn-comment"># Equivalente a: saldo = saldo - pagamento</span><br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Saldo final consolidado: R$ {saldo:.2f}"</span>)
+          </div>
+
+          <!-- Slot de Imagem Didática do Professor (Opcional) -->
+          <div class="exercicio-resolvido-slot" id="slot-img-aula_1_3_sec3_atv_14" data-aula="aula_1_3" data-exercicio="aula_1_3_sec3_atv_14" data-titulo="Seção 3: Atividade 14 (Fluxo de Saldo)"></div>
+        </div>
+
+        <!-- Lista de Atividades Propostas (15 a 21) -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 15:</strong> Pontuação acumulada: inicie <code>pontos = 0</code> e some bônus de três fases consecutivas utilizando exclusivamente <code>+=</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec3_atv_15" data-aula="aula_1_3" data-exercicio="aula_1_3_sec3_atv_15" data-titulo="Seção 3: Atividade 15"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 16:</strong> Reajuste salarial: solicite o salário atual e aplique aumento de 12% atualizando a variável com <code>salario *= 1.12</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec3_atv_16" data-aula="aula_1_3" data-exercicio="aula_1_3_sec3_atv_16" data-titulo="Seção 3: Atividade 16"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 17:</strong> Abatimento promocional: leia o total de uma compra e aplique desconto imediato de R$ 25,00 com <code>total -= 25.00</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec3_atv_17" data-aula="aula_1_3" data-exercicio="aula_1_3_sec3_atv_17" data-titulo="Seção 3: Atividade 17"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 18:</strong> Divisões sucessivas: declare <code>valor = 1024.0</code> e aplique <code>/= 2</code> duas vezes consecutivas, imprimindo o valor resultante.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec3_atv_18" data-aula="aula_1_3" data-exercicio="aula_1_3_sec3_atv_18" data-titulo="Seção 3: Atividade 18"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 19:</strong> Potenciação cumulativa: receba um número inteiro e eleve-o ao cubo utilizando <code>**= 3</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec3_atv_19" data-aula="aula_1_3" data-exercicio="aula_1_3_sec3_atv_19" data-titulo="Seção 3: Atividade 19"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 20:</strong> Redução inteira de estoque: inicie <code>tarefas = 150</code> e divida pela metade inteira repetidamente usando <code>//= 2</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec3_atv_20" data-aula="aula_1_3" data-exercicio="aula_1_3_sec3_atv_20" data-titulo="Seção 3: Atividade 20"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 21:</strong> Minutos residuais com módulo composto: declare <code>minutos = 275</code> e aplique <code>%= 60</code> para atualizar a variável diretamente com os minutos que restam na hora.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec3_atv_21" data-aula="aula_1_3" data-exercicio="aula_1_3_sec3_atv_21" data-titulo="Seção 3: Atividade 21"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         PAINEL: SEÇÃO 4 - PRECEDÊNCIA DE OPERADORES
+         ==================================================================== -->
+    <div id="panel-secao-4" style="display: none;">
+      <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
+            Seção 4: Precedência de Operadores e Uso Estratégico de Parênteses
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+            Atividades 22 a 29
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1rem;">
+          Domine a prioridade de resolução aritmética do Python para evitar erros conceituais silenciosos.
+        </p>
+
+        <!-- Atividade 22 (Resolvida) -->
+        <div style="background: var(--color-surface-lowest); border-left: 4px solid var(--color-secondary); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-secondary); font-size: 0.9rem;">
+              ⭐ Atividade 22 (Modelo Resolvido): A Armadilha da Média Aritmética
+            </strong>
+            <span style="font-size: 0.7rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Resolvido</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Demonstração prática do erro clássico <code>nota1 + nota2 / 2</code> e sua respectiva correção com <code>(nota1 + nota2) / 2</code>.
+          </p>
+          <div style="background: var(--color-code-bg); padding: 0.85rem; border-radius: var(--radius-sm); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+            nota1 = <span class="syn-num">7.0</span><br>
+            nota2 = <span class="syn-num">9.0</span><br><br>
+            <span class="syn-comment"># Cálculo com erro (a divisão nota2 / 2 ocorre primeiro!)</span><br>
+            media_errada = nota1 + nota2 / <span class="syn-num">2</span>  <span class="syn-comment"># Resulta em 11.5</span><br><br>
+            <span class="syn-comment"># Cálculo correto forçando a adição prévia via parênteses</span><br>
+            media_correta = (nota1 + nota2) / <span class="syn-num">2</span>  <span class="syn-comment"># Resulta em 8.0</span><br><br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Resultado com erro de precedência: {media_errada}"</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Resultado corrigido com parênteses: {media_correta}"</span>)
+          </div>
+
+          <!-- Slot de Imagem Didática do Professor (Opcional) -->
+          <div class="exercicio-resolvido-slot" id="slot-img-aula_1_3_sec4_atv_22" data-aula="aula_1_3" data-exercicio="aula_1_3_sec4_atv_22" data-titulo="Seção 4: Atividade 22 (Árvore de Precedência)"></div>
+        </div>
+
+        <!-- Lista de Atividades Propostas (23 a 29) -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 23:</strong> Compare os resultados das expressões <code>2 + 3 * 5</code> e <code>(2 + 3) * 5</code>, comentando no código por que os resultados diferem (17 vs 25).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec4_atv_23" data-aula="aula_1_3" data-exercicio="aula_1_3_sec4_atv_23" data-titulo="Seção 4: Atividade 23"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 24:</strong> Conversor de Fahrenheit para Celsius: <code>C = 5 * (F - 32) / 9</code>. Demonstre a obrigatoriedade dos parênteses na subtração.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec4_atv_24" data-aula="aula_1_3" data-exercicio="aula_1_3_sec4_atv_24" data-titulo="Seção 4: Atividade 24"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 25:</strong> Potências vs Multiplicação: calcule e imprima lado a lado os resultados de <code>4 * 2 ** 3</code> (32) e <code>(4 * 2) ** 3</code> (512).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec4_atv_25" data-aula="aula_1_3" data-exercicio="aula_1_3_sec4_atv_25" data-titulo="Seção 4: Atividade 25"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 26:</strong> Fração algébrica: receba quatro reais (<code>a, b, c, d</code>) e calcule <code>(a + b) / (c + d)</code> com parênteses em ambos os blocos.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec4_atv_26" data-aula="aula_1_3" data-exercicio="aula_1_3_sec4_atv_26" data-titulo="Seção 4: Atividade 26"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 27:</strong> Expressão mista aritmética e relacional: avalie <code>resultado = 10 + 5 * 2 > 30 - 4 / 2</code> e imprima o booleano resultante (<code>False</code>).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec4_atv_27" data-aula="aula_1_3" data-exercicio="aula_1_3_sec4_atv_27" data-titulo="Seção 4: Atividade 27"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 28:</strong> Associatividade da esquerda para a direita: compare <code>60 / 5 * 2</code> (24.0) com <code>60 / (5 * 2)</code> (6.0).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec4_atv_28" data-aula="aula_1_3" data-exercicio="aula_1_3_sec4_atv_28" data-titulo="Seção 4: Atividade 28"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 29:</strong> Expressão mestre decomposta: resolva <code>100 - 4 ** 2 * 3 + 24 // (2 + 4)</code> exibindo o cálculo direto e o mesmo cálculo decomposto em 4 variáveis intermediárias (56).
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec4_atv_29" data-aula="aula_1_3" data-exercicio="aula_1_3_sec4_atv_29" data-titulo="Seção 4: Atividade 29"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       5. OFICINAS DE DESAFIO PRÁTICO & DESAFIO MESTRE COM I/O (+60 XP)
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Desafios Integradores de Código
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          5. Desafios de Aplicação Real (Sem uso de if/else)
+        </h2>
+      </div>
+    </div>
+
+    <!-- Grid dos 2 Desafios Temáticos -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+
+      <!-- Desafio 1: Otimizador de Saque do Caixa Eletrônico -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-primary); font-size: 0.95rem;">Desafio 1: Caixa Eletrônico (Sem if)</strong>
+            <span style="font-size: 0.7rem; background: var(--color-surface-high); color: var(--color-secondary); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">// e % sucessivos</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.5;">
+            Calcule o menor número de cédulas de R$ 50, R$ 20, R$ 10 e R$ 2 para um saque inteiro, atualizando o resíduo sucessivamente com <code>//=</code> e <code>%=</code> sem utilizar estruturas condicionais.
+          </p>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_3_desafio_1" data-aula="aula_1_3" data-exercicio="aula_1_3_desafio_1" data-titulo="Desafio 1: Caixa Eletrônico"></div>
+        </div>
+      </div>
+
+      <!-- Desafio 2: Radar de Distância Euclidiana -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-primary); font-size: 0.95rem;">Desafio 2: Distância Euclidiana</strong>
+            <span style="font-size: 0.7rem; background: var(--color-surface-high); color: var(--color-secondary); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Pitágoras e ** 0.5</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.5;">
+            Calcule a distância física entre dois computadores no laboratório mapeados em coordenadas cartesianas reais: <code>d = ((x2 - x1)**2 + (y2 - y1)**2)**0.5</code>.
+          </p>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_3_desafio_2" data-aula="aula_1_3" data-exercicio="aula_1_3_desafio_2" data-titulo="Desafio 2: Distância Euclidiana"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ====================================================================
+         DESAFIO MESTRE: SIMULADOR DE REFORMA E PINTURA DO LABORATÓRIO (+60 XP)
+         ==================================================================== -->
+    <div style="border: 2px solid var(--color-secondary); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-md);">
+      
+      <!-- Cabeçalho do Desafio Mestre -->
+      <div style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-container) 100%); color: #ffffff; padding: 1.25rem 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary); color: #000000; padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Problema Integrador para Homologação de XP
+          </span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 800; margin-top: 0.35rem; letter-spacing: -0.01em;">
+            Desafio Mestre: Simulador de Reforma e Pintura do Laboratório
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--color-on-primary-container); margin-top: 0.25rem;">
+            Rendimento: <strong>6 m²/litro</strong> | Latas de 18L (R$ 85) | Taxa Insumos (R$ 45) | Validação Relacional sem if
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.85rem;" onclick="copiarTemplateReforma()">
+            📋 Copiar Template Python
+          </button>
+        </div>
+      </div>
+
+      <!-- Corpo do Desafio Mestre -->
+      <div style="padding: 1.5rem; background: var(--color-surface-lowest);">
+        
+        <!-- Fórmulas Chave do Negócio -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+            <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">1. Área Total das Paredes</div>
+            <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: var(--color-primary); margin-top: 0.2rem;">
+              area = 2*(comp*alt) + 2*(larg*alt)
+            </div>
+          </div>
+          <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+            <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">2. Decomposição de Latas (18L)</div>
+            <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: var(--color-secondary); margin-top: 0.2rem;">
+              latas = litros // 18 | sobra = litros % 18
+            </div>
+          </div>
+          <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+            <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">3. Custo e Validação Relacional</div>
+            <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: var(--color-tertiary-dark); margin-top: 0.2rem;">
+              custo += 45 | viavel = (custo &lt;= teto)
+            </div>
+          </div>
+        </div>
+
+        <!-- Slot de Imagem Didática do Desafio Mestre (Opcional) -->
+        <div class="questao-imagem-slot" id="slot-img-aula_1_3_desafio_mestre" data-aula="aula_1_3" data-exercicio="aula_1_3_desafio_mestre" data-titulo="Desafio Mestre: Reforma e Pintura do Lab"></div>
+
+        <!-- Especificação de I/O com os 2 Cenários de Teste -->
+        <div style="margin-bottom: 1.5rem;">
+          <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+            Especificação de Entrada & Saída (I/O) para Validação Local
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+            
+            <!-- Cenário 1 -->
+            <div class="io-card">
+              <div class="io-header">
+                <span style="color: var(--color-success); font-weight: 700;">Cenário 1: Sala Padrão</span>
+                <span style="font-family: var(--font-code);">caso_1</span>
+              </div>
+              <div class="io-grid">
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Entrada Fornecida:</div>
+                  <div class="io-box">
+                    Comprimento: 8.0<br>
+                    Largura: 6.0<br>
+                    Altura: 3.0<br>
+                    Teto Orçamento: 200.00
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Saída Esperada no Console:</div>
+                  <div class="io-box" style="color: var(--color-success); font-weight: 600;">
+                    Área total: 84.0 m²<br>
+                    Litros necessários: 14.0 L<br>
+                    Latas cheias (18L): 0<br>
+                    Litros avulsos restantes: 14.0 L<br>
+                    Custo com taxa: R$ 45.00<br>
+                    Orçamento suficiente: True
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cenário 2 -->
+            <div class="io-card">
+              <div class="io-header">
+                <span style="color: var(--color-primary); font-weight: 700;">Cenário 2: Galpão Maior</span>
+                <span style="font-family: var(--font-code);">caso_2</span>
+              </div>
+              <div class="io-grid">
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Entrada Fornecida:</div>
+                  <div class="io-box">
+                    Comprimento: 12.0<br>
+                    Largura: 10.0<br>
+                    Altura: 4.0<br>
+                    Teto Orçamento: 150.00
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Saída Esperada no Console:</div>
+                  <div class="io-box" style="color: var(--color-primary); font-weight: 600;">
+                    Área total: 176.0 m²<br>
+                    Litros necessários: 29.33 L<br>
+                    Latas cheias (18L): 1<br>
+                    Litros avulsos restantes: 11.33 L<br>
+                    Custo com taxa: R$ 130.00<br>
+                    Orçamento suficiente: True
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Gabarito / Solução Comentada (Toggle) -->
+        <div style="border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem;">
+          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabaritoReforma()">
+            <span style="font-weight: 700; color: var(--color-primary);">👁️ Revelar Solução Modelo Comentada (Simulador de Pintura)</span>
+            <span id="gabarito-reforma-icon">▼</span>
+          </button>
+          <div id="gabarito-reforma-body" style="display: none; padding: 1rem; background-color: var(--color-surface-lowest); border-top: 1px solid var(--color-surface-container);">
+            <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
+              Compare com a resolução executada no Google Colab ou Jupyter:
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+              <span class="syn-comment"># 1. Coleta das dimensões</span><br>
+              comp = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Comprimento da sala (m): "</span>))<br>
+              larg = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Largura da sala (m): "</span>))<br>
+              alt = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Altura das paredes (m): "</span>))<br>
+              teto = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Teto de orçamento (R$): "</span>))<br><br>
+              <span class="syn-comment"># 2. Área das paredes e consumo de tinta</span><br>
+              area_total = <span class="syn-num">2</span> * (comp * alt) + <span class="syn-num">2</span> * (larg * alt)<br>
+              litros = area_total / <span class="syn-num">6.0</span><br><br>
+              <span class="syn-comment"># 3. Decomposição com // e %</span><br>
+              latas_cheias = <span class="syn-kw">int</span>(litros // <span class="syn-num">18</span>)<br>
+              litros_sobra = litros % <span class="syn-num">18</span><br><br>
+              <span class="syn-comment"># 4. Gasto com taxa auxiliar via +=</span><br>
+              custo_total = latas_cheias * <span class="syn-num">85.0</span><br>
+              custo_total += <span class="syn-num">45.0</span>  <span class="syn-comment"># Taxa de materiais auxiliares</span><br><br>
+              <span class="syn-comment"># 5. Avaliação relacional sem if</span><br>
+              orcamento_ok = custo_total &lt;= teto<br><br>
+              <span class="syn-comment"># Saída consolidada</span><br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Área total: {area_total:.1f} m²"</span>)<br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Litros necessários: {litros:.2f} L"</span>)<br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Latas cheias (18L): {latas_cheias}"</span>)<br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Litros avulsos restantes: {litros_sobra:.2f} L"</span>)<br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Custo com taxa: R$ {custo_total:.2f}"</span>)<br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Orçamento suficiente: {orcamento_ok}"</span>)
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist de Autoavaliação e Homologação de XP (+60 XP) -->
+        <div style="background-color: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="font-family: var(--font-headline); font-size: 0.9rem; font-weight: 700; color: var(--color-primary);">
+            Casos de Teste Conceituais (Checklist de Validação do Estudante)
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
+              <input type="checkbox" id="chk-reforma-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistReforma()">
+              <span><strong>Teste 1:</strong> Utilização correta de parênteses no cálculo da área total para evitar precedência incorreta.</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
+              <input type="checkbox" id="chk-reforma-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistReforma()">
+              <span><strong>Teste 2:</strong> Aplicação de <code>//</code> e <code>%</code> para decompor o volume de tinta em latas padrão de 18L.</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
+              <input type="checkbox" id="chk-reforma-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistReforma()">
+              <span><strong>Teste 3:</strong> Emprego do operador de atribuição composta <code>+=</code> para somar a taxa de materiais auxiliares (R$ 45,00).</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
+              <input type="checkbox" id="chk-reforma-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistReforma()">
+              <span><strong>Teste 4:</strong> Validação de viabilidade com operador de comparação relacional <code>&lt;=</code> sem usar instruções <code>if</code>.</span>
+            </label>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+            <button class="btn btn-secondary" id="btn-concluir-reforma" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirReforma(60)">
+              ✓ Validar Resolução da Reforma & Receber +60 XP
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       6. GUIA PRÁTICO PARA OS AMBIENTES DE DESENVOLVIMENTO
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <h2 style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1rem;">
+      6. Guia Prático para os Ambientes de Desenvolvimento
+    </h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+      
+      <!-- Jupyter Notebook (Anaconda) -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.25rem;">💻</span>
+          <strong style="color: var(--color-primary); font-size: 0.95rem;">No Computador (Jupyter Notebook / Anaconda3)</strong>
+        </div>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.6; padding-left: 1.25rem;">
+          <li>Crie uma nova célula de código para cada atividade proposta usando o atalho <code>B</code> (abaixo) ou <code>A</code> (acima).</li>
+          <li>Execute a célula pressionando <code>Shift + Enter</code>.</li>
+          <li>Ao realizar cálculos com <code>//</code> e <code>%</code>, verifique no rodapé da célula se o tipo da saída é inteiro ou decimal.</li>
+        </ol>
+      </div>
+
+      <!-- Google Colab -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.25rem;">📱</span>
+          <strong style="color: var(--color-primary); font-size: 0.95rem;">No Tablet / Navegador (Google Colab)</strong>
+        </div>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.6; padding-left: 1.25rem;">
+          <li>Toque em <strong>+ Código</strong> para inserir o bloco de execução.</li>
+          <li>Digite as instruções prestando atenção à abertura e fechamento de parênteses <code>()</code> nas fórmulas.</li>
+          <li>Toque no botão circular de <strong>Play (▶️)</strong> para rodar o código e visualizar os resultados no console integrado.</li>
+        </ol>
+      </div>
+
+    </div>
+  </div>
+
+  </div> <!-- FIM DO BLOCO DE PRÁTICA -->
+
+</div> <!-- FIM DA VIEW AULA -->
+
+    </template>
+
     <!-- 3. Tela: Painel Administrativo do Professor (Restrito) -->
     <div class="view-section" id="view-professor">
       <div class="card" style="margin-bottom: 2rem;">
@@ -2695,8 +3876,133 @@ const DEFAULT_SIMULATION_STEPS = [
   }
 ];
 
+const SIMULATION_STEPS_AULA1_3 = [
+  {
+    step: 0,
+    line: null,
+    insightTitle: "Passo 0: Preparação da Call Stack (Aula 1.3)",
+    insightDesc: "Inicie o simulador para acompanhar a resolução da expressão '100 - 4 ** 2 * 3 + 24 // (2 + 4)' decomposta passo a passo de acordo com as regras de precedência.",
+    stack: [],
+    heap: [],
+    stdout: "> (Aguardando início...)"
+  },
+  {
+    step: 1,
+    line: 1,
+    insightTitle: "Passo 1: Resolução de Parênteses (bloco_par = 2 + 4)",
+    insightDesc: "Regra 1: Parênteses possuem a maior precedência de todos! O CPython calcula (2 + 4) = 6 antes de qualquer outra operação. O valor 6 é alocado no Heap em 0x7FA11.",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" }
+    ],
+    stdout: "> (Calculando bloco dos parênteses...)"
+  },
+  {
+    step: 2,
+    line: 2,
+    insightTitle: "Passo 2: Exponenciação (bloco_pot = 4 ** 2)",
+    insightDesc: "Regra 2: A exponenciação (**) tem prioridade superior à multiplicação e divisão. CPython eleva 4 ao quadrado resultando em 16 (0x7FA12).",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" }
+    ],
+    stdout: "> (Calculando exponenciação: 4 ** 2 = 16)"
+  },
+  {
+    step: 3,
+    line: 3,
+    insightTitle: "Passo 3: Multiplicação (bloco_mult = bloco_pot * 3)",
+    insightDesc: "Regra 3: Multiplicação entre 16 e 3 resulta em 48 (0x7FA13). O termo multiplicativo intermediário está resolvido.",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
+      { name: "bloco_mult", type: "int", addr: "0x7FA13" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" },
+      { addr: "0x7FA13", val: "48", type: "int" }
+    ],
+    stdout: "> (Calculando multiplicação: 16 * 3 = 48)"
+  },
+  {
+    step: 4,
+    line: 4,
+    insightTitle: "Passo 4: Divisão Inteira (bloco_div = 24 // bloco_par)",
+    insightDesc: "Regra 4: Divisão inteira (//) entre 24 e 6 (resultado do parêntese). Quociente inteiro exato é 4 (0x7FA14).",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
+      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
+      { name: "bloco_div", type: "int", addr: "0x7FA14" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" },
+      { addr: "0x7FA13", val: "48", type: "int" },
+      { addr: "0x7FA14", val: "4", type: "int" }
+    ],
+    stdout: "> (Calculando divisão inteira: 24 // 6 = 4)"
+  },
+  {
+    step: 5,
+    line: 5,
+    insightTitle: "Passo 5: Adições e Subtrações da Esquerda para a Direita",
+    insightDesc: "Regra 5: Com multiplicativos e potências resolvidos, avaliamos 100 - 48 + 4 da esquerda para a direita: (100 - 48 = 52) + 4 = 56 (0x7FA15).",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
+      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
+      { name: "bloco_div", type: "int", addr: "0x7FA14" },
+      { name: "resultado", type: "int", addr: "0x7FA15" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" },
+      { addr: "0x7FA13", val: "48", type: "int" },
+      { addr: "0x7FA14", val: "4", type: "int" },
+      { addr: "0x7FA15", val: "56", type: "int" }
+    ],
+    stdout: "> (Expressão resolvida: resultado = 56)"
+  },
+  {
+    step: 6,
+    line: 6,
+    insightTitle: "Passo 6: Saída Formatada no Console",
+    insightDesc: "Instrução print exibe a mensagem final 'Resultado final: 56' no terminal STDOUT.",
+    stack: [
+      { name: "bloco_par", type: "int", addr: "0x7FA11" },
+      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
+      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
+      { name: "bloco_div", type: "int", addr: "0x7FA14" },
+      { name: "resultado", type: "int", addr: "0x7FA15" }
+    ],
+    heap: [
+      { addr: "0x7FA11", val: "6", type: "int" },
+      { addr: "0x7FA12", val: "16", type: "int" },
+      { addr: "0x7FA13", val: "48", type: "int" },
+      { addr: "0x7FA14", val: "4", type: "int" },
+      { addr: "0x7FA15", val: "56", type: "int" }
+    ],
+    stdout: "> Resultado final: 56"
+  }
+];
+
 // Inicialização do documento
 document.addEventListener('DOMContentLoaded', function() {
+  const initialAula = document.getElementById('dynamic-lesson-content');
+  if (initialAula && !document.getElementById('template-aula-1-2')) {
+    const t12 = document.createElement('template');
+    t12.id = 'template-aula-1-2';
+    t12.innerHTML = initialAula.innerHTML;
+    document.body.appendChild(t12);
+  }
   initSimulation(DEFAULT_SIMULATION_STEPS);
   loadUserSession();
   loadCatalog();
@@ -2783,7 +4089,7 @@ function loadCatalog() {
       })
       .getCatalogoAulas(currentEmail);
   } else {
-    // Mock local do catálogo: apenas a aula que de fato existe (Aula 1.2)
+    // Mock local do catálogo: aulas desenvolvidas no projeto (Aula 1.2 e Aula 1.3)
     onCatalogSuccess([
       {
         id_aula: 'aula_1_2',
@@ -2796,6 +4102,18 @@ function loadCatalog() {
         xp_base: 150,
         tempo_estimado: '45 min',
         descricao: 'Ciclo elementar entrada/processamento/saída, tipos primitivos, Stack vs Heap, teste de mesa e Totem de Bilhetagem.'
+      },
+      {
+        id_aula: 'aula_1_3',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        titulo: 'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
+        arquivo_html: 'Aula1_3',
+        ordem: 2,
+        status: 'publicado',
+        xp_base: 180,
+        tempo_estimado: '50 min',
+        descricao: 'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
       }
     ]);
   }
@@ -3149,10 +4467,11 @@ investigar_identidade_inteiros(257, 257)
 }
 
 /**
- * Alternância de abas do Caderno de Oficinas (Blocos A, B e C)
+ * Alternância de abas do Caderno de Oficinas (Blocos A, B e C ou Seções 1, 2, 3 e 4)
  */
 function switchOficinaBloco(blocoId) {
-  ['bloco-a', 'bloco-b', 'bloco-c'].forEach(id => {
+  const todasAbas = ['bloco-a', 'bloco-b', 'bloco-c', 'secao-1', 'secao-2', 'secao-3', 'secao-4'];
+  todasAbas.forEach(id => {
     const btn = document.getElementById(`btn-tab-${id}`);
     const panel = document.getElementById(`panel-${id}`);
     if (btn) {
@@ -3168,6 +4487,110 @@ function switchOficinaBloco(blocoId) {
       panel.style.display = (id === blocoId) ? 'block' : 'none';
     }
   });
+}
+
+/**
+ * Cópia do template do Desafio Mestre: Simulador de Reforma e Pintura (Aula 1.3)
+ */
+function copiarTemplateReforma() {
+  const codigoReforma = `# ============================================================
+# PYTHONLAB — DESAFIO MESTRE: SIMULADOR DE REFORMA E PINTURA (AULA 1.3)
+# Execute esta célula diretamente no Google Colab ou Jupyter Notebook
+# ============================================================
+
+def simular_reforma(comp, larg, alt, teto_orcamento):
+    # 1. Área total das 4 paredes
+    area_total = 2 * (comp * alt) + 2 * (larg * alt)
+    
+    # 2. Litros de tinta (6 m² por litro)
+    litros = area_total / 6.0
+    
+    # 3. Decomposição em latas de 18L e sobra
+    latas_cheias = int(litros // 18)
+    litros_sobra = litros % 18
+    
+    # 4. Custo total com taxa fixa de R$ 45
+    custo_total = latas_cheias * 85.0
+    custo_total += 45.0
+    
+    # 5. Validação relacional sem if
+    orcamento_ok = custo_total <= teto_orcamento
+    
+    print(f"Área total: {area_total:.1f} m²")
+    print(f"Litros necessários: {litros:.2f} L")
+    print(f"Latas cheias (18L): {latas_cheias}")
+    print(f"Litros avulsos restantes: {litros_sobra:.2f} L")
+    print(f"Custo com taxa: R$ {custo_total:.2f}")
+    print(f"Orçamento suficiente: {orcamento_ok}")
+    return orcamento_ok
+
+# --- TESTES DE VALIDAÇÃO LOCAL ---
+print("--- CASO 1: SALA PADRÃO ---")
+simular_reforma(8.0, 6.0, 3.0, 200.0)
+
+print("\\n--- CASO 2: GALPÃO MAIOR ---")
+simular_reforma(12.0, 10.0, 4.0, 150.0)
+`;
+
+  navigator.clipboard.writeText(codigoReforma).then(() => {
+    showToast('Template do Simulador de Reforma copiado com sucesso!', 'success');
+  }).catch(() => {
+    showToast('Não foi possível copiar automaticamente para a área de transferência.', 'info');
+  });
+}
+
+function toggleGabaritoReforma() {
+  const body = document.getElementById('gabarito-reforma-body');
+  const icon = document.getElementById('gabarito-reforma-icon');
+  if (body) {
+    const isHidden = (body.style.display === 'none' || body.style.display === '');
+    body.style.display = isHidden ? 'block' : 'none';
+    if (icon) icon.textContent = isHidden ? '▲' : '▼';
+  }
+}
+
+function atualizarChecklistReforma() {
+  const c1 = document.getElementById('chk-reforma-1');
+  const c2 = document.getElementById('chk-reforma-2');
+  const c3 = document.getElementById('chk-reforma-3');
+  const c4 = document.getElementById('chk-reforma-4');
+  const btn = document.getElementById('btn-concluir-reforma');
+  
+  const todosConcluidos = c1 && c1.checked && c2 && c2.checked && c3 && c3.checked && c4 && c4.checked;
+  if (btn) {
+    btn.disabled = !todosConcluidos;
+    btn.style.opacity = todosConcluidos ? '1' : '0.5';
+    btn.style.cursor = todosConcluidos ? 'pointer' : 'not-allowed';
+  }
+}
+
+function validarEConcluirReforma(xp) {
+  const user = AppState.user;
+  if (user.perfil === 'visitante' || !user.autenticado) {
+    openVisitorModal();
+    return;
+  }
+
+  const idAula = AppState.currentLessonId || 'aula_1_3';
+  const xpGanho = Number(xp) || 60;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(resp) {
+        if (resp && resp.sucesso) {
+          AppState.user.xpTotal += xpGanho;
+          renderHeaderUser();
+          showToast(`🏆 Excelente! Desafio Mestre da Reforma homologado com sucesso! +${xpGanho} XP`, 'success');
+        } else {
+          showToast(resp.mensagem || 'Erro ao registrar progresso', 'info');
+        }
+      })
+      .salvarProgresso(idAula, 'desafio_mestre_reforma', 'concluido', true, true, true, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
+  } else {
+    AppState.user.xpTotal += xpGanho;
+    renderHeaderUser();
+    showToast(`🏆 Modo Mock: Desafio Mestre da Reforma concluído! +${xpGanho} XP adicionados.`, 'success');
+  }
 }
 
 /**
@@ -3482,27 +4905,16 @@ function concluirEtapaAtual() {
 }
 
 function abrirAula(idAula) {
-  // Apenas a Aula 1.2 está desenvolvida no momento
-  if (idAula === 'aula_1_2') {
-    AppState.currentLessonId = idAula;
-    navigateTo('view-aula');
-    const aulaAtual = document.getElementById('view-aula');
-    if (aulaAtual) {
-      aulaAtual.classList.add('active');
-    }
-    aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
-    carregarImagensAula(idAula);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return;
-  }
+  if (!idAula) idAula = 'aula_1_2';
+  AppState.currentLessonId = idAula;
 
-  // Para aulas futuras adicionadas dinamicamente
+  const stepsAlvo = (idAula === 'aula_1_3') ? SIMULATION_STEPS_AULA1_3 : DEFAULT_SIMULATION_STEPS;
+
   if (typeof google !== 'undefined' && google.script && google.script.run) {
     showToast('Carregando conteúdo da aula...', 'info');
     google.script.run
       .withSuccessHandler(function(res) {
         if (res && res.sucesso && res.html) {
-          AppState.currentLessonId = idAula;
           const aulaContainer = document.getElementById('dynamic-lesson-content');
           if (aulaContainer) {
             aulaContainer.innerHTML = res.html;
@@ -3512,8 +4924,10 @@ function abrirAula(idAula) {
               novaSec.classList.add('active');
             }
             if (typeof initSimulation === 'function') {
-              initSimulation(DEFAULT_SIMULATION_STEPS);
+              initSimulation(stepsAlvo);
             }
+            aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+            carregarImagensAula(idAula);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         } else {
@@ -3525,7 +4939,26 @@ function abrirAula(idAula) {
       })
       .carregarConteudoAula(idAula);
   } else {
-    showToast('Apenas a Aula 1.2 possui arquivo HTML desenvolvido até o momento.', 'info');
+    // Modo de Desenvolvimento Local / Preview
+    const tmplId = (idAula === 'aula_1_3') ? 'template-aula-1-3' : 'template-aula-1-2';
+    const tmpl = document.getElementById(tmplId);
+    const aulaContainer = document.getElementById('dynamic-lesson-content');
+    
+    if (tmpl && aulaContainer) {
+      aulaContainer.innerHTML = tmpl.innerHTML;
+    }
+    
+    navigateTo('view-aula');
+    const aulaAtual = document.getElementById('view-aula');
+    if (aulaAtual) {
+      aulaAtual.classList.add('active');
+    }
+    if (typeof initSimulation === 'function') {
+      initSimulation(stepsAlvo);
+    }
+    aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+    carregarImagensAula(idAula);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
