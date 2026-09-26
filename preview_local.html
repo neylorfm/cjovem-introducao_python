@@ -4468,7 +4468,7 @@ body {
             Desafio Mestre: Simulador de Reforma e Pintura do Laboratório
           </h3>
           <p style="font-size: 0.85rem; color: var(--color-on-primary-container); margin-top: 0.25rem;">
-            Rendimento: <strong>6 m²/litro</strong> | Latas de 18L (R$ 85) | Taxa Insumos (R$ 45) | Validação Relacional sem if
+            Rendimento: <strong>6 m²/litro</strong> | Latas de 18L (R$ 87) | Taxa Insumos (R$ 45) | Validação Relacional sem if
           </p>
         </div>
 
@@ -4482,7 +4482,7 @@ body {
       <!-- Corpo do Desafio Mestre -->
       <div style="padding: 1.5rem; background: var(--color-surface-lowest);">
         
-        <!-- Comando de Texto da Questão (Enunciado Completo e Detalhado) -->
+        <!-- Comando de Texto da Questão (Enunciado Completo com Todos os Dados Necessários) -->
         <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-primary-container); border-left: 5px solid var(--color-primary); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm);">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.5rem; flex-wrap: wrap;">
             <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -4497,40 +4497,75 @@ body {
           </div>
 
           <p style="font-size: 0.9rem; line-height: 1.6; color: var(--color-on-surface); margin-bottom: 0.75rem;">
-            A diretoria da escola aprovou a reforma e pintura das 4 paredes do laboratório de informática e solicitou que você construa um programa em Python para automatizar o cálculo da quantidade de tinta necessária e apurar a viabilidade financeira do orçamento antes da compra dos materiais.
+            A diretoria da escola aprovou a reforma e pintura das <strong>4 paredes</strong> do laboratório de informática. Você foi encarregado de construir um programa em Python para apurar os quantitativos de materiais e validar se os custos cabem dentro do teto financeiro disponível pela instituição antes de realizar os pedidos.
           </p>
 
-          <p style="font-size: 0.88rem; line-height: 1.6; color: var(--color-on-surface); margin-bottom: 0.75rem;">
-            <strong>Atenção às Restrições de Aprendizagem:</strong> Como estruturas de repetição, desvios condicionais (<code>if/else</code>) e criação de funções (<code>def</code>) ainda <strong>não</strong> foram estudadas, este programa deve ser implementado como um <strong>script puramente sequencial</strong>, aplicando exclusivamente o conteúdo estudado até esta aula (coleta de dados com <code>input()</code>, conversão com <code>float()</code> e <code>int()</code>, operadores aritméticos, precedência com parênteses <code>()</code>, atribuição composta <code>+=</code> e operador relacional <code>&lt;=</code>).
-          </p>
-
-          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-top: 0.75rem;">
-            <div style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.03em;">
-              Instruções Passo a Passo de Implementação:
+          <!-- Tabela de Dados e Parâmetros Fornecidos da Questão -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
+            <div style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.03em;">
+              📊 Dados e Parâmetros Fornecidos para a Resolução:
             </div>
-            <ol style="font-size: 0.85rem; line-height: 1.7; color: var(--color-on-surface-variant); padding-left: 1.25rem; margin: 0;">
-              <li><strong>Entrada de Dados:</strong> Solicite via teclado (usando <code>input()</code> e convertendo para <code>float</code>) o <strong>comprimento</strong> da sala em metros, a <strong>largura</strong> da sala em metros, a <strong>altura (pé-direito)</strong> das paredes em metros e o <strong>teto de orçamento</strong> disponibilizado pela escola em Reais.</li>
-              <li><strong>Cálculo da Área das Paredes:</strong> Calcule a área total de pintura das 4 paredes somando os dois pares de paredes opostas, utilizando parênteses para garantir que as multiplicações tenham precedência sobre a adição:
-                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 600;">area_total = 2 * (comprimento * altura) + 2 * (largura * altura)</code>.
-              </li>
-              <li><strong>Consumo de Tinta:</strong> Sabendo que <strong>1 litro de tinta cobre exatamente 6 m²</strong> de parede, calcule o volume total de litros dividindo a área total por <code>6.0</code>:
-                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 600;">litros = area_total / 6.0</code>.
-              </li>
-              <li><strong>Decomposição em Latas Fechadas e Litros Avulsos:</strong> A tinta é comercializada em latas fechadas de 18 litros.
+            <ul style="font-size: 0.85rem; line-height: 1.7; color: var(--color-on-surface); padding-left: 1.25rem; margin: 0;">
+              <li><strong>Entradas do Usuário (via <code>input()</code> como <code>float</code>):</strong>
                 <ul>
-                  <li>Utilize a <strong>divisão inteira (<code>//</code>)</strong> com conversão para <code>int</code> para apurar quantas latas cheias de 18L serão adquiridas: <code>latas_cheias = int(litros // 18)</code>;</li>
-                  <li>Utilize o <strong>operador de resto/módulo (<code>%</code>)</strong> para apurar os litros avulsos que sobram fora das latas cheias: <code>litros_sobra = litros % 18</code>.</li>
+                  <li><strong>Comprimento</strong> da sala em metros;</li>
+                  <li><strong>Largura</strong> da sala em metros;</li>
+                  <li><strong>Altura (pé-direito)</strong> das paredes em metros;</li>
+                  <li><strong>Teto de Orçamento</strong> total aprovado pela escola em Reais (R$).</li>
                 </ul>
               </li>
-              <li><strong>Custo Total e Atribuição Composta (<code>+=</code>):</strong> Cada lata de 18L custa <strong>R$ 85,00</strong>. Inicialize a variável de custo com o valor das latas cheias (<code>custo_total = latas_cheias * 85.0</code>) e acrescente a taxa fixa de materiais auxiliares (pincéis, rolos e fitas) de <strong>R$ 45,00</strong> utilizando obrigatoriamente a atribuição composta:
-                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 600;">custo_total += 45.0</code>.
+              <li><strong>Área Total de Pintura:</strong> A sala retangular possui 4 paredes no total — dois pares de paredes opostas:
+                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 700;">Área = 2 * (comprimento * altura) + 2 * (largura * altura)</code>.
               </li>
-              <li><strong>Validação Relacional sem if:</strong> Avalie se o custo total calculado cabe dentro do teto orçamentário da escola através do operador relacional <code>&lt;=</code>:
-                <br><code style="font-family: var(--font-code); color: var(--color-primary); font-weight: 600;">orcamento_ok = custo_total &lt;= teto_orcamento</code> (gerando o valor booleano <code>True</code> ou <code>False</code> no console sem usar <code>if</code>).
+              <li><strong>Rendimento da Tinta:</strong> Cada <strong>1 litro de tinta</strong> cobre exatamente <strong>6 m²</strong> de parede.</li>
+              <li><strong>Catálogo de Embalagens Disponíveis na Loja:</strong>
+                <ul>
+                  <li><strong>Lata Grande (18 Litros):</strong> <strong>R$ 87,00</strong> cada <em>(embalagem padrão adotada para o cálculo de atacado da pintura)</em>;</li>
+                  <li><strong>Lata Média (9 Litros):</strong> R$ 45,00 cada;</li>
+                  <li><strong>Galão Pequeno (2 Litros):</strong> R$ 10,00 cada.</li>
+                </ul>
               </li>
-              <li><strong>Saída de Dados Formatada:</strong> Exiba no terminal o relatório consolidado com mensagens descritivas e valores decimais formatados através de f-strings, seguindo o padrão exato da tabela de I/O abaixo.</li>
-            </ol>
+              <li><strong>Decomposição em Latas Fechadas e Litros Avulsos:</strong> Como a compra principal de atacado é feita em latas de 18L, o script deve apurar quantas <strong>latas cheias de 18L</strong> serão adquiridas usando a <strong>divisão inteira (<code>//</code>)</strong>, e quantos <strong>litros avulsos restantes</strong> sobram usando o <strong>operador de módulo (<code>%</code>)</strong>.</li>
+              <li><strong>Custos Operacionais e Atribuição Composta (<code>+=</code>):</strong> Inicialize a variável de custo com o valor das latas cheias de 18L (<code>latas_cheias * 87.0</code>) e acrescente a <strong>taxa fixa de materiais auxiliares (pincéis, rolos, lixas e fitas de proteção) de R$ 45,00</strong> utilizando obrigatoriamente o operador de atribuição composta <code>+=</code>.</li>
+              <li><strong>Validação Relacional sem if:</strong> Avalie se o custo total cabe no teto orçamentário através do operador relacional <code>&lt;=</code> (armazenando o resultado booleano <code>True</code> ou <code>False</code> na variável <code>orcamento_suficiente</code>, sem usar <code>if</code>).</li>
+            </ul>
           </div>
+
+          <p style="font-size: 0.88rem; line-height: 1.6; color: var(--color-on-surface); margin-bottom: 0.75rem;">
+            <strong>Atenção às Restrições Pedagógicas:</strong> Como estruturas de repetição, funções (<code>def</code>) e condicionais (<code>if</code>) ainda <strong>não</strong> foram estudadas, construa um <strong>script sequencial direto</strong> aplicando unicamente: <code>input()</code>, conversão <code>float()</code> / <code>int()</code>, operadores aritméticos, precedência com parênteses <code>()</code>, atribuição composta <code>+=</code> e operador relacional <code>&lt;=</code>.
+          </p>
+
+          <!-- Bloco Contraído (Accordion / Details) com Instruções Passo a Passo -->
+          <details style="background: var(--color-surface-container-low); border: 1px dashed var(--color-secondary); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-top: 1rem; cursor: pointer;">
+            <summary style="font-family: var(--font-headline); font-size: 0.9rem; font-weight: 700; color: var(--color-secondary); user-select: none; display: flex; align-items: center; gap: 0.5rem;">
+              <span>💡</span>
+              <span>Precisa de Ajuda? Instruções Passo a Passo para Resolução (Clique para Expandir)</span>
+            </summary>
+            <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--color-surface-high); cursor: default;">
+              <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem; font-style: italic;">
+                Recomendamos fortemente que você tente resolver o desafio autonomamente no Google Colab ou Jupyter antes de consultar estas instruções! Se tiver dúvidas sobre a ordem dos cálculos, siga o roteiro abaixo:
+              </p>
+              <ol style="font-size: 0.83rem; line-height: 1.7; color: var(--color-on-surface-variant); padding-left: 1.25rem; margin: 0;">
+                <li><strong>Entrada de Dados:</strong> Use <code>float(input(...))</code> quatro vezes para coletar <code>comp</code>, <code>larg</code>, <code>alt</code> e <code>teto_orcamento</code>.</li>
+                <li><strong>Cálculo da Área das Paredes:</strong> <code>area_total = 2 * (comp * alt) + 2 * (larg * alt)</code>. Os parênteses garantem que as áreas parciais sejam calculadas antes da soma total.</li>
+                <li><strong>Consumo de Tinta:</strong> <code>litros = area_total / 6.0</code>. Cada litro pinta 6 m².</li>
+                <li><strong>Decomposição em Latas de 18L:</strong>
+                  <ul>
+                    <li>Latas cheias: <code>latas_cheias = int(litros // 18)</code> (quociente inteiro).</li>
+                    <li>Sobra avulsa: <code>litros_sobra = litros % 18</code> (resto da divisão).</li>
+                  </ul>
+                </li>
+                <li><strong>Custo Total e Taxa Auxiliar:</strong>
+                  <ul>
+                    <li>Inicialização: <code>custo_total = latas_cheias * 87.0</code> (cada lata de 18L custa R$ 87,00).</li>
+                    <li>Atribuição composta: <code>custo_total += 45.0</code> (soma a taxa fixa de R$ 45,00 de materiais).</li>
+                  </ul>
+                </li>
+                <li><strong>Validação Relacional:</strong> <code>orcamento_ok = custo_total &lt;= teto_orcamento</code>. Produz <code>True</code> se o custo for viável ou <code>False</code> caso exceda o teto.</li>
+                <li><strong>Impressão Formatada:</strong> Use comandos <code>print(f"...")</code> para exibir o relatório com formatação decimal (ex: <code>{area_total:.1f}</code>, <code>{litros:.2f}</code>, <code>{custo_total:.2f}</code>).</li>
+              </ol>
+            </div>
+          </details>
         </div>
 
         <!-- Fórmulas Chave do Negócio -->
@@ -4618,7 +4653,7 @@ body {
                     Litros necessários: 29.33 L<br>
                     Latas cheias (18L): 1<br>
                     Litros avulsos restantes: 11.33 L<br>
-                    Custo com taxa: R$ 130.00<br>
+                    Custo com taxa: R$ 132.00<br>
                     Orçamento suficiente: True
                   </div>
                 </div>
@@ -4650,8 +4685,8 @@ body {
               <span class="syn-comment"># 3. Decomposição com // e %</span><br>
               latas_cheias = <span class="syn-kw">int</span>(litros // <span class="syn-num">18</span>)<br>
               litros_sobra = litros % <span class="syn-num">18</span><br><br>
-              <span class="syn-comment"># 4. Gasto com taxa auxiliar via +=</span><br>
-              custo_total = latas_cheias * <span class="syn-num">85.0</span><br>
+              <span class="syn-comment"># 4. Gasto com taxa auxiliar via += (lata de 18L a R$ 87,00)</span><br>
+              custo_total = latas_cheias * <span class="syn-num">87.0</span><br>
               custo_total += <span class="syn-num">45.0</span>  <span class="syn-comment"># Taxa de materiais auxiliares</span><br><br>
               <span class="syn-comment"># 5. Avaliação relacional sem if</span><br>
               orcamento_ok = custo_total &lt;= teto<br><br>
@@ -7214,6 +7249,12 @@ function copiarTemplateReforma() {
 # Conteúdo permitido: Variáveis, input(), float(), int(),
 # Operadores Aritméticos, Precedência com () e Operador Relacional <=
 # (Sem uso de funções 'def' e sem condicionais 'if')
+#
+# Catálogo de insumos da loja:
+# - Lata 18L: R$ 87,00 (adotada no cálculo de atacado da pintura)
+# - Lata 9L: R$ 45,00 | Galão 2L: R$ 10,00
+# - Taxa fixa de materiais (pincéis, rolos, fitas): R$ 45,00
+# - Rendimento: 1 litro de tinta cobre 6 m²
 # ============================================================
 
 # 1. ENTRADA DE DADOS VIA INPUT() COM TYPE CASTING (FLOAT)
@@ -7233,8 +7274,8 @@ litros = area_total / 6.0
 latas_cheias = int(litros // 18)
 litros_sobra = litros % 18
 
-# 5. CUSTO TOTAL (R$ 85/LATA) E TAXA AUXILIAR COM ATRIBUIÇÃO COMPOSTA (+=)
-custo_total = latas_cheias * 85.0
+# 5. CUSTO TOTAL (R$ 87/LATA) E TAXA AUXILIAR COM ATRIBUIÇÃO COMPOSTA (+=)
+custo_total = latas_cheias * 87.0
 custo_total += 45.0  # Adiciona taxa fixa de materiais auxiliares (R$ 45.00)
 
 # 6. VALIDAÇÃO RELACIONAL DE ORÇAMENTO (BOOLEANO PRODUZIDO SEM IF)

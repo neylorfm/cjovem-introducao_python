@@ -880,6 +880,12 @@ function copiarTemplateReforma() {
 # Conteúdo permitido: Variáveis, input(), float(), int(),
 # Operadores Aritméticos, Precedência com () e Operador Relacional <=
 # (Sem uso de funções 'def' e sem condicionais 'if')
+#
+# Catálogo de insumos da loja:
+# - Lata 18L: R$ 87,00 (adotada no cálculo de atacado da pintura)
+# - Lata 9L: R$ 45,00 | Galão 2L: R$ 10,00
+# - Taxa fixa de materiais (pincéis, rolos, fitas): R$ 45,00
+# - Rendimento: 1 litro de tinta cobre 6 m²
 # ============================================================
 
 # 1. ENTRADA DE DADOS VIA INPUT() COM TYPE CASTING (FLOAT)
@@ -899,8 +905,8 @@ litros = area_total / 6.0
 latas_cheias = int(litros // 18)
 litros_sobra = litros % 18
 
-# 5. CUSTO TOTAL (R$ 85/LATA) E TAXA AUXILIAR COM ATRIBUIÇÃO COMPOSTA (+=)
-custo_total = latas_cheias * 85.0
+# 5. CUSTO TOTAL (R$ 87/LATA) E TAXA AUXILIAR COM ATRIBUIÇÃO COMPOSTA (+=)
+custo_total = latas_cheias * 87.0
 custo_total += 45.0  # Adiciona taxa fixa de materiais auxiliares (R$ 45.00)
 
 # 6. VALIDAÇÃO RELACIONAL DE ORÇAMENTO (BOOLEANO PRODUZIDO SEM IF)
