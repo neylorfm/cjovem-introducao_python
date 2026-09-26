@@ -320,16 +320,21 @@ Cada arquivo de aula (ex: `Aula1_2.html`) deve estruturar o aprendizado através
 
 Este guia estabelece o **contrato técnico e pedagógico obrigatório** para criar qualquer nova aula no ecossistema PythonLab (ex.: Aula 1.4, Aula 1.5, Módulo 2, etc.), garantindo consistência visual, interoperabilidade no Google Apps Script, sincronização com o Google Sheets/Drive e suporte a testes offline.
 
-### 8.1. Convenção Estrita de Nomenclatura
+### 8.1. Convenção Estrita de Nomenclatura e Numeração
 
 | Entidade | Padrão de Nomenclatura | Exemplo (Aula 1.4) |
 | :--- | :--- | :--- |
 | **Identificador da Aula (`id_aula`)** | `aula_X_Y` (minúsculo, separado por underline) | `aula_1_4` |
+| **Numeração Exibida no Card (Badge)** | Derivada canonicamente de `id_aula` (`aula_X_Y` -> `Aula X.Y`) | `Aula 1.4` |
+| **Coluna `ordem` no Google Sheets** | Número sequencial exato da aula no módulo (sempre igual a `Y`) | `4` (Aula 1.2 = `2`, Aula 1.3 = `3`) |
 | **Documento Pedagógico Canônico** | `aulas/aulaX_Y.md` | `aulas/aula1_4.md` |
 | **Componente Visual HTML** | `AulaX_Y.html` (PascalCase, sem underline) | `Aula1_4.html` |
 | **ID do Template SPA (Client-side)** | `template-aula-X-Y` (hífen minúsculo) | `template-aula-1-4` |
 | **Constante de Simulação JS** | `SIMULATION_STEPS_AULAX_Y` | `SIMULATION_STEPS_AULA1_4` |
 | **Slot de Imagem da Questão** | `data-img-aula="aula_X_Y"` e `data-img-exercicio="..."` | `data-img-aula="aula_1_4"` e `data-img-exercicio="secao_1_atv_1"` |
+
+> [!CAUTION]
+> **Imunidade a Inconsistências de Numeração**: Para evitar que edições acidentais na planilha afetem o nome da aula no card, o frontend **sempre deriva o badge a partir do `id_aula`** (ex.: `aula_1_3` sempre exibe `Aula 1.3`). Além disso, as rotinas de sincronização no backend (`Code.gs`) realizam auto-correção na planilha para garantir que a coluna `ordem` coincida com a posição numérica correspondente (Aula 1.2 -> `2`, Aula 1.3 -> `3`, Aula 1.4 -> `4`).
 
 ---
 
@@ -341,7 +346,7 @@ Ao criar uma nova aula, **exatamente 6 pontos no projeto** devem ser implementad
 [ ] 1. aulas/aulaX_Y.md        -> Fonte primária da verdade (conteúdo pedagógico, enunciados, gabaritos e desafios)
 [ ] 2. AulaX_Y.html            -> Interface visual completa montada com as classes do Design System
 [ ] 3. Index.html              -> Inclusão do <template id="template-aula-X-Y"><?!= include('AulaX_Y'); ?></template>
-[ ] 4. Code.gs                 -> Registro no auto-sync (sincronizarAulasPadraoNoCatalogo) e no mapaFallback
+[ ] 4. Code.gs                 -> Registro no auto-sync (sincronizarAulasPadraoNoCatalogo com ordem correta) e mapaFallback
 [ ] 5. Script.html             -> Constante de simulação, switch de abas, funções do Desafio Mestre e abrirAula()
 [ ] 6. preview_local.html      -> Inclusão do template e rotinas JS para validação local offline em 2 cliques
 ```
@@ -462,7 +467,7 @@ Cada aula deve culminar em um **Desafio Mestre**:
 Em [Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs), incluir a nova aula em **4 funções**:
 
 1. **`sincronizarAulasPadraoNoCatalogo(sheetCat)`**:
-   Adicionar a linha da nova aula no array `aulasObrigatorias` para auto-provisionamento em 0 cliques.
+   Adicionar a linha da nova aula no array `aulasObrigatorias` para auto-provisionamento em 0 cliques, garantindo que a coluna `ordem` coincida com a numeração (Aula 1.2 = 2, Aula 1.3 = 3, Aula 1.4 = 4).
 2. **`setupDatabase(forcarRecriacao)`**:
    Adicionar no array `aulasSementes` para inicialização limpa de novas planilhas.
 3. **`limparCatalogoParaAulasExistentes()`**:
@@ -485,7 +490,7 @@ Em [Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs), i
    - Atualizar a função `abrirAula(idAula)` para selecionar os passos correspondentes e carregar o template instantâneo.
    - Atualizar a função `switchOficinaBloco(blocoId)` para incluir os IDs das abas da nova aula.
    - Implementar as funções auxiliares do Desafio Mestre: `copiarTemplateX()`, `toggleGabaritoX()`, `atualizarChecklistX()` e `validarEConcluirX()`.
-   - Adicionar o item correspondente no array do catálogo mock de fallback.
+   - Adicionar o item correspondente no array do catálogo mock de fallback com `ordem` rigorosamente coerente.
 
 ---
 
@@ -495,3 +500,13 @@ Para permitir que a nova aula seja testada no Windows com **dois cliques** sem p
 1. Embutir o código completo de `AulaX_Y.html` dentro de um `<template id="template-aula-X-Y">` no corpo do [preview_local.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/preview_local.html).
 2. Adicionar as rotinas JS do Desafio Mestre e a constante `SIMULATION_STEPS_AULAX_Y` na tag `<script>` do preview.
 3. Testar a troca de aula pelo Dashboard local confirmando que a alternância ocorre com sucesso.
+
+---
+
+### 8.9. Regra Canônica de Layout do Dashboard
+
+A estrutura do Dashboard do Estudante ([Dashboard.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Dashboard.html)) segue rigorosamente a ordem de prioridade visual:
+1. **Banner Superior / Onde você parou**: Retomada rápida com 1 clique para a aula onde o estudante parou.
+2. **Trilha de Aprendizagem & Módulos**: Posicionado **obrigatoriamente logo após o card de retomada**. Apresenta todos os módulos agrupados e cards de aulas disponíveis para acesso imediato sem necessidade de rolagem de página.
+3. **Indicadores de Engajamento e Conquistas**: Métricas consolidadas (percentual de conclusão da trilha, contador de dúvidas pendentes e total de XP).
+4. **Meu Caderno de Dúvidas para o Professor**: Painel de autonomia com os tópicos sinalizados pelo próprio estudante para revisão.

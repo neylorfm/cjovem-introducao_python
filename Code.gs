@@ -86,7 +86,7 @@ function limparCatalogoParaAulasExistentes() {
     1,
     'Variáveis, Tipos de Dados e Entrada/Saída',
     'Aula1_2',
-    1,
+    2,
     'publicado',
     150,
     '45 min',
@@ -98,7 +98,7 @@ function limparCatalogoParaAulasExistentes() {
     1,
     'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
     'Aula1_3',
-    2,
+    3,
     'publicado',
     180,
     '50 min',
@@ -133,8 +133,16 @@ function sincronizarAulasPadraoNoCatalogo(sheetCat) {
     var data = sheetCat.getDataRange().getValues();
     var idsExistentes = {};
     for (var i = 1; i < data.length; i++) {
-      if (data[i][0]) {
-        idsExistentes[data[i][0].toString().trim()] = true;
+      var idRow = data[i][0] ? data[i][0].toString().trim() : '';
+      if (idRow) {
+        idsExistentes[idRow] = true;
+        // Auto-correção automática de numeração na planilha caso esteja divergente do id_aula
+        if (idRow === 'aula_1_2' && Number(data[i][5]) !== 2) {
+          sheetCat.getRange(i + 1, 6).setValue(2);
+        }
+        if (idRow === 'aula_1_3' && Number(data[i][5]) !== 3) {
+          sheetCat.getRange(i + 1, 6).setValue(3);
+        }
       }
     }
 
@@ -145,7 +153,7 @@ function sincronizarAulasPadraoNoCatalogo(sheetCat) {
         1,
         'Variáveis, Tipos de Dados e Entrada/Saída',
         'Aula1_2',
-        1,
+        2,
         'publicado',
         150,
         '45 min',
@@ -157,7 +165,7 @@ function sincronizarAulasPadraoNoCatalogo(sheetCat) {
         1,
         'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
         'Aula1_3',
-        2,
+        3,
         'publicado',
         180,
         '50 min',
@@ -298,7 +306,7 @@ function setupDatabase(forcarRecriacao) {
         1,
         'Variáveis, Tipos de Dados e Entrada/Saída',
         'Aula1_2',
-        1,
+        2,
         'publicado',
         150,
         '45 min',
@@ -310,7 +318,7 @@ function setupDatabase(forcarRecriacao) {
         1,
         'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
         'Aula1_3',
-        2,
+        3,
         'publicado',
         180,
         '50 min',

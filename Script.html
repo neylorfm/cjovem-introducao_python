@@ -343,7 +343,7 @@ function loadCatalog() {
         ordem_modulo: 1,
         titulo: 'Variáveis, Tipos de Dados e Entrada/Saída',
         arquivo_html: 'Aula1_2',
-        ordem: 1,
+        ordem: 2,
         status: 'publicado',
         xp_base: 150,
         tempo_estimado: '45 min',
@@ -355,7 +355,7 @@ function loadCatalog() {
         ordem_modulo: 1,
         titulo: 'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
         arquivo_html: 'Aula1_3',
-        ordem: 2,
+        ordem: 3,
         status: 'publicado',
         xp_base: 180,
         tempo_estimado: '50 min',
@@ -455,12 +455,21 @@ function renderCatalogDashboard(catalog) {
           ? '<span class="test-badge test-pending" style="font-size: 0.7rem;">Rascunho</span>'
           : '<span class="test-badge" style="background: var(--color-surface-container); color: var(--color-secondary); font-size: 0.7rem;">Disponível</span>');
 
+      // Derivação canônica do número da aula (ex.: aula_1_3 -> Aula 1.3, aula_1_4 -> Aula 1.4)
+      let labelAula = '';
+      if (lesson.id_aula && lesson.id_aula.startsWith('aula_')) {
+        const partes = lesson.id_aula.replace('aula_', '').split('_');
+        labelAula = `Aula ${partes.join('.')}`;
+      } else {
+        labelAula = `Aula ${lesson.ordem_modulo || 1}.${lesson.ordem || 1}`;
+      }
+
       html += `
         <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem;">
           <div>
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
               <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-secondary); font-weight: 600;">
-                Aula ${lesson.ordem_modulo}.${lesson.ordem}
+                ${labelAula}
               </span>
               ${statusBadge}
             </div>
