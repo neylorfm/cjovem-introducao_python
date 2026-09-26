@@ -1,0 +1,1385 @@
+<!-- ============================================================================
+     PYTHONLAB — AULA 1.4: ESTRUTURAS CONDICIONAIS, INDENTAÇÃO E OPERADORES LÓGICOS (Aula1_4.html)
+     Alinhada integralmente às diretrizes pedagógicas de aulas/aula1_4.md
+     ============================================================================ -->
+
+<div class="view-section" id="view-aula">
+
+  <!-- ========================================================================
+       CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
+       ======================================================================== -->
+  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+    <div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
+        <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 1: Fundamentos</span>
+        <span style="color: var(--color-outline);">›</span>
+        <span style="font-weight: 600; color: var(--color-on-surface-variant);">Aula 1.4</span>
+        <span style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          Iniciante • 55 min
+        </span>
+        <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          +200 XP
+        </span>
+      </div>
+      <h1 style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+        Estruturas Condicionais, Indentação e Operadores Lógicos
+      </h1>
+      <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
+        Prática no <strong>Jupyter Notebook</strong> (Anaconda3) ou <strong>Google Colab</strong> (Tablet/Navegador).
+      </p>
+    </div>
+
+    <!-- 3 Ações de Gestão pelo Próprio Aluno -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_1_4', 'Aula 1.4: Condicionais e Operadores Lógicos')">
+        📌 Onde Parei
+      </button>
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_1_4', 'Condicionais e Operadores Lógicos')">
+        ❓ Tenho Dúvidas
+      </button>
+      <button class="btn btn-success" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+        ✓ Compreendi e Concluí (+200 XP)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       DIVISOR DIDÁTICO NO TOPO: ESCOLHA DA TRILHA DE ESTUDO
+       ======================================================================== -->
+  <div class="lesson-mode-bifurcator" id="lesson-mode-bifurcator">
+    <div class="bifurcator-header">
+      <div>
+        <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary);">
+          🧭 Como você deseja estudar esta aula hoje?
+        </div>
+        <div style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.2rem;">
+          Decida se prefere reforçar os conceitos ou ir direto para a prática no Google Colab/Jupyter.
+        </div>
+      </div>
+      <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+        Fast-Track ou Deep-Dive
+      </span>
+    </div>
+    <div class="bifurcator-nav">
+      <button class="bifurcator-btn active" id="btn-mode-explicacoes" onclick="setModoVisualizacaoAula('explicacoes')">
+        <span class="btn-mode-icon">📖</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">1. Explicações & Fundamentos</span>
+          <span class="btn-mode-subtitle">Desvios if-elif-else • Indentação PEP 8 • Short-Circuit • Trace Table</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-pratica" onclick="setModoVisualizacaoAula('pratica')">
+        <span class="btn-mode-icon">🛠️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">2. Exercícios Propostos & Prática</span>
+          <span class="btn-mode-subtitle">4 Seções Práticas • 3 Desafios • Desafio Mestre Edital de Monitoria</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-tudo" onclick="setModoVisualizacaoAula('tudo')">
+        <span class="btn-mode-icon">👁️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">Visualização Completa</span>
+          <span class="btn-mode-subtitle">Exibir tudo em sequência linear contínua</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTAINER TRILHA 1: EXPLICAÇÕES & FUNDAMENTOS -->
+  <div id="bloco-aula-explicacoes">
+
+    <!-- ========================================================================
+         1. VISÃO GERAL E FUNDAMENTOS TEÓRICOS
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Fundamentos Conceituais
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            O Conceito de Desvio Condicional e Fluxo de Decisão
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          CPython Control Flow
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Até este momento, os programas executavam todas as instruções de cima para baixo de maneira estritamente linear. As <strong>estruturas condicionais</strong> permitem que o programa tome decisões e escolha caminhos diferentes de execução com base em testes lógicos que resultam em verdadeiro (<code>True</code>) ou falso (<code>False</code>).
+      </p>
+
+      <!-- Diagrama de Fluxo de Desvio -->
+      <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
+        <div style="font-size: 0.8rem; font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary); text-transform: uppercase; margin-bottom: 0.75rem;">
+          Mapeamento Lógico de Bifurcação de Execução
+        </div>
+        <div style="font-family: var(--font-code); font-size: 0.85rem; line-height: 1.45; color: var(--color-primary); display: inline-block; text-align: left; background: #0f172a; color: #38bdf8; padding: 1rem 1.5rem; border-radius: var(--radius-md);">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌──────────────────┐<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ Condição Lógica&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────────┬─────────┘<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───────────┴───────────┐<br>
+          &nbsp;&nbsp;[ True ]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ False ]<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+          ┌─────────────────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌─────────────────┐<br>
+          │ Bloco sob o if&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ Bloco sob else&nbsp;&nbsp;│<br>
+          └────────┬────────┘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────────┬────────┘<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───────────┬───────────────┘<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───────────────────────┐<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ Continuação do Código │<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───────────────────────┘
+        </div>
+      </div>
+
+      <!-- 4 Tipos de Estruturas Condicionais em Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.25rem;">1️⃣</span>
+            <strong style="font-size: 0.95rem; color: var(--color-primary);">Desvio Simples (if)</strong>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+            Executa o bloco subordinado <em>apenas quando o teste lógico for verdadeiro</em>. Se for falso, o interpretador ignora as instruções recuadas e segue o fluxo adiante.
+          </p>
+        </div>
+
+        <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.25rem;">2️⃣</span>
+            <strong style="font-size: 0.95rem; color: var(--color-primary);">Desvio Composto (if-else)</strong>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+            Estrutura <strong>dois caminhos mutuamente exclusivos</strong>. Se verdadeiro, executa o <code>if</code>; se falso, executa o <code>else</code>. O <code>else</code> <em>nunca</em> recebe condição própria.
+          </p>
+        </div>
+
+        <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.25rem;">3️⃣</span>
+            <strong style="font-size: 0.95rem; color: var(--color-primary);">Encadeado (if-elif-else)</strong>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+            Avalia uma <strong>sequência de condições em fila</strong>. A palavra <code>elif</code> (abreviação de <em>else if</em>) testa uma nova condição apenas se as anteriores tiverem resultado em <code>False</code>.
+          </p>
+        </div>
+
+        <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.25rem;">4️⃣</span>
+            <strong style="font-size: 0.95rem; color: var(--color-primary);">Desvios Aninhados (if em if)</strong>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+            Inclusão de um bloco condicional inteiro <strong>dentro de outro</strong> (recuo de 8 espaços). Ideal para validações por etapas sucessivas (ex.: idade mínima primeiro, depois treinamento).
+          </p>
+        </div>
+      </div>
+
+      <!-- Indentação e Regras de Sintaxe PEP 8 -->
+      <div style="background: var(--color-surface-lowest); border-left: 4px solid var(--color-primary); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.4rem;">
+          📐 Indentação e Regras de Sintaxe (PEP 8)
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.5rem;">
+          Diferente de linguagens que utilizam chaves <code>{}</code>, o Python utiliza o <strong>espaçamento no início da linha (recuo)</strong> para determinar a hierarquia do código:
+        </p>
+        <ul style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; padding-left: 1.25rem; margin: 0;">
+          <li><strong>Padrão Oficial (PEP 8):</strong> O recuo padrão deve conter rigorosamente <strong>4 espaços em branco</strong> por cada nível de profundidade.</li>
+          <li><strong>Tecla Tab:</strong> Tanto no Jupyter Notebook quanto no Google Colab, a tecla Tab já insere 4 espaços automaticamente.</li>
+          <li><strong>Erro Comum (<code>IndentationError</code>):</strong> Misturar quantidades diferentes de espaços no mesmo bloco interrompe o interpretador imediatamente.</li>
+          <li><strong>Dois-Pontos Obrigatórios (<code>:</code>):</strong> Toda instrução de cabeçalho condicional (<code>if</code>, <code>elif</code>, <code>else</code>) deve obrigatoriamente terminar com <code>:</code>.</li>
+        </ul>
+      </div>
+
+      <!-- Tabela de Operadores Lógicos e Comportamento -->
+      <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+        Operadores Lógicos e Tabelas-Verdade
+      </h3>
+      <div class="trace-table-container">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th>Operador</th>
+              <th>Significado</th>
+              <th>Comportamento Lógico</th>
+              <th>Exemplo de Expressão</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>and</code></td>
+              <td>E (Conjunção)</td>
+              <td>Retorna <code>True</code> apenas se <strong>todas</strong> as condições forem verdadeiras</td>
+              <td><code>(media >= 7.0) and (presenca >= 75)</code></td>
+            </tr>
+            <tr>
+              <td><code>or</code></td>
+              <td>OU (Disjunção)</td>
+              <td>Retorna <code>True</code> se <strong>pelo menos uma</strong> das condições for verdadeira</td>
+              <td><code>(idade >= 60) or (e_estudante)</code></td>
+            </tr>
+            <tr>
+              <td><code>not</code></td>
+              <td>NÃO (Inversão)</td>
+              <td>Inverte o valor lógico: o que for <code>True</code> vira <code>False</code> e vice-versa</td>
+              <td><code>not em_manutencao</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         2. DIAGRAMA DE MEMÓRIA CPYTHON: STACK VS HEAP E SHORT-CIRCUIT
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            CPython Internals
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            Memória Stack vs Heap e Avaliação de Curto-Circuito (Short-Circuit)
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          Short-Circuit Evaluation
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        No CPython, os operadores lógicos <code>and</code> e <code>or</code> operam por <strong>avaliação de curto-circuito</strong>: o Python só avalia o segundo operando se for estritamente necessário para determinar o resultado final. Se no comando <code>if (A and B):</code> o teste <code>A</code> for falso, o interpretador <em>nem sequer executa o teste B</em>!
+      </p>
+
+      <!-- Trecho de Código Analisado -->
+      <div style="background: #0f172a; border-radius: var(--radius-md); padding: 0.85rem 1.25rem; font-family: var(--font-code); font-size: 0.85rem; color: #f8fafc; margin-bottom: 1.5rem;">
+        <span style="color: #94a3b8;"># Expressão lógica avaliada na memória CPython:</span><br>
+        <span style="color: #38bdf8;">media</span> = <span style="color: #f59e0b;">8.5</span><br>
+        <span style="color: #38bdf8;">tem_advertencia</span> = <span style="color: #ec4899;">False</span><br>
+        <span style="color: #38bdf8;">elegivel</span> = (<span style="color: #38bdf8;">media</span> &gt;= <span style="color: #f59e0b;">8.0</span>) <span style="color: #c084fc;">and</span> (<span style="color: #c084fc;">not</span> <span style="color: #38bdf8;">tem_advertencia</span>)
+      </div>
+
+      <!-- Representação Gráfica da Memória -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+        <!-- CALL STACK -->
+        <div style="background: var(--color-surface-lowest); border: 2px solid var(--color-primary); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1.5px solid var(--color-surface-container); padding-bottom: 0.5rem;">
+            <strong style="font-family: var(--font-headline); font-size: 0.95rem; color: var(--color-primary);">
+              📚 CALL STACK (Frame Local)
+            </strong>
+            <span style="font-size: 0.75rem; font-family: var(--font-code); color: var(--color-outline);">Ponteiros</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <div style="display: flex; justify-content: space-between; background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--color-surface-container); font-family: var(--font-code); font-size: 0.8rem;">
+              <span>media</span>
+              <span style="color: var(--color-secondary); font-weight: 700;">➔ 0x7FC01</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--color-surface-container); font-family: var(--font-code); font-size: 0.8rem;">
+              <span>tem_advertencia</span>
+              <span style="color: var(--color-secondary); font-weight: 700;">➔ 0x7FC02</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--color-surface-container); font-family: var(--font-code); font-size: 0.8rem;">
+              <span>elegivel</span>
+              <span style="color: var(--color-secondary); font-weight: 700;">➔ 0x7FC03</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HEAP SPACE -->
+        <div style="background: var(--color-surface-lowest); border: 2px dashed var(--color-secondary); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1.5px solid var(--color-surface-container); padding-bottom: 0.5rem;">
+            <strong style="font-family: var(--font-headline); font-size: 0.95rem; color: var(--color-secondary);">
+              📦 HEAP SPACE (Objetos na RAM)
+            </strong>
+            <span style="font-size: 0.75rem; font-family: var(--font-code); color: var(--color-outline);">Alocação</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <div style="display: flex; justify-content: space-between; background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--color-surface-container); font-family: var(--font-code); font-size: 0.8rem;">
+              <span style="color: var(--color-outline);">[0x7FC01]</span>
+              <span>tipo: <strong>float</strong></span>
+              <span style="color: #0284c7; font-weight: 700;">8.5</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--color-surface-container); font-family: var(--font-code); font-size: 0.8rem;">
+              <span style="color: var(--color-outline);">[0x7FC02]</span>
+              <span>tipo: <strong>bool</strong></span>
+              <span style="color: #dc2626; font-weight: 700;">False</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--color-surface-container); font-family: var(--font-code); font-size: 0.8rem;">
+              <span style="color: var(--color-outline);">[0x7FC03]</span>
+              <span>tipo: <strong>bool</strong></span>
+              <span style="color: #16a34a; font-weight: 700;">True</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: var(--radius-md); padding: 0.85rem 1rem; font-size: 0.85rem; color: #92400e;">
+        <strong>⚠️ Ponto de Atenção Didático:</strong> No comando <code>if (A and B):</code>, se o teste <code>A</code> for avaliado como <code>False</code>, o interpretador nem sequer executa o teste <code>B</code>, pois uma conjunção lógica com a primeira parte falsa jamais poderá resultar em verdadeiro!
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         3. SIMULADOR PASSO A PASSO & TESTE DE MESA (TRACE TABLE)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Simulação Interativa
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            Player de Linha Ativa e Tabela de Rastreio (Trace Table)
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          Algoritmo: Validação de Margem de Crédito
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Acompanhe a simulação do algoritmo de crédito estudantil. Observe como o CPython avalia a condição relacional na <strong>Linha 4</strong> e desvia a execução diretamente para o bloco do <code>if</code>, ignorando completamente as instruções do <code>else</code>.
+      </p>
+
+      <!-- Player de Código e Terminal -->
+      <div class="code-player" style="margin-bottom: 1.5rem;">
+        <div class="code-editor-header">
+          <div class="code-editor-title">
+            <span>🐍</span>
+            <span>simulador_credito.py</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="player-btn" id="btn-prev-step" onclick="prevStep()">◀ Passo Anterior</button>
+            <span style="font-family: var(--font-code); font-size: 0.8rem; color: #94a3b8;" id="step-counter">Passo 1 de 6</span>
+            <button class="player-btn" id="btn-next-step" onclick="nextStep()">Próximo Passo ▶</button>
+            <button class="player-btn" onclick="resetSimulation()">🔄 Reiniciar</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 0;">
+          <pre class="code-display" id="code-snippet-box"><code><span class="code-line" id="line-1"><span class="line-num">1</span><span class="code-text"><span class="token-var">renda</span> = <span class="token-num">1800.0</span></span></span>
+<span class="code-line" id="line-2"><span class="line-num">2</span><span class="code-text"><span class="token-var">parcela</span> = <span class="token-num">400.0</span></span></span>
+<span class="code-line" id="line-3"><span class="line-num">3</span><span class="code-text"><span class="token-var">limite_margem</span> = <span class="token-var">renda</span> * <span class="token-num">0.30</span>       <span class="token-comment"># 30% da renda = 540.0</span></span></span>
+<span class="code-line" id="line-4"><span class="line-num">4</span><span class="code-text"><span class="token-keyword">if</span> <span class="token-var">parcela</span> &lt;= <span class="token-var">limite_margem</span>:</span></span>
+<span class="code-line" id="line-5"><span class="line-num">5</span><span class="code-text">    <span class="token-var">status</span> = <span class="token-str">"Aprovado"</span></span></span>
+<span class="code-line" id="line-6"><span class="line-num">6</span><span class="code-text"><span class="token-keyword">else</span>:</span></span>
+<span class="code-line" id="line-7"><span class="line-num">7</span><span class="code-text">    <span class="token-var">status</span> = <span class="token-str">"Negado"</span></span></span>
+<span class="code-line" id="line-8"><span class="line-num">8</span><span class="code-text"><span class="token-keyword">print</span>(<span class="token-str">"Resultado da Linha:"</span>, <span class="token-var">status</span>)</span></span></code></pre>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span>Terminal / Console STDOUT</span>
+            <span style="font-size: 0.75rem; color: #64748b;">Python 3.12</span>
+          </div>
+          <div class="terminal-body" id="terminal-stdout">
+            &gt; Aguardando execução do primeiro passo...
+          </div>
+        </div>
+      </div>
+
+      <!-- Explicação Contextual do Passo -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;" id="step-insight-container">
+        <h4 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;" id="step-insight-title">
+          Passo 1: Inicialização da Renda Mensal
+        </h4>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin: 0; line-height: 1.5;" id="step-insight-desc">
+          O interpretador avalia o literal 1800.0 e cria o objeto float na memória Heap, associando o identificador 'renda' ao endereço 0x7FC01 na Call Stack.
+        </p>
+      </div>
+
+      <!-- Tabela Trace Table Canônica -->
+      <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+        Tabela de Teste de Mesa (Trace Table Oficial)
+      </h3>
+      <div class="trace-table-container">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th>Passo</th>
+              <th>Linha do Código</th>
+              <th>Variável</th>
+              <th>Operação / Condição</th>
+              <th>Valor Gravado</th>
+              <th>STDOUT (Saída)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="trace-row-1">
+              <td>01</td>
+              <td>Linha 1</td>
+              <td><code>renda</code></td>
+              <td>Atribuição direta</td>
+              <td><code>1800.0</code></td>
+              <td>(Nenhum)</td>
+            </tr>
+            <tr id="trace-row-2">
+              <td>02</td>
+              <td>Linha 2</td>
+              <td><code>parcela</code></td>
+              <td>Atribuição direta</td>
+              <td><code>400.0</code></td>
+              <td>(Nenhum)</td>
+            </tr>
+            <tr id="trace-row-3">
+              <td>03</td>
+              <td>Linha 3</td>
+              <td><code>limite_margem</code></td>
+              <td><code>1800.0 * 0.30</code></td>
+              <td><code>540.0</code></td>
+              <td>(Nenhum)</td>
+            </tr>
+            <tr id="trace-row-4">
+              <td>04</td>
+              <td>Linha 4</td>
+              <td>—</td>
+              <td><code>400.0 &lt;= 540.0</code> ➔ <strong>True</strong></td>
+              <td>—</td>
+              <td>(Desvia para Linha 5)</td>
+            </tr>
+            <tr id="trace-row-5">
+              <td>05</td>
+              <td>Linha 5</td>
+              <td><code>status</code></td>
+              <td>Atribuição no bloco <code>if</code></td>
+              <td><code>"Aprovado"</code></td>
+              <td>(Nenhum)</td>
+            </tr>
+            <tr id="trace-row-6">
+              <td>06</td>
+              <td>Linha 8</td>
+              <td>—</td>
+              <td>Execução final</td>
+              <td>—</td>
+              <td><code>Resultado da Linha: Aprovado</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div> <!-- FIM BLOCO EXPLICATIVES -->
+
+  <!-- CONTAINER TRILHA 2: CADERNO DE OFICINAS & PRÁTICA -->
+  <div id="bloco-aula-pratica">
+
+    <!-- ========================================================================
+         4. CADERNO DE ATIVIDADES E PRÁTICAS DE CÓDIGO (4 SEÇÕES)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Caderno de Oficinas
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            Atividades Práticas de Programação em Python
+          </h2>
+        </div>
+        <span style="font-size: 0.8rem; color: var(--color-outline);">
+          4 Seções Temáticas + Desafios
+        </span>
+      </div>
+
+      <!-- Navegador de Abas por Seções -->
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-surface-container); padding-bottom: 0.5rem;">
+        <button class="btn tab-btn active" id="btn-tab-secao-1" onclick="switchOficinaBloco('secao-1')">
+          1. Simples e Composto (if / if-else)
+        </button>
+        <button class="btn tab-btn" id="btn-tab-secao-2" onclick="switchOficinaBloco('secao-2')">
+          2. Indentação & PEP 8
+        </button>
+        <button class="btn tab-btn" id="btn-tab-secao-3" onclick="switchOficinaBloco('secao-3')">
+          3. Encadeados & Aninhados
+        </button>
+        <button class="btn tab-btn" id="btn-tab-secao-4" onclick="switchOficinaBloco('secao-4')">
+          4. Operadores and, or, not
+        </button>
+        <button class="btn tab-btn" id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')">
+          🏆 Desafios & Desafio Mestre
+        </button>
+      </div>
+
+      <!-- ======================================================================
+           PAINEL 1: SEÇÃO 1 — DESVIOS SIMPLES E COMPOSTO
+           ====================================================================== -->
+      <div id="panel-secao-1" class="oficina-panel active">
+        <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
+          Seção 1: Desvio Condicional Simples (if) e Composto (if-else)
+        </h3>
+
+        <!-- Atividade 1 (Resolvida) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 1.1 (Resolvida) — Radar em Via Escolar
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Condicional Simples</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Crie um programa para controle de velocidade de uma via escolar com limite máximo de 30 km/h. Solicite a velocidade medida e, caso seja superior a 30, exiba: <em>"Atenção: Limite de velocidade ultrapassado! Multa emitida."</em>. Ao final, exiba <em>"Fiscalização concluída."</em>.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_1_atv_1"></div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>velocidade = float(input("Digite a velocidade do veículo (km/h): "))
+if velocidade &gt; 30:
+    print("Atenção: Limite de velocidade ultrapassado! Multa emitida.")
+print("Fiscalização concluída.")</code></pre>
+        </div>
+
+        <!-- Atividade 2 (Proposta) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 1.2 (Proposta) — Conquista em Jogo Eletrônico
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Prática no Colab</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Solicite a pontuação de um jogador. Se for maior ou igual a 100 pontos, imprima: <code>"Conquista desbloqueada: Guerreiro Veterano"</code>. Se for menor que 100, nada referente à conquista deve ser impresso.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_1_atv_2"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec1-atv2')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec1-atv2" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>pontos = int(input("Digite sua pontuação: "))
+if pontos &gt;= 100:
+    print("Conquista desbloqueada: Guerreiro Veterano")</code></pre>
+          </div>
+        </div>
+
+        <!-- Atividade 3 (Resolvida) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 1.3 (Resolvida) — Média Escolar com if-else
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Condicional Composto</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Leia a média final do aluno (0 a 10) e exiba se ele foi aprovado ou reprovado, sendo a nota mínima de aprovação igual a 6.0.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_1_atv_3"></div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>media = float(input("Digite a média do estudante: "))
+if media &gt;= 6.0:
+    print("Situação: Aprovado!")
+else:
+    print("Situação: Reprovado.")</code></pre>
+        </div>
+
+        <!-- Atividade 4 (Proposta) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 1.4 (Proposta) — Verificador de Par ou Ímpar
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Operador %</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Solicite um número inteiro e utilize o operador de resto da divisão (<code>%</code>) para imprimir se o número é <em>"Número Par"</em> ou <em>"Número Ímpar"</em>.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_1_atv_4"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec1-atv4')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec1-atv4" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>numero = int(input("Digite um número inteiro: "))
+if numero % 2 == 0:
+    print("Número Par")
+else:
+    print("Número Ímpar")</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           PAINEL 2: SEÇÃO 2 — INDENTAÇÃO E REGRAS DE SINTAXE
+           ====================================================================== -->
+      <div id="panel-secao-2" class="oficina-panel">
+        <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
+          Seção 2: Indentação e Regras de Sintaxe em Python (PEP 8)
+        </h3>
+
+        <!-- Atividade 1 (Identificação de Erro) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: #b91c1c; background: #fee2e2; padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 2.1 — Correção de IndentationError
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Diagnóstico de Sintaxe</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            O trecho abaixo gerou <code>IndentationError</code> no Jupyter Notebook. Identifique a causa e corrija para 4 espaços por nível:
+          </p>
+          <pre style="background: #1e293b; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.75rem;"><code>temperatura = 38.5
+if temperatura &gt; 37.5:
+  print("Estado febril detectado.")     # Erro: apenas 2 espaços
+    print("Recomenda-se aferição médica.") # Erro: 4 espaços misturados com 2
+print("Verificação terminada.")</code></pre>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_2_atv_1"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec2-atv1')">
+              👁️ Ver Correção Oficial
+            </button>
+          </div>
+          <div id="gab-sec2-atv1" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>temperatura = 38.5
+if temperatura &gt; 37.5:
+    print("Estado febril detectado.")
+    print("Recomenda-se aferição médica.")
+print("Verificação terminada.")</code></pre>
+          </div>
+        </div>
+
+        <!-- Atividade 2 (Estruturação de Bloco Fabril) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 2.2 — Controle de Qualidade Fabril
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Blocos com Múltiplas Instruções</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Solicite um inteiro <code>pecas_defeituosas</code>. Se for maior que 5, execute 3 <code>print</code>s no <code>if</code> (paralisação, manutenção e retenção). Caso contrário, execute 2 <code>print</code>s no <code>else</code> (tolerância e liberação), mantendo 4 espaços perfeitos.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_2_atv_2"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec2-atv2')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec2-atv2" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>pecas = int(input("Quantidade de peças defeituosas: "))
+if pecas &gt; 5:
+    print("ALERTA: Linha de montagem paralisada imediatamente!")
+    print("Equipe de manutenção preventiva acionada para o setor.")
+    print("Lote registrado e retido para auditoria de qualidade.")
+else:
+    print("Índice de defeitos dentro da tolerância aceitável.")
+    print("Produção liberada: linha operando normalmente.")</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           PAINEL 3: SEÇÃO 3 — ENCADEADOS E ANINHADOS
+           ====================================================================== -->
+      <div id="panel-secao-3" class="oficina-panel">
+        <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
+          Seção 3: Desvios Condicionais Encadeados (if-elif-else) e Aninhados (if em if)
+        </h3>
+
+        <!-- Atividade 3.1 (Resolvida: Conceitos Escolares) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 3.1 (Resolvida) — Classificador de Conceitos
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">if-elif-else</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Classifique uma nota decimal (0 a 10): 9 a 10 ➔ A, 7 a 8.9 ➔ B, 5 a 6.9 ➔ C, abaixo de 5 ➔ D.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_1"></div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>nota = float(input("Digite a nota do aluno (0 a 10): "))
+if nota &gt;= 9.0:
+    conceito = "A"
+elif nota &gt;= 7.0:
+    conceito = "B"
+elif nota &gt;= 5.0:
+    conceito = "C"
+else:
+    conceito = "D"
+print(f"Conceito obtido: {conceito}")</code></pre>
+        </div>
+
+        <!-- Atividade 3.2 (Proposta: Tarifador Parque) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 3.2 (Proposta) — Tarifador de Ingressos
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Faixas Etárias</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Tarifador de parque: &lt; 5 anos (Gratuito), 5 a 12 anos (R$ 15,00), 13 a 59 anos (R$ 30,00), &gt;= 60 anos (R$ 10,00).
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_2"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec3-atv2')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec3-atv2" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>idade = int(input("Digite a idade: "))
+if idade &lt; 5:
+    print("Entrada Gratuita")
+elif idade &lt;= 12:
+    print("Bilhete Infantil: R$ 15.00")
+elif idade &lt;= 59:
+    print("Bilhete Normal: R$ 30.00")
+else:
+    print("Bilhete Sênior: R$ 10.00")</code></pre>
+          </div>
+        </div>
+
+        <!-- Atividade 3.3 (Resolvida: Laboratório Aninhado) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 3.3 (Resolvida) — Acesso ao Laboratório de Robótica
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">if Aninhado (8 espaços)</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Primeiro nível: idade &gt;= 16. Segundo nível (interno): concluiu treinamento de segurança ("sim" ou "nao").
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_3"></div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>idade = int(input("Digite a idade do estudante: "))
+if idade &gt;= 16:
+    print("Idade mínima atingida. Verificando pré-requisitos...")
+    concluiu = input("Concluiu o treinamento de segurança? (sim/nao): ")
+    if concluiu.lower() == "sim":
+        print("Acesso autorizado! Crachá liberado.")
+    else:
+        print("Acesso pendente: realize o treinamento primeiro.")
+else:
+    print("Acesso não autorizado: idade mínima não atingida.")</code></pre>
+        </div>
+
+        <!-- Atividade 3.4 (Proposta: Login Aninhado) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 3.4 (Proposta) — Login com Dois Níveis
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Autenticação Segura</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Peça usuário ("admin") e, se correto, valide senha ("1234") em if interno, imprimindo mensagens específicas para cada desvio.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_4"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec3-atv4')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec3-atv4" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>user = input("Usuário: ")
+if user == "admin":
+    senha = input("Senha: ")
+    if senha == "1234":
+        print("Acesso concedido")
+    else:
+        print("Senha incorreta")
+else:
+    print("Usuário não registrado")</code></pre>
+          </div>
+        </div>
+
+        <!-- Atividade 3.5 (Proposta: Retenção Salarial) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 3.5 (Proposta) — Alíquota de Retenção Salarial
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Cálculo Financeiro</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Receba o salário bruto e aplique: até 1500 (isento), 1500.01 a 2500 (10%), 2500.01 a 4000 (15%), acima de 4000 (20%). Exiba percentual, desconto e salário líquido.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_5"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec3-atv5')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec3-atv5" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>salario = float(input("Salário bruto: "))
+if salario &lt;= 1500:
+    taxa = 0.0
+elif salario &lt;= 2500:
+    taxa = 0.10
+elif salario &lt;= 4000:
+    taxa = 0.15
+else:
+    taxa = 0.20
+desconto = salario * taxa
+liquido = salario - desconto
+print(f"Alíquota: {int(taxa*100)}% | Desconto: R$ {desconto:.2f} | Líquido: R$ {liquido:.2f}")</code></pre>
+          </div>
+        </div>
+
+        <!-- Atividade 3.6 (Proposta: Classificador de Triângulos) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 3.6 (Proposta) — Classificador Geométrico de Triângulos
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Desafio Algorítmico</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Receba três lados float (A, B, C). Valide a existência no if externo: <code>(A + B &gt; C) and (A + C &gt; B) and (B + C &gt; A)</code>. No interno, classifique em: Equilátero (3 iguais), Isósceles (2 iguais) ou Escaleno (todos diferentes).
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_6"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec3-atv6')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec3-atv6" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>a = float(input("Lado A: "))
+b = float(input("Lado B: "))
+c = float(input("Lado C: "))
+
+if (a + b &gt; c) and (a + c &gt; b) and (b + c &gt; a):
+    if a == b and b == c:
+        print("Triângulo Equilátero")
+    elif a == b or a == c or b == c:
+        print("Triângulo Isósceles")
+    else:
+        print("Triângulo Escaleno")
+else:
+    print("Não forma triângulo")</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           PAINEL 4: SEÇÃO 4 — OPERADORES LÓGICOS
+           ====================================================================== -->
+      <div id="panel-secao-4" class="oficina-panel">
+        <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
+          Seção 4: Operadores Lógicos Individuais e Combinados (and, or, not)
+        </h3>
+
+        <!-- Atividade 4.1 (Resolvida and) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 4.1 (Resolvida) — Média e Presença com 'and'
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Conjunção</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Aprovação apenas com média &gt;= 7.0 <strong>e</strong> presença &gt;= 75%.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_1"></div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>media = float(input("Média final: "))
+presenca = float(input("Presença (%): "))
+if (media &gt;= 7.0) and (presenca &gt;= 75):
+    print("Resultado: Aluno Aprovado!")
+else:
+    print("Resultado: Aluno Reprovado.")</code></pre>
+        </div>
+
+        <!-- Atividade 4.2 (Proposta and) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 4.2 (Proposta) — Acesso à Montanha-Russa
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Dupla Validação</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Exige altura &gt;= 1.40 m e idade &gt;= 12 anos para permitir a entrada no brinquedo usando <code>and</code>.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_2"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec4-atv2')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec4-atv2" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>altura = float(input("Altura (m): "))
+idade = int(input("Idade: "))
+if (altura &gt;= 1.40) and (idade &gt;= 12):
+    print("Acesso Liberado para o brinquedo!")
+else:
+    print("Acesso Negado por motivos de segurança.")</code></pre>
+          </div>
+        </div>
+
+        <!-- Atividade 4.3 (Resolvida or) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 4.3 (Resolvida) — Meia-Entrada no Cinema com 'or'
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Disjunção</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Idade &gt;= 60 anos <strong>ou</strong> ser estudante concede meia-entrada (R$ 15,00 contra R$ 30,00).
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_3"></div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>idade = int(input("Idade: "))
+resp = input("É estudante? (sim/nao): ")
+e_estudante = resp.lower() == "sim"
+if (idade &gt;= 60) or (e_estudante):
+    print("Direito concedido: Meia-entrada (R$ 15.00).")
+else:
+    print("Tarifa normal: Ingresso Inteiro (R$ 30.00).")</code></pre>
+        </div>
+
+        <!-- Atividade 4.4 (Proposta or) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 4.4 (Proposta) — Frete Grátis na Loja Virtual
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Condição Alternativa</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Frete grátis se compra &gt;= 150.0 <strong>ou</strong> cliente possui clube fidelidade (resposta sim).
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_4"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec4-atv4')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec4-atv4" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>compra = float(input("Valor da compra: "))
+fidelidade = input("Possui clube fidelidade? (sim/nao): ").lower() == "sim"
+if compra &gt;= 150.0 or fidelidade:
+    print("Frete Grátis Liberado!")
+else:
+    print("Frete Cobrado: R$ 20.00")</code></pre>
+          </div>
+        </div>
+
+        <!-- Atividade 4.5 (Resolvida not) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 4.5 (Resolvida) — Manutenção de Computadores com 'not'
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Inversor Booleano</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            O computador só pode ser usado se <code>not em_manutencao</code> for verdadeiro.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_5"></div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>resposta = input("Computador em manutenção? (sim/nao): ")
+em_manutencao = resposta.lower() == "sim"
+if not em_manutencao:
+    print("Computador liberado para o aluno utilizar.")
+else:
+    print("Acesso bloqueado: equipamento em manutenção.")</code></pre>
+        </div>
+
+        <!-- Atividade 4.6 (Proposta not) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 4.6 (Proposta) — Validação de Tarefas com 'not'
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Negação Direta</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Pergunte se a tarefa já foi enviada. Com <code>if not tarefa_entregue:</code>, alerte sobre pendências.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_6"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec4-atv6')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec4-atv6" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>resposta = input("Enviou a atividade? (sim/nao): ")
+tarefa_entregue = resposta.lower() == "sim"
+if not tarefa_entregue:
+    print("Atenção: Você tem pendências de envio!")
+else:
+    print("Parabéns, sua tarefa já foi registrada!")</code></pre>
+          </div>
+        </div>
+
+        <!-- Atividade 4.7 (Resolvida Combinada) -->
+        <div class="card" style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 4.7 (Resolvida) — Robótica Avançada (and, or, not Juntos)
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Expressão Combinada</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Critérios: (matemática &gt;= 8.0 <strong>ou</strong> ciências &gt;= 8.0) <strong>e</strong> (<strong>não</strong> possuir advertência).
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_7"></div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>nota_mat = float(input("Nota Matemática: "))
+nota_cie = float(input("Nota Ciências: "))
+tem_adv = input("Possui advertência? (sim/nao): ").lower() == "sim"
+
+if (nota_mat &gt;= 8.0 or nota_cie &gt;= 8.0) and (not tem_adv):
+    print("Classificação: Aluno qualificado para o curso de Robótica!")
+else:
+    print("Classificação: Inscrição não atende aos requisitos do edital.")</code></pre>
+        </div>
+
+        <!-- Atividade 4.8 (Proposta Combinada) -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Atividade 4.8 (Proposta) — Sorteio de Viagem Esportiva
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Condição Complexa</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Regras: (treinos &gt;= 85% <strong>ou</strong> medalha no torneio) <strong>e</strong> (<strong>não</strong> estar com mensalidade atrasada).
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_8"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec4-atv8')">
+              👁️ Ver Solução Modelo
+            </button>
+          </div>
+          <div id="gab-sec4-atv8" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>frequencia = float(input("Frequência (%): "))
+medalha = input("Ganhou medalha no torneio? (sim/nao): ").lower() == "sim"
+atrasado = input("Mensalidade atrasada? (sim/nao): ").lower() == "sim"
+
+if (frequencia &gt;= 85.0 or medalha) and (not atrasado):
+    print("Atleta apto para o sorteio da viagem!")
+else:
+    print("Atleta inapto para o sorteio.")</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================================
+           PAINEL 5: DESAFIOS TEMÁTICOS E DESAFIO MESTRE
+           ====================================================================== -->
+      <div id="panel-desafios" class="oficina-panel">
+        <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
+          Desafios Práticos de Decisão & Desafio Mestre Integrador
+        </h3>
+
+        <!-- Desafio 1 -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Desafio 1 — Simulador de Financiamento Estudantil
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Juros e Margem</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Receba renda mensal, valor do equipamento e parcelas (6, 12 ou 24). Aplique juros de 5% (6x), 10% (12x) ou 18% (24x). A parcela calculada não pode exceder 30% da renda comprovada.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="desafio_1"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-desafio-1')">
+              👁️ Ver Solução Comentada
+            </button>
+          </div>
+          <div id="gab-desafio-1" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>renda = float(input("Renda mensal: "))
+valor = float(input("Valor do computador: "))
+parcelas = int(input("Parcelas (6, 12 ou 24): "))
+
+if parcelas == 6:
+    total = valor * 1.05
+elif parcelas == 12:
+    total = valor * 1.10
+elif parcelas == 24:
+    total = valor * 1.18
+else:
+    print("Plano de parcelamento inválido!")
+    total = 0
+
+if total &gt; 0:
+    prestacao = total / parcelas
+    margem = renda * 0.30
+    print(f"Total com juros: R$ {total:.2f} | Prestação: R$ {prestacao:.2f}")
+    if prestacao &lt;= margem:
+        print("Crédito Aprovado! Parabéns pela aquisição.")
+    else:
+        print("Crédito Recusado: Parcela excede 30% da renda comprovada.")</code></pre>
+          </div>
+        </div>
+
+        <!-- Desafio 2 -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Desafio 2 — Monitor de Conforto Térmico e CO2 do Lab
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Sensores Ambientais</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Classifique a sala em: <strong>Nível 1 (Ideal)</strong>: 20 a 24°C e CO2 &lt;= 800; <strong>Nível 2 (Atenção Térmica)</strong>: &gt; 24 e &lt;= 28°C com CO2 normal; <strong>Nível 3 (Ventilação)</strong>: CO2 de 801 a 1500; <strong>Nível 4 (Crítico)</strong>: Temp &gt; 28°C ou CO2 &gt; 1500.
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="desafio_2"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-desafio-2')">
+              👁️ Ver Solução Comentada
+            </button>
+          </div>
+          <div id="gab-desafio-2" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>temp = float(input("Temperatura (°C): "))
+co2 = int(input("CO2 (ppm): "))
+
+if temp &gt; 28.0 or co2 &gt; 1500:
+    print("ALERTA CRÍTICO: Risco de superaquecimento dos computadores e fadiga! Interromper aula.")
+elif 801 &lt;= co2 &lt;= 1500:
+    print("Status: Abrir janelas ou acionar renovação de ar.")
+elif 20.0 &lt;= temp &lt;= 24.0 and co2 &lt;= 800:
+    print("Status: Ambiente Ideal para Aprendizagem.")
+elif 24.0 &lt; temp &lt;= 28.0 and co2 &lt;= 800:
+    print("Status: Ajustar climatizadores para resfriamento.")
+else:
+    print("Status: Condições fora dos padrões monitorados.")</code></pre>
+          </div>
+        </div>
+
+        <!-- Desafio 3 -->
+        <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-tertiary); background: var(--color-tertiary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+              Desafio 3 — Fechadura Digital Biométrica com Rota de Fuga
+            </span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Aninhamento Estruturado</span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
+            Nível externo: Se alarme de incêndio ativo ➔ destranque como rota de fuga. Nível interno (else): crachá 9901 e senha "Alpha2026".
+          </p>
+          <!-- Slot de Imagem Opcional do Professor -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="desafio_3"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-desafio-3')">
+              👁️ Ver Solução Comentada
+            </button>
+          </div>
+          <div id="gab-desafio-3" style="display: none; margin-top: 0.75rem;">
+            <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>cracha = int(input("Código do crachá: "))
+senha = input("Senha mestre: ")
+emergencia = input("Alarme de incêndio ativado? (sim/nao): ").lower() == "sim"
+
+if emergencia:
+    print("ROTA DE FUGA: Porta destrancada automaticamente devido a emergência!")
+else:
+    if cracha == 9901:
+        if senha == "Alpha2026":
+            print("Acesso Autorizado: Bem-vindo à Sala de Servidores.")
+        else:
+            print("Falha de Autenticação: Senha mestre inválida.")
+    else:
+        print("Acesso Negado: Identificador não autorizado no perímetro.")</code></pre>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             DESAFIO MESTRE: SISTEMA DE SELEÇÃO DE BOLSAS DE MONITORIA
+             ================================================================== -->
+        <div class="card" style="border: 2px solid var(--color-primary); background: linear-gradient(180deg, var(--color-surface-lowest) 0%, var(--color-surface-low) 100%); margin-bottom: 2rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 2px solid var(--color-surface-container); padding-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-size: 2rem;">🎓</span>
+              <div>
+                <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary); color: #ffffff; padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+                  Desafio Mestre Integrador
+                </span>
+                <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 800; color: var(--color-primary); margin: 0.25rem 0 0 0;">
+                  Sistema Integrado de Seleção de Bolsas de Monitoria
+                </h3>
+              </div>
+            </div>
+            <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-weight: 700; font-size: 0.85rem; padding: 0.35rem 0.8rem; border-radius: var(--radius-full);">
+              +60 XP Bônus
+            </span>
+          </div>
+
+          <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1rem;">
+            Você foi encarregado de implementar o motor de triagem do edital de monitoria da coordenação de computação. O sistema deve validar requisitos eliminatórios em uma única expressão lógica, calcular o valor mensal conforme a carga horária (10h ou 20h) e aplicar a bonificação de excelência com o operador de atribuição composta <code>+=</code>.
+          </p>
+
+          <!-- Slot de Imagem do Professor no Desafio Mestre -->
+          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="desafio_mestre"></div>
+
+          <!-- Tabela de Casos I/O do Edital -->
+          <h4 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+            📋 Casos de Teste Oficiais para Validação (I/O)
+          </h4>
+          <div class="trace-table-container" style="margin-bottom: 1.25rem;">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>Cenário</th>
+                  <th>Entradas Fornecidas</th>
+                  <th>Saída Esperada no Terminal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Cenário 1 (Aprovado + Bônus)</strong></td>
+                  <td>Nome: <code>Marina Lima</code><br>Prog: <code>9.0</code> | Geral: <code>9.6</code><br>Freq: <code>92.0</code> | Susp: <code>nao</code><br>Outra bolsa: <code>nao</code> | Carga: <code>20</code></td>
+                  <td><code>Parecer: INSCRIÇÃO DEFERIDA<br>Bolsista: Marina Lima<br>Carga Horária: 20h<br>Bônus de Excelência: Aplicado (+ R$ 100.00)<br>Remuneração Final: R$ 800.00</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Cenário 2 (Rejeição Disciplinar)</strong></td>
+                  <td>Nome: <code>Carlos Souza</code><br>Prog: <code>10.0</code> | Geral: <code>8.5</code><br>Freq: <code>85.0</code> | Susp: <code>sim</code><br>Outra bolsa: <code>nao</code> | Carga: <code>10</code></td>
+                  <td><code>Parecer: INSCRIÇÃO INDEFERIDA<br>Motivo: Candidato possui penalidade disciplinar ativa no semestre.</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Cenário 3 (Frequência Insuficiente)</strong></td>
+                  <td>Nome: <code>Pedro Silva</code><br>Prog: <code>7.5</code> | Geral: <code>7.0</code><br>Freq: <code>72.0</code> | Susp: <code>nao</code><br>Outra bolsa: <code>nao</code> | Carga: <code>10</code></td>
+                  <td><code>Parecer: INSCRIÇÃO INDEFERIDA<br>Motivo: Índice de frequência insuficiente e média abaixo do corte.</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Botão Copiar Template -->
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <button class="btn btn-primary" onclick="copiarTemplateMonitoria()">
+              📋 Copiar Template para Google Colab / Jupyter
+            </button>
+            <button class="btn btn-outline" onclick="toggleGabaritoMonitoria()">
+              👁️ Alternar Gabarito Comentado
+            </button>
+          </div>
+
+          <!-- Gabarito Desafio Mestre -->
+          <div id="gabarito-monitoria-body" style="display: none; margin-bottom: 1.5rem; background: #0f172a; border-radius: var(--radius-md); padding: 1.25rem;">
+            <pre style="margin: 0; font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; line-height: 1.5;"><code># Solução Oficial do Desafio Mestre: Seleção de Monitoria
+def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, carga):
+    tem_susp = susp.lower() == "sim"
+    tem_outra = outra_bolsa.lower() == "sim"
+    
+    # Validação lógica única com operadores combinados
+    apto = (nota_prog &gt;= 8.5 or media_geral &gt;= 8.0) and (freq &gt;= 80.0) and (not tem_susp) and (not tem_outra)
+    
+    if apto:
+        if carga == 10:
+            remuneracao = 400.0
+        elif carga == 20:
+            remuneracao = 700.0
+        else:
+            print("Carga horária inválida!")
+            return False
+            
+        bonus_aplicado = False
+        if media_geral &gt;= 9.5:
+            remuneracao += 100.0
+            bonus_aplicado = True
+            
+        print("Parecer: INSCRIÇÃO DEFERIDA")
+        print(f"Bolsista: {nome}")
+        print(f"Carga Horária: {carga}h")
+        if bonus_aplicado:
+            print("Bônus de Excelência: Aplicado (+ R$ 100.00)")
+        print(f"Remuneração Final: R$ {remuneracao:.2f}")
+        return True
+    else:
+        print("Parecer: INSCRIÇÃO INDEFERIDA")
+        if tem_susp:
+            print("Motivo: Candidato possui penalidade disciplinar ativa no semestre.")
+        elif freq &lt; 80.0 and (nota_prog &lt; 8.5 and media_geral &lt; 8.0):
+            print("Motivo: Índice de frequência insuficiente e média abaixo do corte.")
+        elif freq &lt; 80.0:
+            print("Motivo: Frequência abaixo do mínimo de 80%.")
+        elif tem_outra:
+            print("Motivo: Acúmulo de bolsa não permitido.")
+        else:
+            print("Motivo: Média acadêmica insuficiente para o corte.")
+        return False</code></pre>
+          </div>
+
+          <!-- Checklist Interativo de Validação -->
+          <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+            <h4 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+              ✅ Checklist de Homologação do Estudante
+            </h4>
+            <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
+              Marque os itens após testar seu script com sucesso no Google Colab ou Jupyter Notebook:
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="chk-monitoria-1" onchange="atualizarChecklistMonitoria()">
+                <span><strong>Teste 1:</strong> Utilizei parênteses para isolar o operador <code>or</code> das notas antes da conjunção com <code>and</code>.</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="chk-monitoria-2" onchange="atualizarChecklistMonitoria()">
+                <span><strong>Teste 2:</strong> Apliquei o operador <code>not</code> sobre as variáveis booleanas de impedimento (suspensão e outra bolsa).</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="chk-monitoria-3" onchange="atualizarChecklistMonitoria()">
+                <span><strong>Teste 3:</strong> Mantive indentação de 4 espaços para o bloco deferido e utilizei atribuição composta <code>+= 100.0</code> para o bônus.</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="chk-monitoria-4" onchange="atualizarChecklistMonitoria()">
+                <span><strong>Teste 4:</strong> Validei os 3 cenários de teste I/O com sucesso no meu ambiente de execução.</span>
+              </label>
+            </div>
+            <button class="btn btn-success" id="btn-concluir-monitoria" disabled style="opacity: 0.5; cursor: not-allowed;" onclick="validarEConcluirMonitoria(60)">
+              🏆 Homologar Desafio Mestre (+60 XP)
+            </button>
+          </div>
+        </div>
+
+      </div> <!-- FIM PAINEL DESAFIOS -->
+
+    </div> <!-- FIM CARD OFICINAS -->
+
+  </div> <!-- FIM BLOCO PRÁTICA -->
+
+  <!-- ========================================================================
+       5. GUIA PRÁTICO PARA OS AMBIENTES DE DESENVOLVIMENTO
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container);">
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <span style="font-size: 1.5rem;">💻</span>
+      <div>
+        <h3 style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+          Guia de Execução nos Ambientes de Prática
+        </h3>
+        <span style="font-size: 0.75rem; color: var(--color-outline);">
+          Jupyter Notebook (Anaconda3) e Google Colab (Tablet/Navegador)
+        </span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <div style="background: var(--color-surface-low); padding: 1rem; border-radius: var(--radius-md);">
+        <strong style="color: var(--color-primary); font-size: 0.9rem;">No Computador (Jupyter Notebook / Anaconda3):</strong>
+        <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-top: 0.35rem; line-height: 1.45;">
+          Ao digitar <code>:</code> no final de <code>if</code>, <code>elif</code> ou <code>else</code> e pressionar Enter, o Jupyter adiciona 4 espaços automaticamente. Se receber <code>IndentationError</code>, use as teclas <strong>Tab</strong> (recuar) ou <strong>Shift + Tab</strong> (desfazer recuo) para alinhar o bloco.
+        </p>
+      </div>
+      <div style="background: var(--color-surface-low); padding: 1rem; border-radius: var(--radius-md);">
+        <strong style="color: var(--color-secondary); font-size: 0.9rem;">No Tablet / Celular (Google Colab):</strong>
+        <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-top: 0.35rem; line-height: 1.45;">
+          Utilize a tecla virtual de seta para a direita <strong>⇥ (Tab)</strong> da barra de ferramentas do Colab. Observe as guias verticais pontilhadas na tela: comandos na mesma guia pertencem ao mesmo nível hierárquico.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>

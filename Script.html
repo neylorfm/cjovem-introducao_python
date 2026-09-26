@@ -247,6 +247,118 @@ const SIMULATION_STEPS_AULA1_3 = [
   }
 ];
 
+const SIMULATION_STEPS_AULA1_4 = [
+  {
+    step: 0,
+    line: null,
+    insightTitle: "Passo 0: Preparação da Call Stack (Aula 1.4)",
+    insightDesc: "Inicie o simulador para acompanhar o fluxo de execução condicional (if-else) e a avaliação booleana no CPython.",
+    stack: [],
+    heap: [],
+    stdout: "> (Aguardando início...)"
+  },
+  {
+    step: 1,
+    line: 1,
+    insightTitle: "Passo 1: Atribuição de renda (float)",
+    insightDesc: "O literal float 1800.0 é alocado no Heap em 0x7FB01 e vinculado à variável local 'renda'.",
+    stack: [
+      { name: "renda", type: "float", addr: "0x7FB01" }
+    ],
+    heap: [
+      { addr: "0x7FB01", val: "1800.0", type: "float" }
+    ],
+    stdout: ""
+  },
+  {
+    step: 2,
+    line: 2,
+    insightTitle: "Passo 2: Atribuição de parcela (float)",
+    insightDesc: "O literal 400.0 é alocado no Heap em 0x7FB02 e vinculado à variável local 'parcela'.",
+    stack: [
+      { name: "renda", type: "float", addr: "0x7FB01" },
+      { name: "parcela", type: "float", addr: "0x7FB02" }
+    ],
+    heap: [
+      { addr: "0x7FB01", val: "1800.0", type: "float" },
+      { addr: "0x7FB02", val: "400.0", type: "float" }
+    ],
+    stdout: ""
+  },
+  {
+    step: 3,
+    line: 3,
+    insightTitle: "Passo 3: Cálculo da Margem Consignável (30%)",
+    insightDesc: "CPython multiplica renda (1800.0) por 0.30, resultando em 540.0 alocado no Heap em 0x7FB03 e vinculado a 'limite_margem'.",
+    stack: [
+      { name: "renda", type: "float", addr: "0x7FB01" },
+      { name: "parcela", type: "float", addr: "0x7FB02" },
+      { name: "limite_margem", type: "float", addr: "0x7FB03" }
+    ],
+    heap: [
+      { addr: "0x7FB01", val: "1800.0", type: "float" },
+      { addr: "0x7FB02", val: "400.0", type: "float" },
+      { addr: "0x7FB03", val: "540.0", type: "float" }
+    ],
+    stdout: ""
+  },
+  {
+    step: 4,
+    line: 4,
+    insightTitle: "Passo 4: Avaliação do Desvio Condicional (if)",
+    insightDesc: "A CPU compara se parcela (400.0) <= limite_margem (540.0). A expressão booleana é TRUE! O fluxo entra no bloco indentado do if.",
+    stack: [
+      { name: "renda", type: "float", addr: "0x7FB01" },
+      { name: "parcela", type: "float", addr: "0x7FB02" },
+      { name: "limite_margem", type: "float", addr: "0x7FB03" }
+    ],
+    heap: [
+      { addr: "0x7FB01", val: "1800.0", type: "float" },
+      { addr: "0x7FB02", val: "400.0", type: "float" },
+      { addr: "0x7FB03", val: "540.0", type: "float" }
+    ],
+    stdout: "> Condição 400.0 <= 540.0 é True. Desviando para bloco if..."
+  },
+  {
+    step: 5,
+    line: 5,
+    insightTitle: "Passo 5: Execução do Bloco if (status = 'Aprovado')",
+    insightDesc: "A string 'Aprovado' é alocada no Heap em 0x7FB04. O bloco 'else' (linhas 6-7) é completamente ignorado pelo interpretador.",
+    stack: [
+      { name: "renda", type: "float", addr: "0x7FB01" },
+      { name: "parcela", type: "float", addr: "0x7FB02" },
+      { name: "limite_margem", type: "float", addr: "0x7FB03" },
+      { name: "status", type: "str", addr: "0x7FB04" }
+    ],
+    heap: [
+      { addr: "0x7FB01", val: "1800.0", type: "float" },
+      { addr: "0x7FB02", val: "400.0", type: "float" },
+      { addr: "0x7FB03", val: "540.0", type: "float" },
+      { addr: "0x7FB04", val: '"Aprovado"', type: "str" }
+    ],
+    stdout: "> Condição 400.0 <= 540.0 é True. Desviando para bloco if...\\n> status definido como 'Aprovado'"
+  },
+  {
+    step: 6,
+    line: 8,
+    insightTitle: "Passo 6: Saída Formatada após Convergência de Fluxo",
+    insightDesc: "Ambos os ramos convergem na Linha 8 (não indentada). print exibe 'Resultado da Linha: Aprovado' no STDOUT.",
+    stack: [
+      { name: "renda", type: "float", addr: "0x7FB01" },
+      { name: "parcela", type: "float", addr: "0x7FB02" },
+      { name: "limite_margem", type: "float", addr: "0x7FB03" },
+      { name: "status", type: "str", addr: "0x7FB04" }
+    ],
+    heap: [
+      { addr: "0x7FB01", val: "1800.0", type: "float" },
+      { addr: "0x7FB02", val: "400.0", type: "float" },
+      { addr: "0x7FB03", val: "540.0", type: "float" },
+      { addr: "0x7FB04", val: '"Aprovado"', type: "str" }
+    ],
+    stdout: "> Resultado da Linha: Aprovado"
+  }
+];
+
 // Inicialização do documento
 document.addEventListener('DOMContentLoaded', function() {
   initSimulation(DEFAULT_SIMULATION_STEPS);
@@ -360,6 +472,18 @@ function loadCatalog() {
         xp_base: 180,
         tempo_estimado: '50 min',
         descricao: 'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
+      },
+      {
+        id_aula: 'aula_1_4',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        titulo: 'Estruturas Condicionais, Indentação e Operadores Lógicos',
+        arquivo_html: 'Aula1_4',
+        ordem: 4,
+        status: 'publicado',
+        xp_base: 200,
+        tempo_estimado: '55 min',
+        descricao: 'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.'
       }
     ]);
   }
@@ -725,7 +849,7 @@ investigar_identidade_inteiros(257, 257)
  * Alternância de abas do Caderno de Oficinas (Blocos A, B e C ou Seções 1, 2, 3 e 4)
  */
 function switchOficinaBloco(blocoId) {
-  const todasAbas = ['bloco-a', 'bloco-b', 'bloco-c', 'secao-1', 'secao-2', 'secao-3', 'secao-4'];
+  const todasAbas = ['bloco-a', 'bloco-b', 'bloco-c', 'secao-1', 'secao-2', 'secao-3', 'secao-4', 'desafios'];
   todasAbas.forEach(id => {
     const btn = document.getElementById(`btn-tab-${id}`);
     const panel = document.getElementById(`panel-${id}`);
@@ -733,8 +857,10 @@ function switchOficinaBloco(blocoId) {
       if (id === blocoId) {
         btn.classList.remove('btn-outline');
         btn.classList.add('btn-primary');
+        btn.classList.add('active');
       } else {
         btn.classList.remove('btn-primary');
+        btn.classList.remove('active');
         btn.classList.add('btn-outline');
       }
     }
@@ -845,6 +971,127 @@ function validarEConcluirReforma(xp) {
     AppState.user.xpTotal += xpGanho;
     renderHeaderUser();
     showToast(`🏆 Modo Mock: Desafio Mestre da Reforma concluído! +${xpGanho} XP adicionados.`, 'success');
+  }
+}
+
+/**
+ * Cópia do template do Desafio Mestre: Seleção de Bolsas de Monitoria (Aula 1.4)
+ */
+function copiarTemplateMonitoria() {
+  const codigoMonitoria = `# ============================================================
+# PYTHONLAB — DESAFIO MESTRE: SELEÇÃO DE MONITORIA (AULA 1.4)
+# Execute esta célula diretamente no Google Colab ou Jupyter Notebook
+# ============================================================
+
+def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, carga):
+    tem_susp = susp.lower() == "sim"
+    tem_outra = outra_bolsa.lower() == "sim"
+    
+    # Validação lógica única com operadores combinados
+    apto = (nota_prog >= 8.5 or media_geral >= 8.0) and (freq >= 80.0) and (not tem_susp) and (not tem_outra)
+    
+    if apto:
+        if carga == 10:
+            remuneracao = 400.0
+        elif carga == 20:
+            remuneracao = 700.0
+        else:
+            print("Carga horária inválida!")
+            return False
+            
+        bonus_aplicado = False
+        if media_geral >= 9.5:
+            remuneracao += 100.0
+            bonus_aplicado = True
+            
+        print("Parecer: INSCRIÇÃO DEFERIDA")
+        print(f"Bolsista: {nome}")
+        print(f"Carga Horária: {carga}h")
+        if bonus_aplicado:
+            print("Bônus de Excelência: Aplicado (+ R$ 100.00)")
+        print(f"Remuneração Final: R$ {remuneracao:.2f}")
+        return True
+    else:
+        print("Parecer: INSCRIÇÃO INDEFERIDA")
+        if tem_susp:
+            print("Motivo: Candidato possui penalidade disciplinar ativa no semestre.")
+        elif freq < 80.0 and (nota_prog < 8.5 and media_geral < 8.0):
+            print("Motivo: Índice de frequência insuficiente e média abaixo do corte.")
+        elif freq < 80.0:
+            print("Motivo: Frequência abaixo do mínimo de 80%.")
+        elif tem_outra:
+            print("Motivo: Acúmulo de bolsa não permitido.")
+        else:
+            print("Motivo: Média acadêmica insuficiente para o corte.")
+        return False
+
+# --- TESTES DE VALIDAÇÃO LOCAL ---
+print("--- CASO 1: CANDIDATO COM BÔNUS ---")
+avaliar_monitoria("Lucas Mendes", 9.0, 9.6, 92.0, "nao", "nao", 20)
+
+print("\\n--- CASO 2: IMPEDIMENTO DISCIPLINAR ---")
+avaliar_monitoria("Mariana Costa", 9.8, 9.5, 95.0, "sim", "nao", 20)
+
+print("\\n--- CASO 3: FREQUÊNCIA INSUFICIENTE ---")
+avaliar_monitoria("Pedro Silva", 7.5, 7.0, 72.0, "nao", "nao", 10)
+`;
+
+  navigator.clipboard.writeText(codigoMonitoria).then(() => {
+    showToast('Template do Sistema de Monitoria copiado com sucesso!', 'success');
+  }).catch(() => {
+    showToast('Não foi possível copiar automaticamente para a área de transferência.', 'info');
+  });
+}
+
+function toggleGabaritoMonitoria() {
+  const body = document.getElementById('gabarito-monitoria-body');
+  if (body) {
+    const isHidden = (body.style.display === 'none' || body.style.display === '');
+    body.style.display = isHidden ? 'block' : 'none';
+  }
+}
+
+function atualizarChecklistMonitoria() {
+  const c1 = document.getElementById('chk-monitoria-1');
+  const c2 = document.getElementById('chk-monitoria-2');
+  const c3 = document.getElementById('chk-monitoria-3');
+  const c4 = document.getElementById('chk-monitoria-4');
+  const btn = document.getElementById('btn-concluir-monitoria');
+  
+  const todosConcluidos = c1 && c1.checked && c2 && c2.checked && c3 && c3.checked && c4 && c4.checked;
+  if (btn) {
+    btn.disabled = !todosConcluidos;
+    btn.style.opacity = todosConcluidos ? '1' : '0.5';
+    btn.style.cursor = todosConcluidos ? 'pointer' : 'not-allowed';
+  }
+}
+
+function validarEConcluirMonitoria(xp) {
+  const user = AppState.user;
+  if (user.perfil === 'visitante' || !user.autenticado) {
+    openVisitorModal();
+    return;
+  }
+
+  const idAula = AppState.currentLessonId || 'aula_1_4';
+  const xpGanho = Number(xp) || 60;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(resp) {
+        if (resp && resp.sucesso) {
+          AppState.user.xpTotal += xpGanho;
+          renderHeaderUser();
+          showToast(`🏆 Excelente! Desafio Mestre de Monitoria homologado com sucesso! +${xpGanho} XP`, 'success');
+        } else {
+          showToast(resp.mensagem || 'Erro ao registrar progresso', 'info');
+        }
+      })
+      .salvarProgresso(idAula, 'desafio_mestre_monitoria', 'concluido', true, true, true, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
+  } else {
+    AppState.user.xpTotal += xpGanho;
+    renderHeaderUser();
+    showToast(`🏆 Modo Mock: Desafio Mestre de Monitoria concluído! +${xpGanho} XP adicionados.`, 'success');
   }
 }
 
@@ -1163,9 +1410,14 @@ function abrirAula(idAula) {
   if (!idAula) idAula = 'aula_1_2';
   AppState.currentLessonId = idAula;
 
-  const stepsAlvo = (idAula === 'aula_1_3') ? SIMULATION_STEPS_AULA1_3 : DEFAULT_SIMULATION_STEPS;
-  const tmplId = (idAula === 'aula_1_3') ? 'template-aula-1-3' : 'template-aula-1-2';
-  const tmpl = document.getElementById(tmplId);
+  let stepsAlvo = DEFAULT_SIMULATION_STEPS;
+  if (idAula === 'aula_1_4') {
+    stepsAlvo = SIMULATION_STEPS_AULA1_4;
+  } else if (idAula === 'aula_1_3') {
+    stepsAlvo = SIMULATION_STEPS_AULA1_3;
+  }
+  const tmplId = 'template-' + idAula.replace('_', '-');
+  const tmpl = document.getElementById(tmplId) || document.getElementById('template-aula-1-2');
   const aulaContainer = document.getElementById('dynamic-lesson-content');
 
   // Troca instantânea SPA em 0ms caso o template esteja no HTML (seja em produção no Apps Script ou no preview local)

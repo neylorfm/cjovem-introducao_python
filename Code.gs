@@ -104,9 +104,21 @@ function limparCatalogoParaAulasExistentes() {
     '50 min',
     'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
   ]);
+  sheetCatalogo.appendRow([
+    'aula_1_4',
+    'Módulo 1: Fundamentos de CPython',
+    1,
+    'Estruturas Condicionais, Indentação e Operadores Lógicos',
+    'Aula1_4',
+    4,
+    'publicado',
+    200,
+    '55 min',
+    'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.'
+  ]);
   sheetCatalogo.setFrozenRows(1);
   try {
-    SpreadsheetApp.getUi().alert('Catálogo redefinido com sucesso! Aulas 1.2 e 1.3 estão ativas na planilha.');
+    SpreadsheetApp.getUi().alert('Catálogo redefinido com sucesso! Aulas 1.2, 1.3 e 1.4 estão ativas na planilha.');
   } catch (e) {}
 }
 
@@ -143,6 +155,9 @@ function sincronizarAulasPadraoNoCatalogo(sheetCat) {
         if (idRow === 'aula_1_3' && Number(data[i][5]) !== 3) {
           sheetCat.getRange(i + 1, 6).setValue(3);
         }
+        if (idRow === 'aula_1_4' && Number(data[i][5]) !== 4) {
+          sheetCat.getRange(i + 1, 6).setValue(4);
+        }
       }
     }
 
@@ -170,6 +185,18 @@ function sincronizarAulasPadraoNoCatalogo(sheetCat) {
         180,
         '50 min',
         'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
+      ],
+      [
+        'aula_1_4',
+        'Módulo 1: Fundamentos de CPython',
+        1,
+        'Estruturas Condicionais, Indentação e Operadores Lógicos',
+        'Aula1_4',
+        4,
+        'publicado',
+        200,
+        '55 min',
+        'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.'
       ]
     ];
 
@@ -323,6 +350,18 @@ function setupDatabase(forcarRecriacao) {
         180,
         '50 min',
         'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
+      ],
+      [
+        'aula_1_4',
+        'Módulo 1: Fundamentos de CPython',
+        1,
+        'Estruturas Condicionais, Indentação e Operadores Lógicos',
+        'Aula1_4',
+        4,
+        'publicado',
+        200,
+        '55 min',
+        'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.'
       ]
     ];
     for (var i = 0; i < aulasSementes.length; i++) {
@@ -643,7 +682,8 @@ function carregarConteudoAula(idAula) {
     if (!arquivoHtmlAlvo) {
       var mapaFallback = {
         'aula_1_2': 'Aula1_2',
-        'aula_1_3': 'Aula1_3'
+        'aula_1_3': 'Aula1_3',
+        'aula_1_4': 'Aula1_4'
       };
       arquivoHtmlAlvo = mapaFallback[idAula];
     }
