@@ -879,7 +879,7 @@ function copiarTemplateReforma() {
 # Execute esta célula diretamente no Google Colab ou Jupyter Notebook
 # Conteúdo permitido: Variáveis, input(), float(), int(),
 # Operadores Aritméticos, Precedência com () e Operador Relacional <=
-# (Sem uso de funções 'def' e sem condicionais 'if')
+# (Sem uso de funções 'def')
 #
 # Catálogo de insumos da loja:
 # - Lata 18L: R$ 87,00 (adotada no cálculo de atacado da pintura)
@@ -888,42 +888,66 @@ function copiarTemplateReforma() {
 # - Rendimento: 1 litro de tinta cobre 6 m²
 # ============================================================
 
+preco_lata_18L = 87
+preco_lata_9L = 45
+preco_lata_2L = 10
+custos_fixo = 45
+rendimento = 6
+
 # 1. ENTRADA DE DADOS VIA INPUT() COM TYPE CASTING (FLOAT)
 print("=== SIMULADOR DE REFORMA E PINTURA DO LABORATÓRIO ===")
-comp = float(input("Digite o comprimento da sala em metros (ex: 8.0): "))
-larg = float(input("Digite a largura da sala em metros (ex: 6.0): "))
-alt = float(input("Digite a altura/pé-direito das paredes em metros (ex: 3.0): "))
+comp1 = float(input("Digite o comprimento das paredes oposta P1 em metros (ex: 8.0): "))
+comp2 = float(input("Digite o comprimento das outras duas paredes oposta em metros (ex: 8.0): ")) 
+alt = float(input("Digite a altura da sala em metros (ex: 6.0): "))
 teto_orcamento = float(input("Digite o teto de orçamento da escola em R$ (ex: 200.00): "))
 
 # 2. CÁLCULO DA ÁREA TOTAL DAS 4 PAREDES (PRECEDÊNCIA COM PARÊNTESES)
-area_total = 2 * (comp * alt) + 2 * (larg * alt)
+area_total = 2 * (comp1 * alt) + 2 * (comp2 * alt)
 
 # 3. CONSUMO TOTAL DE TINTA (RENDIMENTO: 6 M² POR LITRO)
-litros = area_total / 6.0
+litros = area_total / rendimento
 
-# 4. DECOMPOSIÇÃO EM LATAS DE 18L (//) E SOBRA AVULSA DE LITROS (%)
-latas_cheias = int(litros // 18)
+# 4. DECOMPOSIÇÃO EM LATAS DE 18L 
+latas_cheias_18L = litros // 18
 litros_sobra = litros % 18
 
+# 5. DECOMPOSIÇÃO EM LATAS DE 9L 
+latas_cheias_9L = litros_sobra // 9
+litros_sobra = litros_sobra % 9
+
+# 6. DECOMPOSIÇÃO EM LATAS DE 2L
+latas_cheias_2L = litros_sobra // 2
+litros_sobra = litros_sobra % 2
+
+if litros_sobra != 0 and litros_sobra < 2:
+  latas_cheias_2L += 1
+
 # 5. CUSTO TOTAL (R$ 87/LATA) E TAXA AUXILIAR COM ATRIBUIÇÃO COMPOSTA (+=)
-custo_total = latas_cheias * 87.0
-custo_total += 45.0  # Adiciona taxa fixa de materiais auxiliares (R$ 45.00)
+custo_total = latas_cheias_18L*preco_lata_18L 
+custo_total += latas_cheias_9L*preco_lata_9L
+custo_total += latas_cheias_2L*preco_lata_2L
+custo_total += custos_fixo  # Adiciona taxa fixa de materiais auxiliares 
 
 # 6. VALIDAÇÃO RELACIONAL DE ORÇAMENTO (BOOLEANO PRODUZIDO SEM IF)
 orcamento_ok = custo_total <= teto_orcamento
 
 # 7. SAÍDA FORMATADA NO CONSOLE (STDOUT)
 print("\\n--- RELATÓRIO DE CUSTOS E VIABILIDADE ---")
-print(f"Área total: {area_total:.1f} m²")
-print(f"Litros necessários: {litros:.2f} L")
-print(f"Latas cheias (18L): {latas_cheias}")
-print(f"Litros avulsos restantes: {litros_sobra:.2f} L")
-print(f"Custo com taxa: R$ {custo_total:.2f}")
-print(f"Orçamento suficiente: {orcamento_ok}")
+print(f"Área total: \${area_total:.1f} m²")
+print(f"Litros necessários: \${litros:.2f} L")
+print(f"Latas cheias (18L): \${latas_cheias_18L}")
+print(f"Latas cheias (9L): \${latas_cheias_9L}")
+print(f"Latas cheias (2L): \${latas_cheias_2L}")
+print(f"Litros avulsos restantes: \${litros_sobra:.2f} L")
+print(f"Custo com taxa: R$ \${custo_total:.2f}")
+if orcamento_ok:
+  print("Orçamento suficiente: Reforma Aprovada")
+else:
+  print("Orçamento insuficiente: Reforma Negada")
 `;
 
   navigator.clipboard.writeText(codigoReforma).then(() => {
-    showToast('Template sequencial da Reforma copiado com sucesso!', 'success');
+    showToast('Solução resolvida do Simulador de Reforma copiada com sucesso!', 'success');
   }).catch(() => {
     showToast('Não foi possível copiar automaticamente para a área de transferência.', 'info');
   });
