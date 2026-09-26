@@ -1155,13 +1155,33 @@ function abrirAula(idAula) {
   AppState.currentLessonId = idAula;
 
   const stepsAlvo = (idAula === 'aula_1_3') ? SIMULATION_STEPS_AULA1_3 : DEFAULT_SIMULATION_STEPS;
+  const tmplId = (idAula === 'aula_1_3') ? 'template-aula-1-3' : 'template-aula-1-2';
+  const tmpl = document.getElementById(tmplId);
+  const aulaContainer = document.getElementById('dynamic-lesson-content');
 
+  // Troca instantânea SPA em 0ms caso o template esteja no HTML (seja em produção no Apps Script ou no preview local)
+  if (tmpl && aulaContainer) {
+    aulaContainer.innerHTML = tmpl.innerHTML;
+    navigateTo('view-aula');
+    const aulaAtual = document.getElementById('view-aula');
+    if (aulaAtual) {
+      aulaAtual.classList.add('active');
+    }
+    if (typeof initSimulation === 'function') {
+      initSimulation(stepsAlvo);
+    }
+    aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+    carregarImagensAula(idAula);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  // Carregamento assíncrono via backend Google Apps Script para aulas dinâmicas futuras
   if (typeof google !== 'undefined' && google.script && google.script.run) {
     showToast('Carregando conteúdo da aula...', 'info');
     google.script.run
       .withSuccessHandler(function(res) {
         if (res && res.sucesso && res.html) {
-          const aulaContainer = document.getElementById('dynamic-lesson-content');
           if (aulaContainer) {
             aulaContainer.innerHTML = res.html;
             navigateTo('view-aula');
@@ -1185,26 +1205,7 @@ function abrirAula(idAula) {
       })
       .carregarConteudoAula(idAula);
   } else {
-    // Modo de Desenvolvimento Local / Preview
-    const tmplId = (idAula === 'aula_1_3') ? 'template-aula-1-3' : 'template-aula-1-2';
-    const tmpl = document.getElementById(tmplId);
-    const aulaContainer = document.getElementById('dynamic-lesson-content');
-    
-    if (tmpl && aulaContainer) {
-      aulaContainer.innerHTML = tmpl.innerHTML;
-    }
-    
-    navigateTo('view-aula');
-    const aulaAtual = document.getElementById('view-aula');
-    if (aulaAtual) {
-      aulaAtual.classList.add('active');
-    }
-    if (typeof initSimulation === 'function') {
-      initSimulation(stepsAlvo);
-    }
-    aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
-    carregarImagensAula(idAula);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Esta aula ainda não possui arquivo HTML desenvolvido.', 'info');
   }
 }
 

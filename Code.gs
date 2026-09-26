@@ -124,6 +124,30 @@ function include(filename) {
 }
 
 /**
+ * Retorna o conteúdo HTML de uma aula requisitada dinamicamente pelo frontend
+ */
+function carregarConteudoAula(idAula) {
+  try {
+    var mapaAulas = {
+      'aula_1_2': 'Aula1_2',
+      'aula_1_3': 'Aula1_3'
+    };
+    var arquivoHtml = mapaAulas[idAula] || 'Aula1_2';
+    var html = include(arquivoHtml);
+    return {
+      sucesso: true,
+      idAula: idAula,
+      html: html
+    };
+  } catch (e) {
+    return {
+      sucesso: false,
+      mensagem: 'Erro ao carregar conteúdo da aula: ' + e.message
+    };
+  }
+}
+
+/**
  * Obtém ou inicializa a planilha ativa vinculada
  */
 function getSpreadsheet() {
