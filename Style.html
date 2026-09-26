@@ -1,0 +1,1011 @@
+<style>
+/* ==========================================================================
+   PYTHONLAB — DESIGN SYSTEM & FOLHA DE ESTILO (Style.html)
+   Inspirado no Material 3 + Modern Functional Didactic Minimalist
+   Cores canônicas: Deep Royal Blue, Cerulean, Golden Amber, Emerald & Obsidian
+   ========================================================================== */
+
+/* 1. VARIÁVEIS CSS (DESIGN TOKENS) */
+:root {
+  /* Cores Primárias e Secundárias */
+  --color-primary: #00236f;
+  --color-primary-container: #1e3a8a;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #90a8ff;
+  --color-primary-fixed: #dce1ff;
+  --color-on-primary-fixed: #00164e;
+
+  --color-secondary: #006398;
+  --color-secondary-container: #0284c7;
+  --color-on-secondary: #ffffff;
+  --color-secondary-fixed: #cce5ff;
+  --color-on-secondary-fixed: #001d31;
+
+  --color-tertiary: #f59e0b;
+  --color-tertiary-dark: #b45309;
+  --color-tertiary-container: #5c3800;
+  --color-tertiary-fixed: #ffddb8;
+  --color-on-tertiary-fixed: #2a1700;
+
+  /* Semânticas */
+  --color-success: #10b981;
+  --color-success-container: #d1fae5;
+  --color-on-success-container: #065f46;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Superfícies e Fundos */
+  --color-background: #faf8ff;
+  --color-surface: #faf8ff;
+  --color-surface-lowest: #ffffff;
+  --color-surface-low: #f2f3ff;
+  --color-surface-container: #eaedff;
+  --color-surface-high: #e2e7ff;
+  --color-surface-highest: #dae2fd;
+  --color-on-surface: #131b2e;
+  --color-on-surface-variant: #444651;
+  --color-outline: #757682;
+  --color-outline-variant: #c5c5d3;
+
+  /* Terminal e IDE (Obsidian Slate) */
+  --color-code-bg: #0f172a;
+  --color-code-surface: #1e293b;
+  --color-code-text: #e2e8f0;
+  --color-code-highlight: rgba(56, 189, 248, 0.15);
+  --color-code-gutter: #475569;
+
+  /* Tipografia */
+  --font-headline: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+
+  /* Raios de borda */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-ambient: 0 20px 25px -5px rgba(30, 58, 138, 0.08);
+
+  /* Transições */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 2. RESET E BASE */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 3. SHELL DA APLICAÇÃO & NAVEGAÇÃO */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-surface-high);
+  box-shadow: var(--shadow-sm);
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.header-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.brand-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary-container));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0, 35, 111, 0.2);
+}
+
+.brand-title {
+  font-family: var(--font-headline);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
+.brand-badge {
+  font-family: var(--font-headline);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: var(--color-surface-container);
+  color: var(--color-primary-container);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  display: none;
+}
+@media (min-width: 1024px) {
+  .brand-badge { display: inline-flex; }
+}
+
+/* Nav Menu SPA */
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--color-surface-low);
+  padding: 0.3rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-surface-container);
+}
+
+.nav-item {
+  font-family: var(--font-headline);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  background: transparent;
+  border: none;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  color: var(--color-primary);
+  background-color: var(--color-surface-high);
+}
+
+.nav-item.active {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Painel de Usuário e Gamificação */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.streak-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--color-tertiary-fixed);
+  color: var(--color-on-tertiary-fixed);
+  font-family: var(--font-headline);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+.xp-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--color-primary-fixed);
+  color: var(--color-on-primary-fixed);
+  font-family: var(--font-headline);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+.user-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-surface-lowest);
+  border: 1px solid var(--color-surface-container);
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  background: var(--color-secondary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-headline);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.role-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+}
+.role-aluno { background-color: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); }
+.role-professor { background-color: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); }
+.role-visitante { background-color: var(--color-surface-high); color: var(--color-on-surface-variant); }
+
+/* 4. LAYOUT PRINCIPAL (CONTAINERS SPA) */
+.main-wrapper {
+  flex: 1;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.view-section {
+  display: none;
+  animation: fadeIn var(--transition-normal);
+}
+.view-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 5. CARDS E COMPONENTES GERAIS */
+.card {
+  background-color: var(--color-surface-lowest);
+  border: 1px solid var(--color-surface-high);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-outline-variant);
+}
+
+.btn {
+  font-family: var(--font-headline);
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+.btn-primary {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-on-secondary);
+}
+.btn-secondary:hover {
+  background-color: #004d77;
+}
+.btn-success {
+  background-color: var(--color-success);
+  color: #ffffff;
+}
+.btn-success:hover {
+  background-color: #059669;
+}
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--color-outline-variant);
+  color: var(--color-on-surface);
+}
+.btn-outline:hover {
+  background-color: var(--color-surface-low);
+  border-color: var(--color-outline);
+}
+
+/* 6. COMPONENTE 1: PLAYER & VISOR DE CÓDIGO SINCRONIZADO */
+.code-engine-card {
+  background-color: var(--color-code-bg);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid #1e293b;
+}
+
+.code-header {
+  background-color: #090d16;
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #1e293b;
+}
+
+.code-window-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: var(--radius-full);
+}
+.dot-red { background-color: #ef4444; }
+.dot-yellow { background-color: #f59e0b; }
+.dot-green { background-color: #10b981; }
+
+.code-filename {
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-left: 0.5rem;
+}
+
+.code-body {
+  padding: 1rem 0;
+  font-family: var(--font-code);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.code-line {
+  display: flex;
+  align-items: center;
+  padding: 0.15rem 1rem;
+  transition: background-color var(--transition-fast);
+}
+.code-line.active {
+  background-color: rgba(56, 189, 248, 0.2);
+  border-left: 3px solid var(--color-tertiary);
+}
+
+.line-num {
+  width: 2.5rem;
+  color: var(--color-code-gutter);
+  text-align: right;
+  margin-right: 1.25rem;
+  user-select: none;
+}
+
+.code-text {
+  color: var(--color-code-text);
+  white-space: pre;
+}
+
+/* Syntax highlight básico */
+.syn-kw { color: #f59e0b; font-weight: 600; }
+.syn-fn { color: #38bdf8; }
+.syn-str { color: #34d399; }
+.syn-num { color: #93c5fd; }
+.syn-comment { color: #64748b; font-style: italic; }
+
+/* Console Stdout */
+.terminal-console {
+  background-color: rgba(15, 23, 42, 0.95);
+  border-top: 1px solid #1e293b;
+  padding: 0.85rem 1rem;
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+}
+.console-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.console-output {
+  color: #38bdf8;
+  min-height: 2rem;
+}
+
+/* 7. COMPONENTE 2: DIAGRAMA DE MEMÓRIA (STACK X HEAP) */
+.memory-stage {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  background-color: var(--color-surface-low);
+  padding: 1.25rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-surface-container);
+}
+@media (min-width: 768px) {
+  .memory-stage {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.memory-column-title {
+  font-family: var(--font-headline);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.memory-box {
+  background-color: var(--color-surface-lowest);
+  border: 1px solid var(--color-surface-high);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+.memory-box.updated {
+  border-color: var(--color-secondary);
+  background-color: #f0f9ff;
+  animation: pulseHighlight 1s ease-in-out;
+}
+
+@keyframes pulseHighlight {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.memory-var-name {
+  font-family: var(--font-code);
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+}
+.memory-var-desc {
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+}
+
+.memory-pointer-badge {
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  background-color: var(--color-surface-container);
+  color: var(--color-secondary);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.heap-object-cell {
+  background: linear-gradient(135deg, #ffffff, var(--color-surface-low));
+  border: 1.5px solid var(--color-secondary-fixed);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+.heap-addr {
+  font-family: var(--font-code);
+  font-size: 0.7rem;
+  color: var(--color-outline);
+}
+.heap-val {
+  font-family: var(--font-code);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary-container);
+}
+.heap-type-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  background-color: var(--color-surface-highest);
+  color: var(--color-on-surface-variant);
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-full);
+  align-self: flex-start;
+}
+
+/* 8. COMPONENTE 3: TABELA DE RASTREIO (TRACE TABLE) */
+.trace-table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-surface-high);
+  margin-top: 1rem;
+}
+
+.trace-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.trace-table th {
+  background-color: var(--color-surface-container);
+  color: var(--color-primary);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  border-bottom: 2px solid var(--color-surface-high);
+}
+
+.trace-table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--color-surface-low);
+  font-family: var(--font-code);
+  color: var(--color-on-surface);
+}
+
+.trace-table tr:hover {
+  background-color: var(--color-surface-low);
+}
+
+.trace-table tr.active-step {
+  background-color: #eff6ff;
+  border-left: 3px solid var(--color-secondary);
+}
+
+/* 9. COMPONENTE 4: TRÍADE PEDAGÓGICA (ABAS) */
+.triad-tabs-header {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--color-surface-high);
+  margin-bottom: 1.25rem;
+}
+
+.triad-tab-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-headline);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  padding: 0.75rem 1.25rem;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.triad-tab-btn:hover {
+  color: var(--color-primary);
+}
+
+.triad-tab-btn.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.tab-pane {
+  display: none;
+}
+.tab-pane.active {
+  display: block;
+}
+
+/* 10. COMPONENTE 5: CASOS DE TESTE I/O E RUNNER */
+.io-card {
+  background-color: var(--color-surface-low);
+  border: 1px solid var(--color-surface-container);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.io-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-outline);
+  margin-bottom: 0.4rem;
+}
+
+.io-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.io-box {
+  background-color: var(--color-surface-lowest);
+  border: 1px solid var(--color-surface-high);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+  font-family: var(--font-code);
+  font-size: 0.8rem;
+}
+
+.test-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  background-color: var(--color-surface-lowest);
+  border: 1px solid var(--color-surface-high);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+}
+
+.test-badge {
+  font-family: var(--font-headline);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+.test-passed { background-color: var(--color-success-container); color: var(--color-on-success-container); }
+.test-failed { background-color: var(--color-error-container); color: var(--color-on-error-container); }
+.test-pending { background-color: var(--color-surface-container); color: var(--color-outline); }
+
+/* 11. MODAL DE VISITANTE & OVERLAY */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(19, 27, 46, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  background-color: var(--color-surface-lowest);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-ambient);
+  text-align: center;
+  border: 1px solid var(--color-surface-high);
+  animation: modalScaleUp var(--transition-normal);
+}
+
+@keyframes modalScaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-icon-circle {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--color-tertiary-fixed);
+  color: var(--color-tertiary-dark);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin: 0 auto 1.25rem auto;
+}
+
+/* 12. TOASTS / FEEDBACK */
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  background-color: var(--color-on-surface);
+  color: #ffffff;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  pointer-events: auto;
+  animation: slideInRight var(--transition-fast);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ==========================================================================
+   13. BIFURCAÇÃO DIDÁTICA NO TOPO DA AULA (FAST-TRACK VS DEEP-DIVE)
+   ========================================================================== */
+.lesson-mode-bifurcator {
+  background: var(--color-surface-lowest);
+  border: 1.5px solid var(--color-surface-container);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.bifurcator-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-surface-high);
+}
+
+.bifurcator-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.85rem;
+}
+
+.bifurcator-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1.15rem;
+  background: var(--color-surface-low);
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+  color: var(--color-on-surface);
+}
+
+.bifurcator-btn:hover {
+  background: var(--color-surface-container);
+  border-color: var(--color-primary-fixed);
+  transform: translateY(-1px);
+}
+
+.bifurcator-btn.active {
+  background: var(--color-primary-fixed);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary-fixed);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-mode-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.btn-mode-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-mode-title {
+  font-family: var(--font-headline);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.btn-mode-subtitle {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  margin-top: 0.2rem;
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   14. IMAGEM DIDÁTICA EM QUESTÕES E EXERCÍCIOS (OPCIONAL & GERENCIÁVEL)
+   ========================================================================== */
+.exercicio-resolvido-slot,
+.questao-imagem-slot {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.questao-imagem-slot .teacher-add-img-btn {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.65rem;
+  margin-top: 0.35rem;
+}
+
+.questao-imagem-slot .resolvido-img {
+  max-height: 360px;
+}
+
+.resolvido-img-wrapper {
+  position: relative;
+  background: var(--color-surface-low);
+  border: 1px solid var(--color-surface-container);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  text-align: center;
+  transition: border-color var(--transition-fast);
+}
+
+.resolvido-img-wrapper:hover {
+  border-color: var(--color-secondary);
+}
+
+.resolvido-img {
+  max-width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  cursor: zoom-in;
+  transition: transform var(--transition-normal);
+  display: block;
+  margin: 0 auto;
+}
+
+.resolvido-img:hover {
+  transform: scale(1.01);
+}
+
+.resolvido-img-caption {
+  font-size: 0.8rem;
+  color: var(--color-outline);
+  margin-top: 0.5rem;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.resolvido-img-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.teacher-add-img-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  background: var(--color-surface-lowest);
+  border: 1.5px dashed var(--color-secondary);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-top: 0.5rem;
+}
+
+.teacher-add-img-btn:hover {
+  background: var(--color-secondary-fixed);
+  border-color: var(--color-secondary);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   15. LIGHTBOX DE ZOOM EM TELA CHEIA
+   ========================================================================== */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 30, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn var(--transition-fast);
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 92vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-ambient);
+  background: #ffffff;
+}
+
+.lightbox-caption {
+  color: #f1f5f9;
+  font-size: 0.9rem;
+  margin-top: 0.85rem;
+  text-align: center;
+  max-width: 800px;
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: -2.5rem;
+  right: 0;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full);
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+}
+
+.lightbox-close-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+</style>

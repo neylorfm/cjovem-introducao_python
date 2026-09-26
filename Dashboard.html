@@ -1,0 +1,155 @@
+<!-- ============================================================================
+     PYTHONLAB — DASHBOARD DO ESTUDANTE (Dashboard.html)
+     Painel de autonomia e autorresponsabilidade:
+     - Saber exatamente onde parou e dar prosseguimento
+     - Caderno de dúvidas para levar para a aula com o professor
+     - Catálogo dinâmico sincronizado com a planilha
+     ============================================================================ -->
+
+<div class="view-section active" id="view-dashboard">
+  <!-- 1. Banner de Boas-vindas e Retomada Rápida -->
+  <div class="card" style="background: linear-gradient(135deg, var(--color-surface-lowest) 0%, var(--color-surface-low) 100%); margin-bottom: 2rem; position: relative; overflow: hidden; border: 1px solid var(--color-surface-container);">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; position: relative; z-index: 2;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Gestão da Própria Aprendizagem
+          </span>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            CPython 3.12 Standard Track
+          </span>
+        </div>
+        <h1 style="font-family: var(--font-headline); font-size: 1.85rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+          Painel de Estudos do Estudante
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--color-on-surface-variant); max-width: 680px; line-height: 1.5; margin-bottom: 1.25rem;">
+          Aqui você tem total autonomia para controlar seu progresso. Marque onde parou para continuar sem fricção e anote suas dúvidas específicas para levar ao professor ou monitoria.
+        </p>
+
+        <!-- Card de Retomada: Onde Parei -->
+        <div style="background-color: var(--color-surface-lowest); border: 1.5px solid var(--color-secondary-fixed); border-radius: var(--radius-lg); padding: 1rem 1.25rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <div style="width: 2.75rem; height: 2.75rem; border-radius: var(--radius-full); background: var(--color-secondary-fixed); color: var(--color-secondary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: bold;">
+              📍
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--color-outline); font-family: var(--font-headline); font-weight: 700; text-transform: uppercase;">
+                Onde você parou
+              </div>
+              <div style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);" id="dash-onde-parei-titulo">
+                Aula 1.2: Variáveis, Memória Stack vs Heap e Casting
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="btn-continuar-estudo" onclick="retomarOndeParei()">
+            ▶ Continuar de Onde Parei
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Indicadores de Engajamento e Conquistas -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+    <!-- Card Progresso Geral -->
+    <div class="card" style="display: flex; align-items: center; gap: 1.25rem;">
+      <div style="width: 4rem; height: 4rem; border-radius: var(--radius-full); background: var(--color-surface-container); display: flex; align-items: center; justify-content: center;">
+        <span style="font-family: var(--font-headline); font-weight: 800; font-size: 1.1rem; color: var(--color-primary);" id="dash-pct-conclusao">68%</span>
+      </div>
+      <div>
+        <div style="font-size: 0.8rem; color: var(--color-outline); font-family: var(--font-headline); font-weight: 600; text-transform: uppercase;">
+          Tópicos Concluídos
+        </div>
+        <div style="font-family: var(--font-headline); font-size: 1.1rem; font-weight: 700; color: var(--color-on-surface);" id="dash-topicos-contador">
+          18 de 26 Aulas
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Dúvidas para o Professor -->
+    <div class="card" style="display: flex; align-items: center; gap: 1.25rem;">
+      <div style="width: 4rem; height: 4rem; border-radius: var(--radius-full); background: #fee2e2; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #b91c1c;">
+        ❓
+      </div>
+      <div>
+        <div style="font-size: 0.8rem; color: var(--color-outline); font-family: var(--font-headline); font-weight: 600; text-transform: uppercase;">
+          Dúvidas Registradas
+        </div>
+        <div style="font-family: var(--font-headline); font-size: 1.1rem; font-weight: 700; color: #b91c1c;" id="dash-duvidas-contador">
+          1 pendente
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Pontuação XP -->
+    <div class="card" style="display: flex; align-items: center; gap: 1.25rem;">
+      <div style="width: 4rem; height: 4rem; border-radius: var(--radius-full); background: var(--color-primary-fixed); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--color-primary);">
+        ⭐
+      </div>
+      <div>
+        <div style="font-size: 0.8rem; color: var(--color-outline); font-family: var(--font-headline); font-weight: 600; text-transform: uppercase;">
+          Pontuação Acumulada
+        </div>
+        <div style="font-family: var(--font-headline); font-size: 1.1rem; font-weight: 700; color: var(--color-primary-container);" id="dash-xp-counter">
+          480 XP
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Seção: Meu Caderno de Dúvidas para o Professor -->
+  <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--color-tertiary);">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.25rem;">❓</span>
+        <h3 style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 700; color: var(--color-primary);">
+          Meu Caderno de Dúvidas (Para Levar à Aula ou Monitoria)
+        </h3>
+      </div>
+      <span style="font-size: 0.75rem; color: var(--color-outline);">
+        Itens marcados por você para tirar dúvidas
+      </span>
+    </div>
+    <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+      Estes são os pontos onde você sentiu dificuldade durante os estudos. Leve estas anotações para conversar com o professor.
+    </p>
+
+    <div id="caderno-duvidas-container">
+      <!-- Injetado dinamicamente -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-secondary); font-weight: 600;">
+            Aula 1.2 • Variáveis e Memória
+          </span>
+          <p style="font-size: 0.85rem; font-weight: 600; color: var(--color-on-surface); margin-top: 0.2rem;">
+            "Não entendi por que y continua apontando para 10 no Heap depois que fiz x += 5."
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="abrirAula('aula_1_2')">
+            Revisar Aula
+          </button>
+          <button class="btn btn-success" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="marcarDuvidaSanada('aula_1_2', 'stack_heap')">
+            ✓ Dúvida Sanada
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Catálogo de Aulas & Módulos da Planilha -->
+  <div style="margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+    <h2 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary);">
+      Trilha de Aprendizagem & Módulos
+    </h2>
+    <span style="font-size: 0.85rem; color: var(--color-outline);">
+      Sincronizado com a planilha Google Sheets
+    </span>
+  </div>
+
+  <div id="catalog-modules-container">
+    <div style="text-align: center; padding: 2rem; color: var(--color-outline);">
+      Carregando módulos da planilha...
+    </div>
+  </div>
+</div>

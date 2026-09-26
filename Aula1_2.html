@@ -1,0 +1,1133 @@
+<!-- ============================================================================
+     PYTHONLAB — AULA 1.2: VARIÁVEIS, TIPOS DE DADOS E ENTRADA/SAÍDA (Aula1_2.html)
+     Alinhada integralmente às diretrizes pedagógicas de aula1.2/aula1_2.md
+     ============================================================================ -->
+
+<div class="view-section" id="view-aula">
+
+  <!-- ========================================================================
+       CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
+       ======================================================================== -->
+  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+    <div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
+        <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 1: Fundamentos</span>
+        <span style="color: var(--color-outline);">›</span>
+        <span style="font-weight: 600; color: var(--color-on-surface-variant);">Aula 1.2</span>
+        <span style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          Iniciante • 45 min
+        </span>
+        <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          +150 XP
+        </span>
+      </div>
+      <h1 style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+        Variáveis, Tipos de Dados e Entrada/Saída
+      </h1>
+      <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
+        Prática no <strong>Jupyter Notebook</strong> (Anaconda3) ou <strong>Google Colab</strong> (Tablet/Navegador).
+      </p>
+    </div>
+
+    <!-- 3 Ações de Gestão pelo Próprio Aluno -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_1_2', 'Aula 1.2: Variáveis, Tipos e I/O')">
+        📌 Onde Parei
+      </button>
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_1_2', 'Variáveis, Tipos e I/O')">
+        ❓ Tenho Dúvidas
+      </button>
+      <button class="btn btn-success" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+        ✓ Compreendi e Concluí (+150 XP)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       DIVISOR DIDÁTICO NO TOPO: ESCOLHA DA TRILHA DE ESTUDO
+       ======================================================================== -->
+  <div class="lesson-mode-bifurcator" id="lesson-mode-bifurcator">
+    <div class="bifurcator-header">
+      <div>
+        <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary);">
+          🧭 Como você deseja estudar esta aula hoje?
+        </div>
+        <div style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.2rem;">
+          Decida se prefere reforçar os conceitos ou ir direto para a prática no Google Colab/Jupyter.
+        </div>
+      </div>
+      <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+        Fast-Track ou Deep-Dive
+      </span>
+    </div>
+    <div class="bifurcator-nav">
+      <button class="bifurcator-btn active" id="btn-mode-explicacoes" onclick="setModoVisualizacaoAula('explicacoes')">
+        <span class="btn-mode-icon">📖</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">1. Explicações & Fundamentos</span>
+          <span class="btn-mode-subtitle">Visão Geral • Memória Stack x Heap • Player Passo a Passo • Trace Table</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-pratica" onclick="setModoVisualizacaoAula('pratica')">
+        <span class="btn-mode-icon">🛠️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">2. Exercícios Propostos & Prática</span>
+          <span class="btn-mode-subtitle">30 Atividades • Desafio Totem • Validação I/O no Colab/Jupyter</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-tudo" onclick="setModoVisualizacaoAula('tudo')">
+        <span class="btn-mode-icon">👁️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">Visualização Completa</span>
+          <span class="btn-mode-subtitle">Exibir tudo em sequência linear contínua</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTAINER TRILHA 1: EXPLICAÇÕES & FUNDAMENTOS -->
+  <div id="bloco-aula-explicacoes">
+
+  <!-- ========================================================================
+       1. VISÃO GERAL E FUNDAMENTOS TEÓRICOS
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Fundamentos Conceituais
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          1. Visão Geral e o Ciclo Elementar do Algoritmo
+        </h2>
+      </div>
+    </div>
+
+    <!-- Diagrama Visual do Ciclo do Algoritmo: ENTRADA -> PROCESSAMENTO -> SAÍDA -->
+    <div style="margin-bottom: 1.5rem; background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+      <div style="font-family: var(--font-headline); font-size: 0.9rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1rem; text-align: center;">
+        A Estrutura Básica de Manipulação de Dados em Computadores
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: center;">
+        
+        <!-- Bloco Entrada -->
+        <div style="background: var(--color-surface-lowest); border: 2px solid var(--color-secondary); border-radius: var(--radius-md); padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📥</div>
+          <div style="font-family: var(--font-headline); font-weight: 800; color: var(--color-secondary); font-size: 1rem;">ENTRADA</div>
+          <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0; background: var(--color-secondary-fixed); padding: 0.2rem 0.4rem; border-radius: 4px;">input()</div>
+          <p style="font-size: 0.78rem; color: var(--color-on-surface-variant); margin-top: 0.35rem;">
+            Leitura de informações externas fornecidas pelo usuário ou sensores.
+          </p>
+        </div>
+
+        <div style="text-align: center; font-size: 1.5rem; color: var(--color-secondary); font-weight: bold;">➔</div>
+
+        <!-- Bloco Processamento -->
+        <div style="background: var(--color-surface-lowest); border: 2px solid var(--color-primary); border-radius: var(--radius-md); padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">⚙️</div>
+          <div style="font-family: var(--font-headline); font-weight: 800; color: var(--color-primary); font-size: 1rem;">PROCESSAMENTO</div>
+          <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0; background: var(--color-primary-fixed); padding: 0.2rem 0.4rem; border-radius: 4px;">Memória RAM / =</div>
+          <p style="font-size: 0.78rem; color: var(--color-on-surface-variant); margin-top: 0.35rem;">
+            Armazenamento, transformação matemática ou avaliação lógica dos dados.
+          </p>
+        </div>
+
+        <div style="text-align: center; font-size: 1.5rem; color: var(--color-primary); font-weight: bold;">➔</div>
+
+        <!-- Bloco Saída -->
+        <div style="background: var(--color-surface-lowest); border: 2px solid var(--color-success); border-radius: var(--radius-md); padding: 1rem; text-align: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📤</div>
+          <div style="font-family: var(--font-headline); font-weight: 800; color: var(--color-success); font-size: 1rem;">SAÍDA</div>
+          <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: #0f172a; margin: 0.25rem 0; background: var(--color-success-container); padding: 0.2rem 0.4rem; border-radius: 4px;">print()</div>
+          <p style="font-size: 0.78rem; color: var(--color-on-surface-variant); margin-top: 0.35rem;">
+            Exibição dos resultados processados no terminal ou tela.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Grid: Memória/Identificadores + Tabela de Tipos Primitivos -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;" class="grid-teoria-2col">
+      <style>
+        @media (min-width: 900px) {
+          .grid-teoria-2col { grid-template-columns: 1fr 1fr !important; }
+        }
+      </style>
+
+      <!-- Coluna 1: Memória RAM, Bits e Regras para Identificadores -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+          Memória RAM, Bits e Identificadores
+        </h3>
+        <ul style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem; margin-bottom: 1rem;">
+          <li><strong>Bits e Bytes:</strong> O computador armazena instruções em sinais binários (0 e 1). 8 bits formam 1 byte.</li>
+          <li><strong>Variáveis em Python:</strong> São <em>etiquetas de texto nomeadas</em> criadas para referenciar e recuperar dados alocados na memória física.</li>
+        </ul>
+
+        <div style="background: var(--color-surface-low); border-left: 3px solid var(--color-secondary); padding: 0.75rem 1rem; border-radius: 0 var(--radius-md) var(--radius-md) 0;">
+          <div style="font-weight: 700; font-size: 0.8rem; color: var(--color-primary); margin-bottom: 0.35rem;">
+            Regras Oficiais para Nomes de Variáveis:
+          </div>
+          <ul style="font-size: 0.78rem; color: var(--color-on-surface-variant); line-height: 1.5; padding-left: 1rem;">
+            <li>Devem iniciar com letra (<code>a-z</code>, <code>A-Z</code>) ou sublinhado (<code>_</code>).</li>
+            <li><strong>Não</strong> podem iniciar com números nem conter espaços ou caracteres especiais (<code>@</code>, <code>-</code>, <code>!</code>).</li>
+            <li>O Python é <strong>case-sensitive</strong>: <code>idade</code>, <code>Idade</code> e <code>IDADE</code> são 3 variáveis completamente distintas!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Coluna 2: Entrada, Saída e Type Casting -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+          Entrada, Saída e Type Casting
+        </h3>
+        <ul style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem; margin-bottom: 0.75rem;">
+          <li><code>print(...)</code>: Envia dados para o console. Permite múltiplos valores separados por vírgula.</li>
+          <li><code>type(...)</code>: Revela a classe/tipo interno do dado (ex: <code>type(35)</code> ➔ <code>&lt;class 'int'&gt;</code>).</li>
+          <li><code>int(input(...))</code>: Converte explicitamente a entrada de texto para número inteiro.</li>
+          <li><code>float(input(...))</code>: Converte texto com ponto decimal para número flutuante.</li>
+        </ul>
+
+        <!-- Alerta Didático da Concatenação Acidental -->
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid var(--color-tertiary); padding: 0.75rem 1rem; border-radius: var(--radius-md);">
+          <div style="font-weight: 700; font-size: 0.8rem; color: var(--color-tertiary-dark); margin-bottom: 0.25rem;">
+            ⚠️ Armadilha Didática: Concatenação Acidental
+          </div>
+          <p style="font-size: 0.78rem; color: #92400e; line-height: 1.45;">
+            Tudo devolvido por <code>input()</code> é <strong>texto (str)</strong>, mesmo dígitos! Se o usuário digitar <code>10</code>:<br>
+            • <code>valor + 5</code> dispara <strong>TypeError</strong> (não soma str com int);<br>
+            • <code>valor + valor</code> resulta no texto <strong>"1010"</strong>, e não na soma 20!
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tabela dos Tipos Primitivos de Dados -->
+    <div style="margin-top: 1rem;">
+      <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+        Os Quatro Tipos Primitivos de Dados no CPython
+      </div>
+      <div class="trace-table-container">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Nome Interno</th>
+              <th>Descrição Didática</th>
+              <th>Exemplo de Declaração</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="font-weight: 700; color: var(--color-primary);">Inteiro</span></td>
+              <td><code>int</code></td>
+              <td>Números inteiros positivos ou negativos sem casas decimais</td>
+              <td><code>qtd_alunos = 35</code></td>
+            </tr>
+            <tr>
+              <td><span style="font-weight: 700; color: var(--color-secondary);">Ponto Flutuante</span></td>
+              <td><code>float</code></td>
+              <td>Números reais com casas decimais (separador de ponto <code>.</code>)</td>
+              <td><code>nota_fiscal = 8.75</code></td>
+            </tr>
+            <tr>
+              <td><span style="font-weight: 700; color: #0d9488;">Texto / String</span></td>
+              <td><code>str</code></td>
+              <td>Cadeias de caracteres delimitadas por aspas simples ou duplas</td>
+              <td><code>escola = "EEMTI Ceará"</code></td>
+            </tr>
+            <tr>
+              <td><span style="font-weight: 700; color: #7c3aed;">Booleano</span></td>
+              <td><code>bool</code></td>
+              <td>Estados lógicos binários de verdade (<code>True</code> ou <code>False</code>)</td>
+              <td><code>aprovado = True</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. DIAGRAMA DE MEMÓRIA CPYTHON: STACK VS HEAP
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Arquitetura CPython
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          2. Como as Variáveis Residem na Memória RAM (Stack vs Heap)
+        </h2>
+      </div>
+    </div>
+    <p style="font-size: 0.88rem; color: var(--color-on-surface-variant); margin-bottom: 1.25rem; line-height: 1.5;">
+      Observe como o interpretador Python aloca variáveis ao declarar os quatro tipos primitivos fundamentais:
+    </p>
+
+    <!-- Código Modelo de Inicialização -->
+    <div style="background-color: var(--color-code-bg); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.85rem; color: #e2e8f0; margin-bottom: 1.25rem;">
+      <span class="syn-fn">nome_aluno</span> = <span class="syn-str">"Marina"</span><br>
+      <span class="syn-fn">idade</span> = <span class="syn-num">16</span><br>
+      <span class="syn-fn">media</span> = <span class="syn-num">8.5</span><br>
+      <span class="syn-fn">matriculado</span> = <span class="syn-kw">True</span>
+    </div>
+
+    <!-- Palco Estático Comparativo: Call Stack x Heap -->
+    <div class="memory-stage">
+      <!-- Coluna Call Stack -->
+      <div>
+        <div class="memory-column-title">
+          <span>📚</span>
+          <span>CALL STACK (Frame Local - Identificadores)</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+          <div class="memory-box">
+            <div>
+              <div class="memory-var-name">nome_aluno</div>
+              <div class="memory-var-desc">str</div>
+            </div>
+            <div class="memory-pointer-badge"><span>0x7FFF01</span> <span>→</span></div>
+          </div>
+          <div class="memory-box">
+            <div>
+              <div class="memory-var-name">idade</div>
+              <div class="memory-var-desc">int</div>
+            </div>
+            <div class="memory-pointer-badge"><span>0x7FFF02</span> <span>→</span></div>
+          </div>
+          <div class="memory-box">
+            <div>
+              <div class="memory-var-name">media</div>
+              <div class="memory-var-desc">float</div>
+            </div>
+            <div class="memory-pointer-badge"><span>0x7FFF03</span> <span>→</span></div>
+          </div>
+          <div class="memory-box">
+            <div>
+              <div class="memory-var-name">matriculado</div>
+              <div class="memory-var-desc">bool</div>
+            </div>
+            <div class="memory-pointer-badge"><span>0x7FFF04</span> <span>→</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna Heap Space -->
+      <div>
+        <div class="memory-column-title">
+          <span>🧠</span>
+          <span>HEAP SPACE (Objetos Alocados na RAM)</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.65rem;">
+          <div class="heap-object-cell">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="heap-addr">0x7FFF01</span>
+              <span class="heap-type-badge">str</span>
+            </div>
+            <div class="heap-val">"Marina"</div>
+          </div>
+          <div class="heap-object-cell">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="heap-addr">0x7FFF02</span>
+              <span class="heap-type-badge">int</span>
+            </div>
+            <div class="heap-val">16</div>
+          </div>
+          <div class="heap-object-cell">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="heap-addr">0x7FFF03</span>
+              <span class="heap-type-badge">float</span>
+            </div>
+            <div class="heap-val">8.5</div>
+          </div>
+          <div class="heap-object-cell">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="heap-addr">0x7FFF04</span>
+              <span class="heap-type-badge">bool</span>
+            </div>
+            <div class="heap-val">True</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       3. PLAYER INTERATIVO PASSO A PASSO & TESTE DE MESA (TRACE TABLE)
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <!-- Barra de Controle do Stepper -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); margin-bottom: 1.25rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Player Passo a Passo Sincronizado
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          3. Simulação de Execução: Cálculo de Idade com Type Casting
+        </h2>
+      </div>
+
+      <!-- Controles de Stepper -->
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <button class="btn btn-outline" id="btn-step-prev" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="prevStep()">
+          ◀ Anterior
+        </button>
+        <div id="step-buttons-container" style="display: flex; gap: 0.25rem;"></div>
+        <button class="btn btn-secondary" id="btn-step-next" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="nextStep()">
+          Próximo ▶
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid: Visor de Código + Diagrama Dinâmico de Memória -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="grid-dual-stage">
+      <style>
+        @media (min-width: 1024px) {
+          .grid-dual-stage { grid-template-columns: 1fr 1fr !important; }
+        }
+      </style>
+
+      <!-- Visor de Código CPython -->
+      <div class="code-engine-card">
+        <div class="code-header">
+          <div class="code-window-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <span class="code-filename">calculo_idade_casting.py</span>
+          </div>
+          <span style="font-size: 0.7rem; font-family: var(--font-code); color: #94a3b8; background: #1e293b; padding: 0.15rem 0.5rem; border-radius: 4px;">
+            CPython 3.12
+          </span>
+        </div>
+        <div class="code-body">
+          <div class="code-line" id="code-line-1">
+            <span class="line-num">1</span>
+            <span class="code-text"><span class="syn-fn">dado_bruto</span> = <span class="syn-kw">input</span>(<span class="syn-str">"Digite o ano de nascimento: "</span>)  <span class="syn-comment"># '2010'</span></span>
+          </div>
+          <div class="code-line" id="code-line-2">
+            <span class="line-num">2</span>
+            <span class="code-text"><span class="syn-fn">ano_nasc</span> = <span class="syn-kw">int</span>(<span class="syn-fn">dado_bruto</span>)  <span class="syn-comment"># Casting: str -> int</span></span>
+          </div>
+          <div class="code-line" id="code-line-3">
+            <span class="line-num">3</span>
+            <span class="code-text"><span class="syn-fn">ano_atual</span> = <span class="syn-num">2026</span>  <span class="syn-comment"># Aloca 2026</span></span>
+          </div>
+          <div class="code-line" id="code-line-4">
+            <span class="line-num">4</span>
+            <span class="code-text"><span class="syn-fn">idade_calculada</span> = <span class="syn-fn">ano_atual</span> - <span class="syn-fn">ano_nasc</span></span>
+          </div>
+          <div class="code-line" id="code-line-5">
+            <span class="line-num">5</span>
+            <span class="code-text"><span class="syn-kw">print</span>(<span class="syn-str">"Idade aproximada:"</span>, <span class="syn-fn">idade_calculada</span>)</span>
+          </div>
+        </div>
+
+        <!-- Terminal Stdout Simulado -->
+        <div class="terminal-console">
+          <div class="console-title">
+            <span>Terminal STDOUT</span>
+            <span style="width: 6px; height: 6px; background: #10b981; border-radius: 50%;"></span>
+          </div>
+          <div class="console-output" id="terminal-stdout-output" style="white-space: pre-wrap;">
+            > (Aguardando execução...)
+          </div>
+        </div>
+      </div>
+
+      <!-- Palco Dinâmico de Memória com Insight -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Card de Insight Pedagógico Contextual -->
+        <div style="background-color: var(--color-surface-container); border-left: 4px solid var(--color-secondary); padding: 0.85rem 1rem; border-radius: var(--radius-md);">
+          <div style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem;" id="insight-title">
+            Passo 0: Preparação da Call Stack
+          </div>
+          <div style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.45;" id="insight-desc">
+            Inicie a simulação pelo botão Próximo Passo para inspecionar a memória a cada linha.
+          </div>
+        </div>
+
+        <!-- Palco Dinâmico de Memória -->
+        <div class="memory-stage">
+          <div>
+            <div class="memory-column-title">
+              <span>📚</span>
+              <span>Call Stack (Escopo Local)</span>
+            </div>
+            <div id="stack-frame-vars">
+              <!-- Preenchido via Script.html -->
+            </div>
+          </div>
+          <div>
+            <div class="memory-column-title">
+              <span>🧠</span>
+              <span>Heap Space (Objetos RAM)</span>
+            </div>
+            <div id="heap-objects-grid">
+              <!-- Preenchido via Script.html -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela de Rastreio (Trace Table / Teste de Mesa) Sincronizada -->
+    <div style="margin-top: 1.75rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+          Tabela de Rastreio (Trace Table / Teste de Mesa)
+        </h3>
+        <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full);">
+          Sincronizada em Tempo Real
+        </span>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
+        Acompanhe como cada passo do algoritmo altera o estado interno da memória e a saída do terminal:
+      </p>
+
+      <div class="trace-table-container">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th>Passo</th>
+              <th>Linha do Código</th>
+              <th>Variável</th>
+              <th>Tipo Armazenado</th>
+              <th>Valor em Memória</th>
+              <th>Estado do Terminal (STDOUT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="trace-row-0">
+              <td><strong>00</strong></td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>(Vazio)</td>
+              <td>(Aguardando início)</td>
+            </tr>
+            <tr id="trace-row-1">
+              <td><strong>01</strong></td>
+              <td>Linha 1</td>
+              <td><code>dado_bruto</code></td>
+              <td><code>str</code></td>
+              <td><code>"2010"</code></td>
+              <td>Aguardou entrada do usuário</td>
+            </tr>
+            <tr id="trace-row-2">
+              <td><strong>02</strong></td>
+              <td>Linha 2</td>
+              <td><code>ano_nasc</code></td>
+              <td><code>int</code></td>
+              <td><code>2010</code></td>
+              <td><em>(Nenhum)</em></td>
+            </tr>
+            <tr id="trace-row-3">
+              <td><strong>03</strong></td>
+              <td>Linha 3</td>
+              <td><code>ano_atual</code></td>
+              <td><code>int</code></td>
+              <td><code>2026</code></td>
+              <td><em>(Nenhum)</em></td>
+            </tr>
+            <tr id="trace-row-4">
+              <td><strong>04</strong></td>
+              <td>Linha 4</td>
+              <td><code>idade_calculada</code></td>
+              <td><code>int</code></td>
+              <td><code>16</code></td>
+              <td><em>(Nenhum)</em></td>
+            </tr>
+            <tr id="trace-row-5">
+              <td><strong>05</strong></td>
+              <td>Linha 5</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span style="color: var(--color-success); font-weight: 700;">Idade aproximada: 16</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div> <!-- FIM DO BLOCO DE EXPLICAÇÕES & FUNDAMENTOS -->
+
+  <!-- CONTAINER TRILHA 2: EXERCÍCIOS PROPOSTOS & PRÁTICA -->
+  <div id="bloco-aula-pratica">
+
+  <!-- ========================================================================
+       4. CADERNO DE OFICINAS E EXERCÍCIOS PRÁTICOS (BLOCOS A, B E C)
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Treinamento Gradual
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          4. Caderno de Oficinas Práticas (30 Atividades com Resoluções)
+        </h2>
+      </div>
+
+      <!-- Abas dos Blocos A, B e C -->
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button class="btn btn-primary" id="btn-tab-bloco-a" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('bloco-a')">
+          Bloco A: print()
+        </button>
+        <button class="btn btn-outline" id="btn-tab-bloco-b" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('bloco-b')">
+          Bloco B: input()
+        </button>
+        <button class="btn btn-outline" id="btn-tab-bloco-c" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('bloco-c')">
+          Bloco C: Casting & type()
+        </button>
+      </div>
+    </div>
+
+    <!-- PAINEL BLOCO A: SAÍDA COM PRINT() -->
+    <div class="oficina-panel" id="panel-bloco-a">
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+            Bloco A — Saída de Dados com print()
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+            10 Atividades
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+          Exercícios focados na formatação de mensagens, parâmetros <code>sep</code>, <code>end</code>, quebras de linha e exibição de dados múltiplos.
+        </p>
+
+        <!-- Atividade 1 Resolvida -->
+        <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 1 (Resolvida)</strong>
+            <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+            Crie um programa que exiba uma mensagem de boas-vindas com o nome do curso e o ano letivo em linhas separadas.
+          </p>
+          <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5;">
+            <span class="syn-comment"># Resolução Modelo</span><br>
+            <span class="syn-kw">print</span>(<span class="syn-str">"Seja bem-vindo ao curso de Programação!"</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">"Introdução a Python - 2026"</span>)
+          </div>
+
+          <!-- Slot de Imagem Didática do Professor (Opcional) -->
+          <div class="exercicio-resolvido-slot" id="slot-img-resolvido_bloco_a" data-aula="aula_1_2" data-exercicio="resolvido_bloco_a" data-titulo="Bloco A: Atividade 1 (print)"></div>
+        </div>
+
+        <!-- Lista de Atividades Propostas (2 a 10) -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 2:</strong> Imprima o nome da sua escola e a sua turma na mesma linha, separados por um hífen (<code>-</code>).
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_2" data-aula="aula_1_2" data-exercicio="bloco_a_atv_2" data-titulo="Bloco A: Atividade 2"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 3:</strong> Monte um cartão de identificação com 3 linhas: Nome completo, Função (ex.: Aluno) e E-mail institucional.
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_3" data-aula="aula_1_2" data-exercicio="bloco_a_atv_3" data-titulo="Bloco A: Atividade 3"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 4:</strong> Crie um separador visual com 30 traços (<code>------------------------------</code>), exiba <code>"INÍCIO DO PROGRAMA"</code> centralizado e encerre com outra linha de 30 traços.
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_4" data-aula="aula_1_2" data-exercicio="bloco_a_atv_4" data-titulo="Bloco A: Atividade 4"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 5:</strong> Faça uma contagem regressiva de 3 até 1 usando chamadas separadas de <code>print()</code>, imprimindo <code>"Executar!"</code> ao final.
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_5" data-aula="aula_1_2" data-exercicio="bloco_a_atv_5" data-titulo="Bloco A: Atividade 5"></div>
+          </div>
+
+          <!-- Atividade 6 com Dica Conceitual -->
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1.5px solid var(--color-secondary-fixed); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 6 (Com Suporte Conceitual):</strong> Crie duas variáveis para armazenar texto: <code>cidade</code> e <code>estado</code>. Exiba ambas em um único <code>print()</code> separadas por vírgula.
+            <div style="margin-top: 0.5rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.78rem;">
+              💡 <strong>Dica Interativa (O que é declarar uma variável?):</strong> Criar uma variável é como colocar uma etiqueta em um espaço da memória RAM. O sinal <code>=</code> significa "recebe". Textos exigem aspas <code>""</code>:
+              <div style="font-family: var(--font-code); margin-top: 0.25rem;">pais = "Brasil"<br>sigla = "BR"<br>print(pais, sigla)</div>
+            </div>
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_6" data-aula="aula_1_2" data-exercicio="bloco_a_atv_6" data-titulo="Bloco A: Atividade 6"></div>
+          </div>
+
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 7:</strong> Imprima diretamente o resultado da soma de 45 com 55 e da multiplicação de 8 por 7 sem criar variáveis.
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_7" data-aula="aula_1_2" data-exercicio="bloco_a_atv_7" data-titulo="Bloco A: Atividade 7"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 8:</strong> Escreva duas instruções <code>print()</code> consecutivas, usando <code>end=" "</code> na primeira para que a segunda continue na mesma linha.
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_8" data-aula="aula_1_2" data-exercicio="bloco_a_atv_8" data-titulo="Bloco A: Atividade 8"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 9:</strong> Crie uma lista de compras no terminal exibindo três itens com marcador textual (ex.: <code>* Caderno</code>, <code>* Caneta</code>, <code>* Mochila</code>).
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_9" data-aula="aula_1_2" data-exercicio="bloco_a_atv_9" data-titulo="Bloco A: Atividade 9"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 10:</strong> Imprima uma tabela simples de 2 colunas com cabeçalho (<code>DISCIPLINA</code> e <code>SALA</code>) alinhada com tabulação especial <code>\t</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_a_atv_10" data-aula="aula_1_2" data-exercicio="bloco_a_atv_10" data-titulo="Bloco A: Atividade 10"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAINEL BLOCO B: ENTRADA COM INPUT() -->
+    <div class="oficina-panel" id="panel-bloco-b" style="display: none;">
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+            Bloco B — Entrada de Dados com input()
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+            10 Atividades
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+          Práticas de interação com o usuário, coleta de strings, formulários simples e interpolação de texto no terminal.
+        </p>
+
+        <!-- Atividade 1 Resolvida -->
+        <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 1 (Resolvida)</strong>
+            <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+            Solicite ao usuário o seu primeiro nome e imprima uma mensagem personalizada de saudação utilizando o dado recebido.
+          </p>
+          <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5;">
+            <span class="syn-fn">nome</span> = <span class="syn-kw">input</span>(<span class="syn-str">"Digite o seu primeiro nome: "</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">f"Olá, {nome}! Seja bem-vindo ao ambiente de desenvolvimento."</span>)
+          </div>
+
+          <!-- Slot de Imagem Didática do Professor (Opcional) -->
+          <div class="exercicio-resolvido-slot" id="slot-img-resolvido_bloco_b" data-aula="aula_1_2" data-exercicio="resolvido_bloco_b" data-titulo="Bloco B: Atividade 1 (input)"></div>
+        </div>
+
+        <!-- Lista de Atividades Propostas (2 a 10) -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 2:</strong> Peça ao usuário para digitar a sua cor favorita e exiba a frase: <code>"A cor informada foi: [cor]"</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_2" data-aula="aula_1_2" data-exercicio="bloco_b_atv_2" data-titulo="Bloco B: Atividade 2"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 3:</strong> Solicite separadamente o primeiro nome e o sobrenome em duas perguntas e exiba o nome completo em uma única linha.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_3" data-aula="aula_1_2" data-exercicio="bloco_b_atv_3" data-titulo="Bloco B: Atividade 3"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 4:</strong> Peça o nome de uma música/filme favorito e o artista/diretor. Imprima uma recomendação formatada.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_4" data-aula="aula_1_2" data-exercicio="bloco_b_atv_4" data-titulo="Bloco B: Atividade 4"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 5:</strong> Crie um formulário simples de cadastro que pergunte a profissão desejada e exiba: <code>"Registro efetuado com sucesso para o futuro(a) [profissao]!"</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_5" data-aula="aula_1_2" data-exercicio="bloco_b_atv_5" data-titulo="Bloco B: Atividade 5"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 6:</strong> Solicite o nome de um animal de estimação e a respectiva espécie (ex.: cão, gato, pássaro). Exiba o resumo veterinário.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_6" data-aula="aula_1_2" data-exercicio="bloco_b_atv_6" data-titulo="Bloco B: Atividade 6"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 7:</strong> Peça ao aluno para inserir o dia da semana atual e a principal tarefa do dia. Imprima um resumo da rotina.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_7" data-aula="aula_1_2" data-exercicio="bloco_b_atv_7" data-titulo="Bloco B: Atividade 7"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 8:</strong> Crie um gerador de codinomes: peça um animal e uma cor e exiba: <code>"O seu codinome de agente é: Operação [Animal] [Cor]"</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_8" data-aula="aula_1_2" data-exercicio="bloco_b_atv_8" data-titulo="Bloco B: Atividade 8"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 9:</strong> Solicite a cidade de nascimento e o país, exibindo: <code>"Local de origem registrado: [Cidade], [País]"</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_9" data-aula="aula_1_2" data-exercicio="bloco_b_atv_9" data-titulo="Bloco B: Atividade 9"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 10:</strong> Peça ao aluno para digitar a sua disciplina favorita e imprima uma mensagem personalizada de incentivo com o nome da matéria.
+            <div class="questao-imagem-slot" id="slot-img-bloco_b_atv_10" data-aula="aula_1_2" data-exercicio="bloco_b_atv_10" data-titulo="Bloco B: Atividade 10"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAINEL BLOCO C: CONVERSÃO DE TIPOS E TYPE() -->
+    <div class="oficina-panel" id="panel-bloco-c" style="display: none;">
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+            Bloco C — Conversão de Tipos (Casting) e Função type()
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+            10 Atividades
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+          Conversões explícitas com <code>int()</code> e <code>float()</code>, inspeção de memória e tratamento defensivo de dados.
+        </p>
+
+        <!-- Atividade 1 Resolvida -->
+        <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 1 (Resolvida)</strong>
+            <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+            Peça o ano de nascimento, converta para <code>int</code>, calcule a idade com base em 2026 e exiba o tipo antes e depois da conversão.
+          </p>
+          <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5;">
+            <span class="syn-fn">dado_bruto</span> = <span class="syn-kw">input</span>(<span class="syn-str">"Digite o ano de nascimento: "</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">"Tipo do dado lido:"</span>, <span class="syn-fn">type</span>(<span class="syn-fn">dado_bruto</span>))<br><br>
+            <span class="syn-fn">ano_nascimento</span> = <span class="syn-kw">int</span>(<span class="syn-fn">dado_bruto</span>)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">"Tipo após conversão:"</span>, <span class="syn-fn">type</span>(<span class="syn-fn">ano_nascimento</span>))<br><br>
+            <span class="syn-fn">idade</span> = <span class="syn-num">2026</span> - <span class="syn-fn">ano_nascimento</span><br>
+            <span class="syn-kw">print</span>(<span class="syn-str">"Em 2026 você completa aproximadamente:"</span>, <span class="syn-fn">idade</span>, <span class="syn-str">"anos."</span>)
+          </div>
+
+          <!-- Slot de Imagem Didática do Professor (Opcional) -->
+          <div class="exercicio-resolvido-slot" id="slot-img-resolvido_bloco_c" data-aula="aula_1_2" data-exercicio="resolvido_bloco_c" data-titulo="Bloco C: Atividade 1 (Casting)"></div>
+        </div>
+
+        <!-- Lista de Atividades Propostas (2 a 10) -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 2:</strong> Peça dois números inteiros com <code>int(input(...))</code> e mostre a soma aritmética exata, sem junção de texto.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_2" data-aula="aula_1_2" data-exercicio="bloco_c_atv_2" data-titulo="Bloco C: Atividade 2"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 3:</strong> Solicite a altura em metros (ex.: <code>1.75</code>) convertendo para <code>float</code> e comprove a classe com <code>type()</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_3" data-aula="aula_1_2" data-exercicio="bloco_c_atv_3" data-titulo="Bloco C: Atividade 3"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 4:</strong> Peça o preço de um lanche (<code>float</code>) e a quantidade (<code>int</code>), calculando o valor total da conta.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_4" data-aula="aula_1_2" data-exercicio="bloco_c_atv_4" data-titulo="Bloco C: Atividade 4"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 5:</strong> Solicite duas notas decimais (<code>float</code>), calcule a média aritmética simples e exiba na tela.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_5" data-aula="aula_1_2" data-exercicio="bloco_c_atv_5" data-titulo="Bloco C: Atividade 5"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 6:</strong> Crie uma variável com <code>"50"</code>, converta para float, divida por 2, reconverta para str e imprima: <code>"O resultado final em texto é: " + res</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_6" data-aula="aula_1_2" data-exercicio="bloco_c_atv_6" data-titulo="Bloco C: Atividade 6"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 7:</strong> Tente somar <code>10 + input()</code> sem converter. No comentário explique o erro gerado (<code>TypeError</code>) e logo abaixo escreva a linha corrigida com <code>int()</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_7" data-aula="aula_1_2" data-exercicio="bloco_c_atv_7" data-titulo="Bloco C: Atividade 7"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 8:</strong> Peça a temperatura em Celsius (<code>float</code>) e converta para Fahrenheit pela fórmula: <code>F = (C * 1.8) + 32</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_8" data-aula="aula_1_2" data-exercicio="bloco_c_atv_8" data-titulo="Bloco C: Atividade 8"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 9:</strong> Solicite a idade (<code>int</code>) e guarde o resultado lógico de <code>idade >= 18</code> em <code>maior_de_idade</code>. Exiba o valor booleano e seu <code>type()</code>.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_9" data-aula="aula_1_2" data-exercicio="bloco_c_atv_9" data-titulo="Bloco C: Atividade 9"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 10:</strong> Peça o raio de uma circunferência em metros (<code>float</code>), calcule o diâmetro (<code>2 * raio</code>) e exiba o resultado junto com o seu tipo de dado.
+            <div class="questao-imagem-slot" id="slot-img-bloco_c_atv_10" data-aula="aula_1_2" data-exercicio="bloco_c_atv_10" data-titulo="Bloco C: Atividade 10"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       5. OFICINAS DE DESAFIO PRÁTICO & DESAFIO MESTRE INTEGRADO
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Projetos Práticos Integradores
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          5. Oficinas de Desafios Práticos
+        </h2>
+      </div>
+    </div>
+
+    <!-- Grid dos 3 Desafios Temáticos -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+
+      <!-- Desafio 1 -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-primary); font-size: 0.95rem;">Desafio 1: E-Sports</strong>
+            <span style="font-size: 0.7rem; background: var(--color-surface-high); color: var(--color-secondary); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Foco em print</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.5;">
+            Construa um placar de campeonato alinhado com molduras <code>====</code> e <code>----</code>, 3 colunas com <code>\t</code> (POS, JOGADOR, PONTOS) e status formatado com <code>sep=" -> "</code>.
+          </p>
+          <div class="questao-imagem-slot" id="slot-img-desafio_1" data-aula="aula_1_2" data-exercicio="desafio_1" data-titulo="Desafio 1: E-Sports"></div>
+        </div>
+      </div>
+
+      <!-- Desafio 2 -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-primary); font-size: 0.95rem;">Desafio 2: Retirada de Lab</strong>
+            <span style="font-size: 0.7rem; background: var(--color-surface-high); color: var(--color-secondary); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Foco em input</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.5;">
+            Colete Nome, Turma, Equipamento (Tablet/Notebook), Patrimônio e Horário Limite, emitindo a minuta formal com linha pontilhada para assinatura do monitor.
+          </p>
+          <div class="questao-imagem-slot" id="slot-img-desafio_2" data-aula="aula_1_2" data-exercicio="desafio_2" data-titulo="Desafio 2: Retirada de Lab"></div>
+        </div>
+      </div>
+
+      <!-- Desafio 3 -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-primary); font-size: 0.95rem;">Desafio 3: Consumo Elétrico</strong>
+            <span style="font-size: 0.7rem; background: var(--color-surface-high); color: var(--color-secondary); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Foco em casting</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.5;">
+            Audite a energia do laboratório: Watts (int), horas/dia (int) e tarifa (float). Calcule o consumo mensal (kWh), o custo em R$ e comprove os tipos com <code>type()</code>.
+          </p>
+          <div class="questao-imagem-slot" id="slot-img-desafio_3" data-aula="aula_1_2" data-exercicio="desafio_3" data-titulo="Desafio 3: Consumo Elétrico"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ====================================================================
+         DESAFIO MESTRE: TOTEM DE TRANSPORTE ESCOLAR (COM I/O E +50 XP)
+         ==================================================================== -->
+    <div style="border: 2px solid var(--color-secondary); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-md);">
+      
+      <!-- Cabeçalho do Desafio Mestre -->
+      <div style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-container) 100%); color: #ffffff; padding: 1.25rem 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary); color: #000000; padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Problema Integrador para Homologação de XP
+          </span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 800; margin-top: 0.35rem; letter-spacing: -0.01em;">
+            Desafio Mestre: Totem de Autoatendimento de Transporte Escolar
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--color-on-primary-container); margin-top: 0.25rem;">
+            Tarifa subsidiada: <strong>R$ 2,20</strong> | Operadores de Divisão Inteira (<code>//</code>) e Resto (<code>%</code>)
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="copiarTemplateTotem()">
+            📋 Copiar Template para Notebook
+          </button>
+          <a class="btn btn-outline" style="font-size: 0.8rem; padding: 0.45rem 0.9rem; background: rgba(255,255,255,0.1); color: #ffffff; border-color: rgba(255,255,255,0.3); text-decoration: none;" href="https://colab.research.google.com/" target="_blank" rel="noopener">
+            🔗 Abrir Google Colab ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Corpo do Desafio Mestre -->
+      <div style="padding: 1.5rem; background: var(--color-surface-lowest);">
+        
+        <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+          Implemente o algoritmo de recarga para o terminal de bilhetagem estudantil. O sistema deve coletar o nome do estudante (<code>str</code>), o cartão (<code>str</code>), o saldo remanescente (<code>float</code>) e a recarga em dinheiro (<code>float</code>). Calcule o novo saldo, a quantidade inteira de passagens a R$ 2,20 com <code>//</code> e a sobra financeira residual com <code>%</code>.
+        </p>
+
+        <!-- Fórmulas Matemáticas em Destaque -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
+          <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+            <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">Saldo Total</div>
+            <div style="font-family: var(--font-code); font-size: 0.9rem; font-weight: 700; color: var(--color-primary); margin-top: 0.2rem;">
+              saldo_total = saldo_anterior + recarga
+            </div>
+          </div>
+          <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+            <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">Passagens Disponíveis</div>
+            <div style="font-family: var(--font-code); font-size: 0.9rem; font-weight: 700; color: var(--color-secondary); margin-top: 0.2rem;">
+              passagens = int(saldo_total // 2.20)
+            </div>
+          </div>
+          <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+            <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">Saldo Residual</div>
+            <div style="font-family: var(--font-code); font-size: 0.9rem; font-weight: 700; color: var(--color-tertiary-dark); margin-top: 0.2rem;">
+              saldo_residual = saldo_total % 2.20
+            </div>
+          </div>
+        </div>
+
+        <!-- Slot de Imagem Didática do Desafio Mestre (Opcional) -->
+        <div class="questao-imagem-slot" id="slot-img-desafio_mestre" data-aula="aula_1_2" data-exercicio="desafio_mestre" data-titulo="Desafio Mestre: Totem de Autoatendimento"></div>
+
+        <!-- Especificação de I/O com os 2 Cenários de Teste -->
+        <div style="margin-bottom: 1.5rem;">
+          <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+            Especificação de Entrada & Saída (I/O) para Validação Local
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+            
+            <!-- Cenário 1 -->
+            <div class="io-card">
+              <div class="io-header">
+                <span style="color: var(--color-success); font-weight: 700;">Cenário 1: Recarga Padrão</span>
+                <span style="font-family: var(--font-code);">caso_1</span>
+              </div>
+              <div class="io-grid">
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Entrada Fornecida:</div>
+                  <div class="io-box">
+                    Nome: "Marina Lima"<br>
+                    Cartão: "4098"<br>
+                    Saldo atual: 1.50<br>
+                    Recarga: 20.00
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Saída Esperada no Console:</div>
+                  <div class="io-box" style="color: var(--color-success); font-weight: 600;">
+                    Novo Saldo: R$ 21.50<br>
+                    Passagens disponíveis: 9<br>
+                    Saldo residual: R$ 1.70
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cenário 2 -->
+            <div class="io-card">
+              <div class="io-header">
+                <span style="color: var(--color-primary); font-weight: 700;">Cenário 2: Saldo Exato (Sem Residual)</span>
+                <span style="font-family: var(--font-code);">caso_2</span>
+              </div>
+              <div class="io-grid">
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Entrada Fornecida:</div>
+                  <div class="io-box">
+                    Nome: "Pedro Silva"<br>
+                    Cartão: "1022"<br>
+                    Saldo atual: 0.00<br>
+                    Recarga: 22.00
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Saída Esperada no Console:</div>
+                  <div class="io-box" style="color: var(--color-primary); font-weight: 600;">
+                    Novo Saldo: R$ 22.00<br>
+                    Passagens disponíveis: 10<br>
+                    Saldo residual: R$ 0.00
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Gabarito / Solução Comentada (Toggle) -->
+        <div style="border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem;">
+          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabarito()">
+            <span style="font-weight: 700; color: var(--color-primary);">👁️ Revelar Solução Modelo Comentada (Totem de Bilhetagem)</span>
+            <span id="gabarito-icon">▼</span>
+          </button>
+          <div id="gabarito-body" style="display: none; padding: 1rem; background-color: var(--color-surface-lowest); border-top: 1px solid var(--color-surface-container);">
+            <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
+              Compare com o código que você executou no Google Colab ou Jupyter:
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+              <span class="syn-comment"># Coleta com conversão explícita de tipos</span><br>
+              nome = <span class="syn-kw">input</span>(<span class="syn-str">"Nome do estudante: "</span>)<br>
+              cartao = <span class="syn-kw">input</span>(<span class="syn-str">"Número do cartão: "</span>)<br>
+              saldo_anterior = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Saldo remanescente: "</span>))<br>
+              recarga = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Valor da recarga: "</span>))<br><br>
+              <span class="syn-comment"># Processamento aritmético</span><br>
+              saldo_total = saldo_anterior + recarga<br>
+              passagens = <span class="syn-kw">int</span>(saldo_total // <span class="syn-num">2.20</span>)  <span class="syn-comment"># Divisão inteira</span><br>
+              saldo_residual = saldo_total % <span class="syn-num">2.20</span>     <span class="syn-comment"># Resto da divisão</span><br><br>
+              <span class="syn-comment"># Saída formatada</span><br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Novo Saldo: R$ {saldo_total:.2f}"</span>)<br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Passagens disponíveis: {passagens}"</span>)<br>
+              <span class="syn-kw">print</span>(<span class="syn-str">f"Saldo residual: R$ {saldo_residual:.2f}"</span>)
+            </div>
+          </div>
+        </div>
+
+        <!-- Checklist de Autoavaliação e Homologação de XP (+50 XP) -->
+        <div style="background-color: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="font-family: var(--font-headline); font-size: 0.9rem; font-weight: 700; color: var(--color-primary);">
+            Casos de Teste Conceituais (Checklist de Validação do Estudante)
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
+              <input type="checkbox" id="chk-totem-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <span><strong>Teste 1:</strong> Conversão estrita de tipos (<code>float</code> aplicado a saldo e recarga, evitando concatenação de texto).</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
+              <input type="checkbox" id="chk-totem-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <span><strong>Teste 2:</strong> Utilização do operador <code>//</code> para garantir que o número de passagens seja número inteiro.</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
+              <input type="checkbox" id="chk-totem-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <span><strong>Teste 3:</strong> Utilização do operador <code>%</code> para isolar a sobra financeira menor que uma passagem.</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
+              <input type="checkbox" id="chk-totem-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <span><strong>Teste 4:</strong> Exibição do extrato de conferência formatado e legível no console.</span>
+            </label>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+            <button class="btn btn-secondary" id="btn-concluir-totem" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirTotem(50)">
+              ✓ Validar Resolução do Totem & Receber +50 XP
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       6. GUIA PRÁTICO PARA OS AMBIENTES DE DESENVOLVIMENTO
+       ======================================================================== -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Instalação e Uso
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+          6. Guia Prático para os Ambientes de Desenvolvimento
+        </h2>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem;">
+      
+      <!-- Jupyter Notebook (PC) -->
+      <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.35rem;">💻</span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+            Alunos no Computador (Jupyter Notebook / Anaconda3)
+          </h3>
+        </div>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem;">
+          <li>Abra o navegador e acerte a pasta de trabalho da sua turma.</li>
+          <li>Clique no botão superior direito <strong>New ➔ Python 3 (ipykernel)</strong>.</li>
+          <li>Para executar uma célula com o script, pressione <code>Shift + Enter</code> simultaneamente.</li>
+          <li>Quando a célula rodar <code>input()</code>, uma caixa retangular surgirá logo abaixo: digite o valor e aperte <code>Enter</code> para que o interpretador continue.</li>
+        </ol>
+      </div>
+
+      <!-- Google Colab (Tablet / Celular) -->
+      <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.35rem;">📱</span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+            Alunos no Tablet (Google Colab)
+          </h3>
+        </div>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem;">
+          <li>Acesse o site oficial do <strong>Google Colab</strong> no navegador e clique em <strong>Novo notebook</strong>.</li>
+          <li>Toque no botão <strong>+ Código</strong> para criar um bloco de instrução.</li>
+          <li>Toque no ícone circular de <strong>Play (▶️)</strong> à esquerda da célula para rodar o código.</li>
+          <li>Digite os dados solicitados pelo <code>input()</code> na barra inferior do bloco e confirme no teclado virtual.</li>
+        </ol>
+      </div>
+
+    </div>
+  </div>
+  </div> <!-- FIM DO BLOCO DE EXERCÍCIOS PROPOSTOS & PRÁTICA -->
+
+</div>
+

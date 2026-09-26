@@ -1,0 +1,28 @@
+Criei o design completo da plataforma interativa de ensino de Python (PythonLab) com as 4 telas integradas no formato Desktop:
+
+1. Módulos & Trilha Didática (Módulos & Trilha Didática)
+Organização Pedagógica: Visão hierárquica por Módulos, Tópicos numerados e Oficinas práticas integradas.
+Painel de Progresso: Dashboard com taxa de conclusão (18/26 tópicos), horas acumuladas, metas da semana, ranking amigável e atalho direto para a próxima aula recomendada.
+2. Aula Interativa & Infográficos Conceituais (Aula Interativa & Infográficos)
+Infográficos Explicativos:
+Diagrama de Fluxo Lógico (Ciclo de Vida): Mapeamento visual das decisões booleanas (True / False), laços de repetição e retorno de execução.
+Diagrama de Estado de Memória CPython: Visualização didática de Call Stack e alocação de inteiros na memória Heap.
+Player Passo a Passo: Controle de execução sincronizado com o código Python e callout preventivo sobre armadilhas comuns (como o Loop Infinito).
+3. Oficina Prática de Exercícios Graduais (Oficina Prática de Exercícios)
+Tríade Pedagógica em Abas:
+Exercício Resolvido: Decomposição algorítmica, código-fonte modelo minuciosamente comentado e tabela de teste de mesa (trace table) passo a passo demonstrando o estado das variáveis na memória.
+Exercício Proposto: Prática orientada com dicas escalonadas.
+Exercício Desafio: Problema aberto de maior complexidade com recompensas de XP e medalhas.
+Suporte a Imagens Didáticas Opcionais do Professor: Cada questão da plataforma (exercícios resolvidos de modelo, atividades práticas propostas de 2 a 10 em cada bloco temático e desafios integradores) possui suporte nativo para imagem didática explicativa (diagramas conceituais, fotos de lousa, esquemas visuais). O anexo é 100% opcional pelo professor: se não houver imagem, a questão exibe layout limpo sem espaços vazios. As imagens são salvas na pasta "imagens" do Google Drive e registradas na planilha (Imagens_Exercicios), com zoom em tela cheia (lightbox) para alunos e botões de gerenciamento para professores.
+Painel lateral com critérios estáticos de qualidade de código (PEP 8, complexidade de memória) e assistente socrático.
+4. Ambiente de Testes & IDE Interativa (Ambiente de Testes & IDE)
+Editor de Código Python: Interface com suporte a abas de arquivos, numeração de linhas, avisos didáticos e atalhos de execução.
+Bateria de Testes com Entrada e Saída (I/O): Verificação automatizada em tempo real (Passed/Failed/Pending) com comparação clara entre o resultado esperado e a saída obtida.
+Diagnóstico Pedagógico: Explicação humanizada da causa dos erros em vez de stack traces opacos.
+Solução Comentada Opcional: Bloco de consulta para destravar o aluno sem penalização de aprendizado.
+Todas as telas contam com o shell unificado de navegação no topo, identidade visual consistente nas cores clássicas do ecossistema Python (azul profundo #1e3a8a e âmbar #f59e0b) e tipografia técnica de alta legibilidade.
+
+5. Padrão de Adição de Novas Aulas:
+- Todas as novas aulas têm suas orientações pedagógicas centralizadas na pasta "aulas/".
+- Cada aula é criada como um arquivo Markdown (ex.: aulas/aula1_2.md, aulas/aula1_3.md, etc.) contendo fundamentos teóricos, diagramas conceituais (Stack vs Heap), testes de mesa (Trace Table), blocos de oficinas práticas (print, input, casting), especificações de I/O para desafios integradores e indicação de slot de imagem didática opcional do professor para cada questão.
+- A partir de cada arquivo .md na pasta "aulas/", é gerado o componente HTML modular (AulaX_Y.html) contendo os slots visuais correspondentes (.questao-imagem-slot e .exercicio-resolvido-slot) e inserida a respectiva linha no catálogo dinâmico do Google Sheets (Catalogo_Aulas).

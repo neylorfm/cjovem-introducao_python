@@ -1,0 +1,1615 @@
+<script>
+/**
+ * ============================================================================
+ * PYTHONLAB — LÓGICA DE INTERFACE & CLIENT-SIDE ENGINE (Script.html)
+ * ============================================================================
+ * - Gerenciamento de rotas SPA
+ * - Comunicação assíncrona com Apps Script (google.script.run)
+ * - Motor do Player Passo a Passo e Rastreio de Memória CPython (Stack/Heap)
+ * - Tabela de Rastreio (Trace Table) e Runner de Testes I/O
+ * - Controle de Perfis (Visitante, Aluno, Professor)
+ * ============================================================================
+ */
+
+// Estado Global da Aplicação
+const AppState = {
+  user: {
+    autenticado: false,
+    email: null,
+    nome: 'Visitante',
+    perfil: 'visitante',
+    xpTotal: 0,
+    progressoIds: [],
+    podeGravar: false,
+    isProfessor: false
+  },
+  catalog: [],
+  currentLessonId: 'aula_1_2',
+  currentLessonData: null,
+  currentStepIndex: 0,
+  simulationSteps: [],
+  modoVisualizacaoAula: localStorage.getItem('pythonlab_modo_aula') || 'explicacoes',
+  imagensAula: {},
+  uploadContext: null
+};
+
+// Dados padrão de simulação para a Aula 1.2: Cálculo de Idade com Type Casting (CPython)
+const DEFAULT_SIMULATION_STEPS = [
+  {
+    step: 0,
+    line: 1,
+    insightTitle: "Passo 0: Preparação da Call Stack",
+    insightDesc: "O interpretador CPython inicializa o frame local na Call Stack e prepara para ler a primeira instrução.",
+    stack: [],
+    heap: [],
+    stdout: ""
+  },
+  {
+    step: 1,
+    line: 1,
+    insightTitle: "Passo 1: Entrada de Texto via input()",
+    insightDesc: "O usuário digita '2010'. Atenção: o comando input() SEMPRE retorna um objeto do tipo texto (str). O valor '2010' é alocado no Heap em 0x7FFF01 e o identificador 'dado_bruto' aponta para ele.",
+    stack: [
+      { name: "dado_bruto", type: "str", addr: "0x7FFF01" }
+    ],
+    heap: [
+      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" }
+    ],
+    stdout: "Digite o ano de nascimento: 2010"
+  },
+  {
+    step: 2,
+    line: 2,
+    insightTitle: "Passo 2: Conversão de Tipo (Type Casting com int())",
+    insightDesc: "A função int(dado_bruto) converte a string '2010' para um número inteiro 2010 no Heap (0x7FFF02), apontado por 'ano_nasc'. Agora operações matemáticas são válidas sem erro de TypeError!",
+    stack: [
+      { name: "dado_bruto", type: "str", addr: "0x7FFF01" },
+      { name: "ano_nasc", type: "int", addr: "0x7FFF02" }
+    ],
+    heap: [
+      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" },
+      { addr: "0x7FFF02", val: "2010", type: "int (número)" }
+    ],
+    stdout: "Digite o ano de nascimento: 2010"
+  },
+  {
+    step: 3,
+    line: 3,
+    insightTitle: "Passo 3: Alocação do Ano Vigente (Constante)",
+    insightDesc: "O identificador 'ano_atual' recebe o número inteiro 2026, alocado em 0x7FFF03 no Heap.",
+    stack: [
+      { name: "dado_bruto", type: "str", addr: "0x7FFF01" },
+      { name: "ano_nasc", type: "int", addr: "0x7FFF02" },
+      { name: "ano_atual", type: "int", addr: "0x7FFF03" }
+    ],
+    heap: [
+      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" },
+      { addr: "0x7FFF02", val: "2010", type: "int (número)" },
+      { addr: "0x7FFF03", val: "2026", type: "int (número)" }
+    ],
+    stdout: "Digite o ano de nascimento: 2010"
+  },
+  {
+    step: 4,
+    line: 4,
+    insightTitle: "Passo 4: Processamento Matemático (2026 - 2010)",
+    insightDesc: "CPython executa a subtração entre dois inteiros (2026 - 2010). O resultado 16 é alocado no Heap em 0x7FFF04, e 'idade_calculada' aponta para ele.",
+    stack: [
+      { name: "dado_bruto", type: "str", addr: "0x7FFF01" },
+      { name: "ano_nasc", type: "int", addr: "0x7FFF02" },
+      { name: "ano_atual", type: "int", addr: "0x7FFF03" },
+      { name: "idade_calculada", type: "int", addr: "0x7FFF04" }
+    ],
+    heap: [
+      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" },
+      { addr: "0x7FFF02", val: "2010", type: "int (número)" },
+      { addr: "0x7FFF03", val: "2026", type: "int (número)" },
+      { addr: "0x7FFF04", val: "16", type: "int (número)" }
+    ],
+    stdout: "Digite o ano de nascimento: 2010"
+  },
+  {
+    step: 5,
+    line: 5,
+    insightTitle: "Passo 5: Saída Formatada no Console (print())",
+    insightDesc: "A função print() busca o valor no Heap através do identificador 'idade_calculada' e exibe a mensagem final no terminal STDOUT.",
+    stack: [
+      { name: "dado_bruto", type: "str", addr: "0x7FFF01" },
+      { name: "ano_nasc", type: "int", addr: "0x7FFF02" },
+      { name: "ano_atual", type: "int", addr: "0x7FFF03" },
+      { name: "idade_calculada", type: "int", addr: "0x7FFF04" }
+    ],
+    heap: [
+      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" },
+      { addr: "0x7FFF02", val: "2010", type: "int (número)" },
+      { addr: "0x7FFF03", val: "2026", type: "int (número)" },
+      { addr: "0x7FFF04", val: "16", type: "int (número)" }
+    ],
+    stdout: "Digite o ano de nascimento: 2010\nIdade aproximada: 16"
+  }
+];
+
+// Inicialização do documento
+document.addEventListener('DOMContentLoaded', function() {
+  initSimulation(DEFAULT_SIMULATION_STEPS);
+  loadUserSession();
+  loadCatalog();
+});
+
+/**
+ * ============================================================================
+ * COMUNICAÇÃO COM O BACKEND (GOOGLE APPS SCRIPT)
+ * ============================================================================
+ */
+
+function loadUserSession() {
+  const savedEmail = localStorage.getItem('pythonlab_user_email') || '';
+  
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(onUserSessionSuccess)
+      .withFailureHandler(onUserSessionError)
+      .getUserSessionData(savedEmail);
+  } else {
+    // Modo de Desenvolvimento Local / Preview
+    console.info('Executando fora do ambiente Google Apps Script. Ativando mock local.');
+    const emailMock = savedEmail || 'neylor@gmail.com';
+    onUserSessionSuccess({
+      autenticado: true,
+      email: emailMock,
+      nome: emailMock.split('@')[0],
+      perfil: emailMock.includes('prof') ? 'professor' : 'aluno',
+      xpTotal: 480,
+      progressoIds: ['aula_1_1'],
+      duvidasPendentes: [
+        {
+          idAula: 'aula_1_2',
+          idTopico: 'Variáveis e Memória',
+          duvida: 'Não entendi por que y continua apontando para 10 no Heap depois que fiz x += 5.',
+          data: new Date().toISOString()
+        }
+      ],
+      ultimaAulaAcessada: 'aula_1_2',
+      podeGravar: true,
+      isProfessor: emailMock.includes('prof')
+    });
+  }
+}
+
+function onUserSessionSuccess(userData) {
+  AppState.user = userData;
+  if (userData && userData.autenticado && userData.email) {
+    localStorage.setItem('pythonlab_user_email', userData.email);
+  }
+  renderHeaderUser();
+  renderVisitorModalContent();
+  renderizarDuvidasDashboard();
+  
+  if (userData.ultimaAulaAcessada) {
+    const labelEl = document.getElementById('dash-onde-parei-titulo');
+    if (labelEl) labelEl.textContent = `Aula: ${userData.ultimaAulaAcessada}`;
+  }
+  
+  // Se for professor, exibe atalho no menu
+  const teacherTab = document.getElementById('nav-teacher');
+  if (teacherTab) {
+    teacherTab.style.display = userData.isProfessor ? 'inline-flex' : 'none';
+  }
+
+  // Atualiza modo de visualização e imagens didáticas da aula ativa
+  aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+  carregarImagensAula(AppState.currentLessonId || 'aula_1_2');
+}
+
+function onUserSessionError(error) {
+  console.warn('Erro ao obter sessão:', error);
+  showToast('Sessão em modo visitante.', 'info');
+  renderVisitorModalContent();
+}
+
+function loadCatalog() {
+  const currentEmail = (AppState.user && AppState.user.email) ? AppState.user.email : (localStorage.getItem('pythonlab_user_email') || '');
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(onCatalogSuccess)
+      .withFailureHandler(function(err) {
+        console.error('Erro ao carregar catálogo:', err);
+      })
+      .getCatalogoAulas(currentEmail);
+  } else {
+    // Mock local do catálogo: apenas a aula que de fato existe (Aula 1.2)
+    onCatalogSuccess([
+      {
+        id_aula: 'aula_1_2',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        titulo: 'Variáveis, Tipos de Dados e Entrada/Saída',
+        arquivo_html: 'Aula1_2',
+        ordem: 1,
+        status: 'publicado',
+        xp_base: 150,
+        tempo_estimado: '45 min',
+        descricao: 'Ciclo elementar entrada/processamento/saída, tipos primitivos, Stack vs Heap, teste de mesa e Totem de Bilhetagem.'
+      }
+    ]);
+  }
+}
+
+function onCatalogSuccess(catalog) {
+  AppState.catalog = catalog;
+  renderCatalogDashboard(catalog);
+}
+
+/**
+ * ============================================================================
+ * RENDERIZAÇÃO DE INTERFACE & NAVEGAÇÃO SPA
+ * ============================================================================
+ */
+
+function navigateTo(viewId) {
+  // Atualiza classes ativas nos links de navegação
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const activeBtn = document.querySelector(`.nav-item[data-view="${viewId}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Alterna as seções de visualização
+  document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+  const targetSec = document.getElementById(viewId);
+  if (targetSec) {
+    targetSec.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Se a rota for o painel do professor, carrega o relatório consolidado
+  if (viewId === 'view-professor') {
+    carregarRelatorioProfessor();
+  }
+}
+
+function renderHeaderUser() {
+  const user = AppState.user;
+  const avatarEl = document.getElementById('header-user-avatar');
+  const nameEl = document.getElementById('header-user-name');
+  const xpEl = document.getElementById('header-user-xp');
+  const roleEl = document.getElementById('header-user-role');
+
+  if (avatarEl) {
+    avatarEl.textContent = user.nome ? user.nome.charAt(0).toUpperCase() : 'V';
+  }
+  if (nameEl) {
+    nameEl.textContent = user.nome || 'Visitante';
+  }
+  if (xpEl) {
+    xpEl.textContent = (user.xpTotal || 0) + ' XP';
+  }
+  if (roleEl) {
+    roleEl.textContent = user.perfil;
+    roleEl.className = 'role-tag role-' + user.perfil;
+  }
+}
+
+function renderCatalogDashboard(catalog) {
+  const container = document.getElementById('catalog-modules-container');
+  if (!container) return;
+
+  // Agrupa aulas por módulo
+  const modulesMap = {};
+  catalog.forEach(item => {
+    if (!modulesMap[item.modulo]) {
+      modulesMap[item.modulo] = [];
+    }
+    modulesMap[item.modulo].push(item);
+  });
+
+  let html = '';
+  for (const modTitle in modulesMap) {
+    const lessons = modulesMap[modTitle];
+    html += `
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.1rem; color: var(--color-primary); font-weight: 700;">
+            ${modTitle}
+          </h3>
+          <span style="font-size: 0.8rem; color: var(--color-outline); font-family: var(--font-headline); font-weight: 600;">
+            ${lessons.length} aulas
+          </span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem;">
+    `;
+
+    lessons.forEach(lesson => {
+      const isConcluded = AppState.user.progressoIds && AppState.user.progressoIds.includes(lesson.id_aula);
+      const statusBadge = isConcluded
+        ? '<span class="test-badge test-passed" style="font-size: 0.7rem;">Concluído</span>'
+        : (lesson.status === 'rascunho'
+          ? '<span class="test-badge test-pending" style="font-size: 0.7rem;">Rascunho</span>'
+          : '<span class="test-badge" style="background: var(--color-surface-container); color: var(--color-secondary); font-size: 0.7rem;">Disponível</span>');
+
+      html += `
+        <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+              <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-secondary); font-weight: 600;">
+                Aula ${lesson.ordem_modulo}.${lesson.ordem}
+              </span>
+              ${statusBadge}
+            </div>
+            <h4 style="font-family: var(--font-headline); font-size: 0.95rem; color: var(--color-on-surface); font-weight: 700; margin-bottom: 0.35rem;">
+              ${lesson.titulo}
+            </h4>
+            <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.4;">
+              ${lesson.descricao}
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; pt: 0.5rem; border-top: 1px solid var(--color-surface-high);">
+            <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.75rem; color: var(--color-outline);">
+              <span>⏱ ${lesson.tempo_estimado}</span>
+              <span>⭐ +${lesson.xp_base} XP</span>
+            </div>
+            <button class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;" onclick="abrirAula('${lesson.id_aula}')">
+              Estudar
+            </button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+/**
+ * ============================================================================
+ * MOTOR DO SIMULADOR PASSO A PASSO & RASTREIO DE MEMÓRIA
+ * ============================================================================
+ */
+
+function initSimulation(steps) {
+  AppState.simulationSteps = steps;
+  AppState.currentStepIndex = 0;
+  renderStepperButtons();
+  goToStep(0);
+}
+
+function renderStepperButtons() {
+  const container = document.getElementById('step-buttons-container');
+  if (!container) return;
+
+  let html = '';
+  AppState.simulationSteps.forEach((s, idx) => {
+    html += `
+      <button class="btn btn-outline step-btn-pill" id="step-pill-${idx}" style="padding: 0.25rem 0.65rem; min-width: 2rem; font-size: 0.8rem;" onclick="goToStep(${idx})">
+        ${idx}
+      </button>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function goToStep(index) {
+  if (index < 0 || index >= AppState.simulationSteps.length) return;
+  AppState.currentStepIndex = index;
+  const step = AppState.simulationSteps[index];
+
+  // 1. Atualiza botões de navegação
+  const btnPrev = document.getElementById('btn-step-prev');
+  const btnNext = document.getElementById('btn-step-next');
+  if (btnPrev) btnPrev.disabled = (index === 0);
+  if (btnNext) btnNext.disabled = (index === AppState.simulationSteps.length - 1);
+
+  // Destaque visual dos botões numéricos
+  document.querySelectorAll('.step-btn-pill').forEach(btn => {
+    btn.style.backgroundColor = 'transparent';
+    btn.style.color = 'var(--color-on-surface)';
+    btn.style.borderColor = 'var(--color-outline-variant)';
+  });
+  const activePill = document.getElementById(`step-pill-${index}`);
+  if (activePill) {
+    activePill.style.backgroundColor = 'var(--color-primary)';
+    activePill.style.color = '#ffffff';
+    activePill.style.borderColor = 'var(--color-primary)';
+  }
+
+  // 2. Destaque da linha de código ativa
+  document.querySelectorAll('.code-line').forEach(el => el.classList.remove('active'));
+  const targetCodeLine = document.getElementById(`code-line-${step.line}`);
+  if (targetCodeLine) targetCodeLine.classList.add('active');
+
+  // 3. Atualiza Insight Card Didático
+  const titleEl = document.getElementById('insight-title');
+  const descEl = document.getElementById('insight-desc');
+  if (titleEl) titleEl.textContent = step.insightTitle;
+  if (descEl) descEl.textContent = step.insightDesc;
+
+  // 4. Renderiza Call Stack
+  const stackContainer = document.getElementById('stack-frame-vars');
+  if (stackContainer) {
+    if (step.stack.length === 0) {
+      stackContainer.innerHTML = '<div style="font-size: 0.8rem; color: var(--color-outline); padding: 0.5rem 0;">(Nenhuma variável no escopo local)</div>';
+    } else {
+      let stackHtml = '';
+      step.stack.forEach(v => {
+        stackHtml += `
+          <div class="memory-box updated">
+            <div>
+              <div class="memory-var-name">${v.name}</div>
+              <div class="memory-var-desc">${v.type}</div>
+            </div>
+            <div class="memory-pointer-badge">
+              <span>${v.addr}</span>
+              <span>→</span>
+            </div>
+          </div>
+        `;
+      });
+      stackContainer.innerHTML = stackHtml;
+    }
+  }
+
+  // 5. Renderiza Heap Space
+  const heapContainer = document.getElementById('heap-objects-grid');
+  if (heapContainer) {
+    if (step.heap.length === 0) {
+      heapContainer.innerHTML = '<div style="font-size: 0.8rem; color: var(--color-outline); padding: 0.5rem 0;">(Nenhum objeto alocado no Heap)</div>';
+    } else {
+      let heapHtml = '';
+      step.heap.forEach(obj => {
+        heapHtml += `
+          <div class="heap-object-cell">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="heap-addr">${obj.addr}</span>
+              <span class="heap-type-badge">${obj.type}</span>
+            </div>
+            <div class="heap-val">${obj.val}</div>
+          </div>
+        `;
+      });
+      heapContainer.innerHTML = heapHtml;
+    }
+  }
+
+  // 6. Atualiza Terminal Stdout
+  const stdoutEl = document.getElementById('terminal-stdout-output');
+  if (stdoutEl) {
+    stdoutEl.textContent = step.stdout || '> (Aguardando saída...)';
+  }
+
+  // 7. Sincroniza Trace Table
+  document.querySelectorAll('.trace-table tbody tr').forEach((tr, rIdx) => {
+    if (rIdx === index) {
+      tr.classList.add('active-step');
+    } else {
+      tr.classList.remove('active-step');
+    }
+  });
+}
+
+function prevStep() {
+  goToStep(AppState.currentStepIndex - 1);
+}
+
+function nextStep() {
+  goToStep(AppState.currentStepIndex + 1);
+}
+
+/**
+ * ============================================================================
+ * TRÍADE PEDAGÓGICA (RESOLVIDO / PROPOSTO / DESAFIO)
+ * ============================================================================
+ */
+
+function switchTriadTab(tabId) {
+  document.querySelectorAll('.triad-tab-btn').forEach(btn => btn.classList.remove('active'));
+  const btn = document.querySelector(`.triad-tab-btn[data-tab="${tabId}"]`);
+  if (btn) btn.classList.add('active');
+
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  const targetPane = document.getElementById(`tab-content-${tabId}`);
+  if (targetPane) targetPane.classList.add('active');
+}
+
+/**
+ * ============================================================================
+ * INTEGRAÇÃO COM GOOGLE COLAB / JUPYTER NOTEBOOK & I/O HELPER
+ * ============================================================================
+ */
+
+function copiarTemplateExercicio() {
+  const codigoTemplate = `# ============================================================
+# PYTHONLAB — EXERCÍCIO PROPOSTO: CALCULADORA DE IMC (AULA 1.2)
+# Cole esta célula diretamente no Google Colab ou Jupyter Notebook
+# ============================================================
+
+def calcular_imc(peso, altura):
+    """
+    Recebe peso e altura, aplica casting defensivo para float e
+    calcula o IMC = peso / (altura ** 2).
+    Retorna o valor formatado ou mensagem de erro.
+    """
+    try:
+        peso_val = float(peso)
+        altura_val = float(altura)
+        imc = peso_val / (altura_val ** 2)
+        return f"IMC: {imc:.2f}"
+    except (ValueError, TypeError):
+        return "Erro: Entrada não numérica!"
+
+# --- CASOS DE TESTE AUTOMATIZADOS PARA VERIFICAÇÃO LOCAL ---
+print("--- TESTES DE CONFERÊNCIA ---")
+print("Caso 1 (Esperado: IMC: 22.86):", calcular_imc("70", 1.75))
+print("Caso 2 (Esperado: Erro: Entrada não numérica!):", calcular_imc("invalido", 1.75))
+`;
+
+  navigator.clipboard.writeText(codigoTemplate).then(() => {
+    showToast('Template copiado com sucesso! Cole no Google Colab ou Jupyter.', 'success');
+  }).catch(() => {
+    // Fallback caso clipboard API falhe
+    prompt('Copie o código abaixo para o seu Colab / Jupyter:', codigoTemplate);
+  });
+}
+
+function copiarTemplateDesafio() {
+  const codigoDesafio = `# ============================================================
+# PYTHONLAB — DESAFIO CPYTHON: POOL DE PEQUENOS INTEIROS (id & is)
+# Cole esta célula no Google Colab ou Jupyter Notebook
+# ============================================================
+
+def investigar_identidade_inteiros(a, b):
+    compartilham_mesmo_endereco = (a is b)
+    print(f"Objeto a: {a} | Endereço id(a): {id(a)}")
+    print(f"Objeto b: {b} | Endereço id(b): {id(b)}")
+    print(f"a is b: {compartilham_mesmo_endereco}")
+    return compartilham_mesmo_endereco
+
+# Experimento 1: Inteiros dentro do pool CPython [-5 a 256]
+print("--- Experimento 1: Números Pequenos (256) ---")
+investigar_identidade_inteiros(256, 256)
+
+# Experimento 2: Inteiros fora do pool (> 256)
+print("\\n--- Experimento 2: Números Grandes (257) ---")
+investigar_identidade_inteiros(257, 257)
+`;
+
+  navigator.clipboard.writeText(codigoDesafio).then(() => {
+    showToast('Desafio copiado! Cole no seu Notebook para comprovar a memória.', 'success');
+  }).catch(() => {
+    prompt('Copie o código do desafio:', codigoDesafio);
+  });
+}
+
+/**
+ * Alternância de abas do Caderno de Oficinas (Blocos A, B e C)
+ */
+function switchOficinaBloco(blocoId) {
+  ['bloco-a', 'bloco-b', 'bloco-c'].forEach(id => {
+    const btn = document.getElementById(`btn-tab-${id}`);
+    const panel = document.getElementById(`panel-${id}`);
+    if (btn) {
+      if (id === blocoId) {
+        btn.classList.remove('btn-outline');
+        btn.classList.add('btn-primary');
+      } else {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline');
+      }
+    }
+    if (panel) {
+      panel.style.display = (id === blocoId) ? 'block' : 'none';
+    }
+  });
+}
+
+/**
+ * Cópia do template do Desafio Mestre: Totem de Autoatendimento de Transporte Escolar
+ */
+function copiarTemplateTotem() {
+  const codigoTotem = `# ============================================================
+# PYTHONLAB — DESAFIO MESTRE: TOTEM DE TRANSPORTE ESCOLAR (AULA 1.2)
+# Execute esta célula diretamente no Google Colab ou Jupyter Notebook
+# ============================================================
+
+def processar_recarga(nome, cartao, saldo_anterior, recarga):
+    tarifa = 2.20
+    saldo_total = saldo_anterior + recarga
+    
+    # Divisão inteira (//) para passagens inteiras
+    passagens = int(saldo_total // tarifa)
+    
+    # Operador de resto (%) para resíduo financeiro
+    saldo_residual = round(saldo_total % tarifa, 2)
+    
+    print(f"Estudante: {nome} | Cartão: {cartao}")
+    print(f"Novo Saldo: R$ {saldo_total:.2f}")
+    print(f"Passagens disponíveis: {passagens}")
+    print(f"Saldo residual: R$ {saldo_residual:.2f}")
+    return passagens, saldo_residual
+
+# --- CASOS DE TESTE I/O CONCEITUAIS ---
+print("=== CENÁRIO 1: Recarga Padrão ===")
+processar_recarga("Marina Lima", "4098", 1.50, 20.00)
+
+print("\\n=== CENÁRIO 2: Saldo Exato ===")
+processar_recarga("Pedro Silva", "1022", 0.00, 22.00)
+`;
+
+  navigator.clipboard.writeText(codigoTotem).then(() => {
+    showToast('Template do Totem de Bilhetagem copiado! Cole no Colab ou Jupyter.', 'success');
+  }).catch(() => {
+    prompt('Copie o código do Totem de Bilhetagem:', codigoTotem);
+  });
+}
+
+/**
+ * Controle de validação dos 4 testes conceituais do Totem
+ */
+function atualizarChecklistTotem() {
+  const c1 = document.getElementById('chk-totem-1');
+  const c2 = document.getElementById('chk-totem-2');
+  const c3 = document.getElementById('chk-totem-3');
+  const c4 = document.getElementById('chk-totem-4');
+  const btn = document.getElementById('btn-concluir-totem');
+
+  const todosConcluidos = c1 && c2 && c3 && c4 && c1.checked && c2.checked && c3.checked && c4.checked;
+
+  if (btn) {
+    btn.disabled = !todosConcluidos;
+    btn.style.opacity = todosConcluidos ? '1' : '0.5';
+    btn.style.cursor = todosConcluidos ? 'pointer' : 'not-allowed';
+  }
+}
+
+/**
+ * Registra o XP e validação do Desafio Mestre do Totem
+ */
+function validarEConcluirTotem(xp) {
+  const user = AppState.user;
+  if (user.perfil === 'visitante' || !user.autenticado) {
+    openVisitorModal();
+    return;
+  }
+
+  const idAula = AppState.currentLessonId || 'aula_1_2';
+  const xpGanho = Number(xp) || 50;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(resp) {
+        if (resp && resp.sucesso) {
+          AppState.user.xpTotal += xpGanho;
+          renderHeaderUser();
+          showToast(`🏆 Excelente! Desafio Mestre do Totem homologado com sucesso! +${xpGanho} XP`, 'success');
+        } else {
+          showToast(resp.mensagem || 'Erro ao registrar progresso', 'info');
+        }
+      })
+      .salvarProgresso(idAula, 'desafio_mestre_totem', 'concluido', true, true, true, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
+  } else {
+    AppState.user.xpTotal += xpGanho;
+    renderHeaderUser();
+    showToast(`🏆 Modo Mock: Desafio Mestre do Totem concluído! +${xpGanho} XP adicionados.`, 'success');
+  }
+}
+
+function toggleGabarito() {
+  const body = document.getElementById('gabarito-body');
+  const icon = document.getElementById('gabarito-icon');
+  if (body) {
+    const isHidden = (body.style.display === 'none' || body.style.display === '');
+    body.style.display = isHidden ? 'block' : 'none';
+    if (icon) icon.textContent = isHidden ? '▲' : '▼';
+  }
+}
+
+function atualizarBotaoConclusao() {
+  const checkbox = document.getElementById('check-notebook-validado');
+  const btn = document.getElementById('btn-salvar-tarefa');
+  if (checkbox && btn) {
+    btn.disabled = !checkbox.checked;
+    btn.style.opacity = checkbox.checked ? '1' : '0.5';
+    btn.style.cursor = checkbox.checked ? 'pointer' : 'not-allowed';
+  }
+}
+
+function validarEConcluirTarefa(tipo, xp) {
+  const user = AppState.user;
+  if (user.perfil === 'visitante' || !user.autenticado) {
+    openVisitorModal();
+    return;
+  }
+
+  const idAula = AppState.currentLessonId || 'aula_1_2';
+  const xpGanho = Number(xp) || 35;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(resp) {
+        if (resp && resp.sucesso) {
+          AppState.user.xpTotal += xpGanho;
+          renderHeaderUser();
+          showToast(`Excelente trabalho no Notebook! +${xpGanho} XP computados na sua conta.`, 'success');
+        } else {
+          showToast(resp.mensagem || 'Erro ao registrar', 'info');
+        }
+      })
+      .salvarProgresso(idAula, 'exercicio_proposto', 'concluido', true, true, false, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
+  } else {
+    // Mock local
+    AppState.user.xpTotal += xpGanho;
+    renderHeaderUser();
+    showToast(`Modo Mock: Tarefa do Notebook validada! +${xpGanho} XP adicionados.`, 'success');
+  }
+}
+
+/**
+ * ============================================================================
+ * AUTONOMIA DO ALUNO: 'ONDE PAREI' & CADERNO DE DÚVIDAS
+ * ============================================================================
+ */
+
+let duvidaContexto = { idAula: 'aula_1_2', topico: 'Geral' };
+
+function marcarComoOndeParei(idAula, titulo) {
+  AppState.user.ultimaAulaAcessada = idAula;
+  const labelEl = document.getElementById('dash-onde-parei-titulo');
+  if (labelEl) labelEl.textContent = titulo || idAula;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run && AppState.user.autenticado) {
+    google.script.run.salvarProgresso(idAula, 'ponto_parada', 'em_andamento', false, false, false, 0, '', AppState.user.email || '');
+  }
+  showToast(`📌 Ponto de parada salvo! O Dashboard atualizará para você continuar de "${titulo || idAula}".`, 'success');
+}
+
+function retomarOndeParei() {
+  const alvo = AppState.user.ultimaAulaAcessada || 'aula_1_2';
+  abrirAula(alvo);
+}
+
+function abrirModalDuvida(idAula, topico) {
+  duvidaContexto = { idAula: idAula || 'aula_1_2', topico: topico || 'Tópico de Estudo' };
+  const label = document.getElementById('modal-duvida-topico');
+  if (label) label.textContent = `${topico} (${duvidaContexto.idAula})`;
+  
+  const textarea = document.getElementById('modal-duvida-texto');
+  if (textarea) textarea.value = '';
+
+  const modal = document.getElementById('modal-duvida');
+  if (modal) modal.classList.add('active');
+}
+
+function fecharModalDuvida() {
+  const modal = document.getElementById('modal-duvida');
+  if (modal) modal.classList.remove('active');
+}
+
+function confirmarSalvarDuvida() {
+  const textarea = document.getElementById('modal-duvida-texto');
+  const texto = textarea ? textarea.value.trim() : '';
+
+  if (!texto) {
+    showToast('Por favor, descreva sua dúvida antes de salvar.', 'info');
+    return;
+  }
+
+  const novaDuvida = {
+    idAula: duvidaContexto.idAula,
+    idTopico: duvidaContexto.topico,
+    duvida: texto,
+    data: new Date().toISOString()
+  };
+
+  if (!AppState.user.duvidasPendentes) AppState.user.duvidasPendentes = [];
+  AppState.user.duvidasPendentes.unshift(novaDuvida);
+
+  if (typeof google !== 'undefined' && google.script && google.script.run && AppState.user.autenticado) {
+    google.script.run.salvarProgresso(duvidaContexto.idAula, duvidaContexto.topico, 'com_duvidas', false, false, false, 0, texto, AppState.user.email || '');
+  }
+
+  fecharModalDuvida();
+  renderizarDuvidasDashboard();
+  showToast('❓ Dúvida anotada no seu Caderno de Dúvidas!', 'success');
+}
+
+function marcarDuvidaSanada(idAula, idTopico) {
+  if (AppState.user.duvidasPendentes) {
+    AppState.user.duvidasPendentes = AppState.user.duvidasPendentes.filter(d => !(d.idAula === idAula));
+  }
+
+  if (typeof google !== 'undefined' && google.script && google.script.run && AppState.user.autenticado) {
+    google.script.run.salvarProgresso(idAula, idTopico || 'geral', 'concluido', true, false, false, 10, '', AppState.user.email || '');
+  }
+
+  renderizarDuvidasDashboard();
+  showToast('✓ Parabéns! Dúvida marcada como sanada com o professor.', 'success');
+}
+
+function renderizarDuvidasDashboard() {
+  const container = document.getElementById('caderno-duvidas-container');
+  const contador = document.getElementById('dash-duvidas-contador');
+  const duvidas = AppState.user.duvidasPendentes || [];
+
+  if (contador) {
+    contador.textContent = duvidas.length === 1 ? '1 pendente' : `${duvidas.length} pendentes`;
+  }
+
+  if (!container) return;
+
+  if (duvidas.length === 0) {
+    container.innerHTML = `
+      <div style="background: var(--color-surface-low); border: 1px dashed var(--color-outline-variant); border-radius: var(--radius-md); padding: 1.25rem; text-align: center; color: var(--color-on-surface-variant); font-size: 0.85rem;">
+        <span>🎉 Nenhuma dúvida pendente! Quando encontrar um conceito difícil durante a aula, marque o botão <strong>"❓ Tenho Dúvidas"</strong> para registrar sua pergunta aqui.</span>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  duvidas.forEach(d => {
+    html += `
+      <div style="background: var(--color-surface-low); border: 1px solid #fecaca; border-radius: var(--radius-md); padding: 0.85rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <div>
+          <span style="font-family: var(--font-code); font-size: 0.75rem; color: #b91c1c; font-weight: 700;">
+            ${d.idAula} • ${d.idTopico}
+          </span>
+          <p style="font-size: 0.85rem; font-weight: 600; color: var(--color-on-surface); margin-top: 0.2rem;">
+            "${d.duvida}"
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="abrirAula('${d.idAula}')">
+            Revisar Aula
+          </button>
+          <button class="btn btn-success" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="marcarDuvidaSanada('${d.idAula}', '${d.idTopico}')">
+            ✓ Dúvida Sanada
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function concluirEtapaAtual() {
+  const user = AppState.user;
+
+  // Regra de Negócio: Visitante não grava no Sheets, exibe modal convidativo
+  if (user.perfil === 'visitante' || !user.autenticado) {
+    openVisitorModal();
+    return;
+  }
+
+  const idAula = AppState.currentLessonId || 'aula_1_2';
+  const xpGanho = 120;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(resp) {
+        if (resp && resp.sucesso) {
+          AppState.user.xpTotal += resp.xpGanho;
+          if (!AppState.user.progressoIds.includes(idAula)) {
+            AppState.user.progressoIds.push(idAula);
+          }
+          renderHeaderUser();
+          showToast(`Parabéns! Aula concluída com sucesso. +${resp.xpGanho} XP adicionados!`, 'success');
+        } else {
+          showToast('Aviso: ' + (resp ? resp.mensagem : 'Erro ao salvar'), 'info');
+        }
+      })
+      .withFailureHandler(function(err) {
+        showToast('Erro ao registrar progresso: ' + err.message, 'error');
+      })
+      .salvarProgresso(idAula, 'memoria_casting', 'concluido', true, true, false, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
+  } else {
+    // Mock local
+    AppState.user.xpTotal += xpGanho;
+    if (!AppState.user.progressoIds.includes(idAula)) {
+      AppState.user.progressoIds.push(idAula);
+    }
+    renderHeaderUser();
+    showToast(`Modo Mock: Progresso salvo localmente! +${xpGanho} XP`, 'success');
+  }
+}
+
+function abrirAula(idAula) {
+  // Apenas a Aula 1.2 está desenvolvida no momento
+  if (idAula === 'aula_1_2') {
+    AppState.currentLessonId = idAula;
+    navigateTo('view-aula');
+    const aulaAtual = document.getElementById('view-aula');
+    if (aulaAtual) {
+      aulaAtual.classList.add('active');
+    }
+    aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+    carregarImagensAula(idAula);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  // Para aulas futuras adicionadas dinamicamente
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    showToast('Carregando conteúdo da aula...', 'info');
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.sucesso && res.html) {
+          AppState.currentLessonId = idAula;
+          const aulaContainer = document.getElementById('dynamic-lesson-content');
+          if (aulaContainer) {
+            aulaContainer.innerHTML = res.html;
+            navigateTo('view-aula');
+            const novaSec = document.getElementById('view-aula');
+            if (novaSec) {
+              novaSec.classList.add('active');
+            }
+            if (typeof initSimulation === 'function') {
+              initSimulation(DEFAULT_SIMULATION_STEPS);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        } else {
+          showToast(res ? res.mensagem : 'O arquivo HTML desta aula ainda não foi criado no projeto.', 'info');
+        }
+      })
+      .withFailureHandler(function(err) {
+        showToast('Erro ao carregar aula: ' + err.message, 'error');
+      })
+      .carregarConteudoAula(idAula);
+  } else {
+    showToast('Apenas a Aula 1.2 possui arquivo HTML desenvolvido até o momento.', 'info');
+  }
+}
+
+/**
+ * ============================================================================
+ * PAINEL ADMINISTRATIVO DO PROFESSOR
+ * ============================================================================
+ */
+
+function carregarRelatorioProfessor() {
+  const container = document.getElementById('teacher-students-tbody');
+  if (!container) return;
+
+  container.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1.5rem; color: var(--color-outline);">Carregando métricas da turma...</td></tr>';
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(renderRelatorioProfessor)
+      .withFailureHandler(function(err) {
+        container.innerHTML = `<tr><td colspan="5" style="color: var(--color-error); padding: 1rem;">Erro: ${err.message}</td></tr>`;
+      })
+      .obterRelatorioTurma((AppState.user && AppState.user.email) ? AppState.user.email : '');
+  } else {
+    // Mock para desenvolvimento local
+    renderRelatorioProfessor({
+      sucesso: true,
+      totalAulasPublicadas: 5,
+      totalAlunos: 3,
+      alunos: [
+        { email: 'marina.costa@aluno.com', nome: 'Marina Costa', aulasConcluidas: 4, xpTotal: 480, ultimoAcesso: '2026-09-25T14:10:00Z' },
+        { email: 'carlos.edu@aluno.com', nome: 'Carlos Eduardo', aulasConcluidas: 2, xpTotal: 290, ultimoAcesso: '2026-09-24T18:30:00Z' },
+        { email: 'ana.julia@aluno.com', nome: 'Ana Júlia Ramos', aulasConcluidas: 1, xpTotal: 120, ultimoAcesso: '2026-09-22T09:15:00Z' }
+      ]
+    });
+  }
+}
+
+function renderRelatorioProfessor(data) {
+  const container = document.getElementById('teacher-students-tbody');
+  if (!container) return;
+
+  if (!data || !data.sucesso || !data.alunos || data.alunos.length === 0) {
+    container.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1.5rem; color: var(--color-outline);">Nenhum aluno registrado até o momento.</td></tr>';
+    return;
+  }
+
+  const totalAulas = data.totalAulasPublicadas || 5;
+  let html = '';
+
+  data.alunos.forEach(aluno => {
+    const pct = Math.round((aluno.aulasConcluidas / totalAulas) * 100);
+    html += `
+      <tr>
+        <td style="font-weight: 600; color: var(--color-primary);">${aluno.nome}</td>
+        <td style="font-family: var(--font-code); font-size: 0.8rem; color: var(--color-outline);">${aluno.email}</td>
+        <td>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="flex: 1; height: 6px; background: var(--color-surface-container); border-radius: var(--radius-full); overflow: hidden; min-width: 80px;">
+              <div style="width: ${pct}%; height: 100%; background: var(--color-secondary); border-radius: var(--radius-full);"></div>
+            </div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-secondary);">${pct}% (${aluno.aulasConcluidas}/${totalAulas})</span>
+          </div>
+        </td>
+        <td style="font-weight: 700; color: var(--color-tertiary-dark);">${aluno.xpTotal} XP</td>
+        <td style="font-size: 0.8rem; color: var(--color-outline);">${aluno.ultimoAcesso ? new Date(aluno.ultimoAcesso).toLocaleDateString('pt-BR') : 'Sem acessos'}</td>
+      </tr>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+/**
+ * ============================================================================
+ * MODAIS E IDENTIFICAÇÃO DE USUÁRIO (PERFIL / LOGIN POR E-MAIL)
+ * ============================================================================
+ */
+
+function openVisitorModal() {
+  renderVisitorModalContent();
+  const modal = document.getElementById('visitor-modal');
+  if (modal) modal.classList.add('active');
+  const input = document.getElementById('login-email-input');
+  if (input) {
+    setTimeout(() => input.focus(), 150);
+  }
+}
+
+function closeVisitorModal() {
+  const modal = document.getElementById('visitor-modal');
+  if (modal) modal.classList.remove('active');
+}
+
+function renderVisitorModalContent() {
+  const card = document.getElementById('visitor-modal-card');
+  if (!card) return;
+  const user = AppState.user;
+
+  if (user && user.autenticado) {
+    card.innerHTML = `
+      <div class="modal-icon-circle" style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); font-size: 1.5rem; font-weight: 700;">
+        ${user.nome ? user.nome.charAt(0).toUpperCase() : '👤'}
+      </div>
+      <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem;">
+        ${user.nome || 'Estudante Conectado'}
+      </h3>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.25rem;">
+        <span style="font-family: var(--font-code); font-size: 0.85rem; color: var(--color-on-surface-variant);">${user.email}</span>
+        <span class="role-tag role-${user.perfil}">${user.perfil}</span>
+      </div>
+      
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+          <div>
+            <span style="font-size: 0.75rem; color: var(--color-outline); display: block;">Pontuação</span>
+            <span style="font-size: 1.15rem; font-weight: 700; color: var(--color-primary);">${user.xpTotal || 0} XP</span>
+          </div>
+          <div style="width: 1px; height: 32px; background: var(--color-outline-variant);"></div>
+          <div>
+            <span style="font-size: 0.75rem; color: var(--color-outline); display: block;">Status</span>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-success);">● Sincronizado</span>
+          </div>
+        </div>
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button class="btn btn-primary" onclick="closeVisitorModal()">
+          Continuar Estudando
+        </button>
+        <button class="btn btn-outline" style="color: #b91c1c; border-color: #fca5a5;" onclick="logoutUsuario()">
+          🚪 Desconectar / Trocar de Conta
+        </button>
+      </div>
+    `;
+  } else {
+    card.innerHTML = `
+      <div class="modal-icon-circle">🔐</div>
+      <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+        Identificação de Estudante & Professor
+      </h3>
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1.25rem;">
+        Informe seu e-mail cadastrado na planilha (ex.: <code>neylor@gmail.com</code>) para conectar seu perfil, registrar suas conquistas e sincronizar seu XP.
+      </p>
+
+      <div style="margin-bottom: 1.25rem; text-align: left;">
+        <label for="login-email-input" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-on-surface-variant); margin-bottom: 0.4rem;">
+          E-mail cadastrado na planilha:
+        </label>
+        <input type="email" id="login-email-input" placeholder="exemplo@gmail.com" style="width: 100%; box-sizing: border-box; padding: 0.75rem 1rem; border: 1.5px solid var(--color-outline-variant); border-radius: var(--radius-md); font-size: 0.95rem; font-family: var(--font-body); outline: none;" onkeydown="if(event.key==='Enter') loginComEmail()">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button class="btn btn-primary" id="btn-conectar-email" onclick="loginComEmail()">
+          🚀 Conectar Perfil
+        </button>
+        <button class="btn btn-outline" onclick="closeVisitorModal()">
+          Continuar como Visitante
+        </button>
+      </div>
+    `;
+  }
+}
+
+function loginComEmail() {
+  const emailInput = document.getElementById('login-email-input');
+  if (!emailInput) return;
+  const email = emailInput.value.trim();
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    showToast('Por favor, digite um e-mail válido (ex.: neylor@gmail.com).', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-conectar-email');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Conectando à planilha...';
+  }
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(userData) {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '🚀 Conectar Perfil';
+        }
+        if (userData && userData.autenticado) {
+          localStorage.setItem('pythonlab_user_email', userData.email);
+          onUserSessionSuccess(userData);
+          closeVisitorModal();
+          showToast(`Bem-vindo, ${userData.nome}! Perfil (${userData.perfil}) conectado com sucesso.`, 'success');
+          loadCatalog();
+        } else {
+          showToast('Não foi possível identificar seu perfil. Verifique o e-mail digitado.', 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '🚀 Conectar Perfil';
+        }
+        showToast('Erro ao conectar: ' + err.message, 'error');
+      })
+      .getUserSessionData(email);
+  } else {
+    // Simulação local
+    localStorage.setItem('pythonlab_user_email', email);
+    onUserSessionSuccess({
+      autenticado: true,
+      email: email,
+      nome: email.split('@')[0],
+      perfil: email.includes('prof') ? 'professor' : 'aluno',
+      xpTotal: 0,
+      progressoIds: ['aula_1_1'],
+      duvidasPendentes: [],
+      ultimaAulaAcessada: 'aula_1_2',
+      podeGravar: true,
+      isProfessor: email.includes('prof')
+    });
+    closeVisitorModal();
+    showToast(`Modo Mock: Perfil conectado como ${email}`, 'success');
+  }
+}
+
+function logoutUsuario() {
+  localStorage.removeItem('pythonlab_user_email');
+  AppState.user = {
+    autenticado: false,
+    email: null,
+    nome: 'Visitante',
+    perfil: 'visitante',
+    xpTotal: 0,
+    progressoIds: [],
+    duvidasPendentes: [],
+    ultimaAulaAcessada: 'aula_1_2',
+    podeGravar: false,
+    isProfessor: false
+  };
+  renderHeaderUser();
+  renderVisitorModalContent();
+  const teacherTab = document.getElementById('nav-teacher');
+  if (teacherTab) teacherTab.style.display = 'none';
+  navigateTo('view-dashboard');
+  closeVisitorModal();
+  showToast('Desconectado com sucesso. Modo visitante ativo.', 'info');
+}
+
+function showToast(message, type = 'info') {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  
+  let icon = 'ℹ';
+  if (type === 'success') {
+    icon = '✓';
+    toast.style.backgroundColor = 'var(--color-primary-container)';
+  } else if (type === 'error') {
+    icon = '✕';
+    toast.style.backgroundColor = 'var(--color-error)';
+  }
+
+  toast.innerHTML = `<span style="font-weight: bold; font-size: 1.1rem;">${icon}</span> <span>${message}</span>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+    toast.style.transition = 'all 300ms ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+/**
+ * ============================================================================
+ * BIFURCAÇÃO DIDÁTICA NO TOPO DA AULA (FAST-TRACK VS DEEP-DIVE)
+ * ============================================================================
+ */
+function setModoVisualizacaoAula(modo) {
+  AppState.modoVisualizacaoAula = modo;
+  try {
+    localStorage.setItem('pythonlab_modo_aula', modo);
+  } catch (e) {}
+  aplicarModoVisualizacaoAula(modo, true);
+}
+
+function aplicarModoVisualizacaoAula(modo, scrollar) {
+  const blocoExp = document.getElementById('bloco-aula-explicacoes');
+  const blocoPra = document.getElementById('bloco-aula-pratica');
+  
+  const btnExp = document.getElementById('btn-mode-explicacoes');
+  const btnPra = document.getElementById('btn-mode-pratica');
+  const btnTud = document.getElementById('btn-mode-tudo');
+  
+  if (btnExp) btnExp.classList.toggle('active', modo === 'explicacoes');
+  if (btnPra) btnPra.classList.toggle('active', modo === 'pratica');
+  if (btnTud) btnTud.classList.toggle('active', modo === 'tudo');
+  
+  if (!blocoExp || !blocoPra) return;
+  
+  if (modo === 'explicacoes') {
+    blocoExp.style.display = 'block';
+    blocoPra.style.display = 'none';
+  } else if (modo === 'pratica') {
+    blocoExp.style.display = 'none';
+    blocoPra.style.display = 'block';
+  } else {
+    // 'tudo'
+    blocoExp.style.display = 'block';
+    blocoPra.style.display = 'block';
+  }
+  
+  if (scrollar) {
+    const alvo = (modo === 'pratica') ? blocoPra : blocoExp;
+    if (alvo) {
+      const topOffset = alvo.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: topOffset, behavior: 'smooth' });
+    }
+  }
+}
+
+/**
+ * ============================================================================
+ * IMAGENS DIDÁTICAS DOS EXERCÍCIOS RESOLVIDOS (GOOGLE DRIVE / OPCIONAL)
+ * ============================================================================
+ */
+function carregarImagensAula(idAula) {
+  if (!idAula) idAula = AppState.currentLessonId || 'aula_1_2';
+  
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.sucesso) {
+          AppState.imagensAula[idAula] = res.imagens || {};
+          renderizarSlotsImagens(idAula);
+        }
+      })
+      .withFailureHandler(function(err) {
+        console.warn('Aviso ao carregar imagens da aula:', err);
+        renderizarSlotsImagens(idAula);
+      })
+      .obterImagensAula(idAula);
+  } else {
+    // Local / Preview Mock
+    const chaveStorage = 'pythonlab_imagens_' + idAula;
+    try {
+      const salvas = JSON.parse(localStorage.getItem(chaveStorage) || '{}');
+      AppState.imagensAula[idAula] = salvas;
+    } catch (e) {
+      AppState.imagensAula[idAula] = {};
+    }
+    renderizarSlotsImagens(idAula);
+  }
+}
+
+function renderizarSlotsImagens(idAula) {
+  if (!idAula) idAula = AppState.currentLessonId || 'aula_1_2';
+  const slots = document.querySelectorAll('.exercicio-resolvido-slot[data-aula="' + idAula + '"], .questao-imagem-slot[data-aula="' + idAula + '"]');
+  const mapaImgs = AppState.imagensAula[idAula] || {};
+  const isProf = AppState.user && (AppState.user.isProfessor || AppState.user.perfil === 'professor');
+
+  slots.forEach(slot => {
+    const idEx = slot.getAttribute('data-exercicio');
+    const tituloEx = slot.getAttribute('data-titulo') || 'Questão / Exercício';
+    const imgData = mapaImgs[idEx];
+
+    if (imgData && imgData.urlVisualizacao) {
+      // Exibe a imagem anexada
+      const legendaTxt = imgData.legenda ? String(imgData.legenda).replace(/"/g, '&quot;') : '';
+      const legendaEnc = encodeURIComponent(imgData.legenda || '');
+      let html = `
+        <div class="resolvido-img-wrapper">
+          <img src="${imgData.urlVisualizacao}" alt="${legendaTxt || 'Imagem Didática da Questão'}" class="resolvido-img" onclick="abrirLightboxImagem('${imgData.urlVisualizacao}', '${legendaEnc}')" title="Clique para ampliar em tela cheia">
+          ${imgData.legenda ? `<div class="resolvido-img-caption"><span>📌</span><span>${imgData.legenda}</span></div>` : ''}
+          <div class="resolvido-img-actions">
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="abrirLightboxImagem('${imgData.urlVisualizacao}', '${legendaEnc}')">
+              🔍 Ampliar Imagem
+            </button>
+            ${isProf ? `
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; color: var(--color-secondary);" onclick="abrirModalUploadImagem('${idAula}', '${idEx}', '${encodeURIComponent(tituloEx)}')">
+                📷 Alterar Imagem
+              </button>
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; color: #b91c1c; border-color: #fca5a5;" onclick="confirmarRemoverImagemProfessor('${idAula}', '${idEx}')">
+                🗑️
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      slot.innerHTML = html;
+      slot.style.display = 'block';
+    } else {
+      // Sem imagem: imagens são opcionais
+      if (isProf) {
+        // Professor vê botão para anexar se desejar
+        slot.innerHTML = `
+          <div style="text-align: right; margin-top: 0.35rem;">
+            <button class="teacher-add-img-btn" onclick="abrirModalUploadImagem('${idAula}', '${idEx}', '${encodeURIComponent(tituloEx)}')">
+              <span>📷</span>
+              <span>Anexar Imagem [Professor]</span>
+            </button>
+          </div>
+        `;
+        slot.style.display = 'block';
+      } else {
+        // Aluno / Visitante: slot vazio, limpo e invisível
+        slot.innerHTML = '';
+        slot.style.display = 'none';
+      }
+    }
+  });
+}
+
+function abrirModalUploadImagem(idAula, idExercicio, tituloCodificado) {
+  const isProf = AppState.user && (AppState.user.isProfessor || AppState.user.perfil === 'professor');
+  if (!isProf) {
+    showToast('Apenas professores podem gerenciar imagens didáticas.', 'error');
+    return;
+  }
+
+  const titulo = tituloCodificado ? decodeURIComponent(tituloCodificado) : 'Questão / Exercício';
+  AppState.uploadContext = {
+    idAula: idAula,
+    idExercicio: idExercicio,
+    base64Data: null,
+    mimeType: null
+  };
+
+  const subtituloEl = document.getElementById('modal-img-subtitulo');
+  if (subtituloEl) subtituloEl.textContent = `${idAula.toUpperCase()} • ${titulo}`;
+
+  const placeholder = document.getElementById('modal-img-placeholder');
+  const previewContainer = document.getElementById('modal-img-preview-container');
+  const previewImg = document.getElementById('modal-img-preview');
+  const fileInput = document.getElementById('modal-img-file-input');
+  const legendaInput = document.getElementById('modal-img-legenda');
+  const btnRemover = document.getElementById('btn-remover-img-prof');
+
+  if (fileInput) fileInput.value = '';
+  
+  const mapaImgs = AppState.imagensAula[idAula] || {};
+  const imgAtual = mapaImgs[idExercicio];
+
+  if (imgAtual && imgAtual.urlVisualizacao) {
+    if (placeholder) placeholder.style.display = 'none';
+    if (previewContainer) previewContainer.style.display = 'block';
+    if (previewImg) previewImg.src = imgAtual.urlVisualizacao;
+    if (legendaInput) legendaInput.value = imgAtual.legenda || '';
+    if (btnRemover) btnRemover.style.display = 'inline-flex';
+  } else {
+    if (placeholder) placeholder.style.display = 'block';
+    if (previewContainer) previewContainer.style.display = 'none';
+    if (previewImg) previewImg.src = '';
+    if (legendaInput) legendaInput.value = '';
+    if (btnRemover) btnRemover.style.display = 'none';
+  }
+
+  const modal = document.getElementById('modal-imagem-professor');
+  if (modal) modal.classList.add('active');
+}
+
+function fecharModalImagemProfessor() {
+  const modal = document.getElementById('modal-imagem-professor');
+  if (modal) modal.classList.remove('active');
+  AppState.uploadContext = null;
+}
+
+function aoSelecionarArquivoImagem(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('A imagem excede o limite máximo de 5 MB.', 'error');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64 = e.target.result;
+    if (AppState.uploadContext) {
+      AppState.uploadContext.base64Data = base64;
+      AppState.uploadContext.mimeType = file.type;
+    }
+    const placeholder = document.getElementById('modal-img-placeholder');
+    const previewContainer = document.getElementById('modal-img-preview-container');
+    const previewImg = document.getElementById('modal-img-preview');
+
+    if (placeholder) placeholder.style.display = 'none';
+    if (previewContainer) previewContainer.style.display = 'block';
+    if (previewImg) previewImg.src = base64;
+  };
+  reader.readAsDataURL(file);
+}
+
+function confirmarSalvarImagemProfessor() {
+  if (!AppState.uploadContext) return;
+  const ctx = AppState.uploadContext;
+  const legendaInput = document.getElementById('modal-img-legenda');
+  const legenda = legendaInput ? legendaInput.value.trim() : '';
+
+  // Se o professor não escolheu nova imagem e já tinha uma, só atualiza legenda
+  const mapaImgs = AppState.imagensAula[ctx.idAula] || {};
+  const imgAtual = mapaImgs[ctx.idExercicio];
+
+  if (!ctx.base64Data && (!imgAtual || !imgAtual.urlVisualizacao)) {
+    showToast('Por favor, selecione um arquivo de imagem para anexar.', 'info');
+    return;
+  }
+
+  const btnSalvar = document.getElementById('btn-salvar-img-prof');
+  if (btnSalvar) {
+    btnSalvar.disabled = true;
+    btnSalvar.textContent = 'Enviando ao Drive...';
+  }
+
+  showToast('Salvando imagem na pasta imagens do Google Drive...', 'info');
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (btnSalvar) {
+          btnSalvar.disabled = false;
+          btnSalvar.textContent = '💾 Salvar no Google Drive';
+        }
+        if (res && res.sucesso && res.imagem) {
+          if (!AppState.imagensAula[ctx.idAula]) AppState.imagensAula[ctx.idAula] = {};
+          AppState.imagensAula[ctx.idAula][ctx.idExercicio] = res.imagem;
+          renderizarSlotsImagens(ctx.idAula);
+          fecharModalImagemProfessor();
+          showToast('Imagem didática salva com sucesso no Google Drive!', 'success');
+        } else {
+          showToast(res ? res.mensagem : 'Erro ao salvar imagem.', 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        if (btnSalvar) {
+          btnSalvar.disabled = false;
+          btnSalvar.textContent = '💾 Salvar no Google Drive';
+        }
+        showToast('Erro no upload: ' + err.message, 'error');
+      })
+      .salvarImagemExercicio({
+        idAula: ctx.idAula,
+        idExercicio: ctx.idExercicio,
+        base64Data: ctx.base64Data || imgAtual.urlVisualizacao,
+        mimeType: ctx.mimeType || 'image/png',
+        legenda: legenda,
+        emailParam: (AppState.user && AppState.user.email) ? AppState.user.email : ''
+      });
+  } else {
+    // Mock local preview
+    setTimeout(function() {
+      if (btnSalvar) {
+        btnSalvar.disabled = false;
+        btnSalvar.textContent = '💾 Salvar no Google Drive';
+      }
+      if (!AppState.imagensAula[ctx.idAula]) AppState.imagensAula[ctx.idAula] = {};
+      const novaImg = {
+        idImagem: 'img_' + ctx.idAula + '_' + ctx.idExercicio,
+        idAula: ctx.idAula,
+        idExercicio: ctx.idExercicio,
+        driveFileId: 'mock_drive_' + Date.now(),
+        urlVisualizacao: ctx.base64Data || (imgAtual ? imgAtual.urlVisualizacao : ''),
+        legenda: legenda,
+        uploadedBy: (AppState.user && AppState.user.email) ? AppState.user.email : 'professor',
+        dataUpload: new Date().toISOString()
+      };
+      AppState.imagensAula[ctx.idAula][ctx.idExercicio] = novaImg;
+      try {
+        localStorage.setItem('pythonlab_imagens_' + ctx.idAula, JSON.stringify(AppState.imagensAula[ctx.idAula]));
+      } catch (e) {}
+      renderizarSlotsImagens(ctx.idAula);
+      fecharModalImagemProfessor();
+      showToast('Modo Mock: Imagem gravada localmente com sucesso!', 'success');
+    }, 600);
+  }
+}
+
+function confirmarRemoverImagemProfessor(idAula, idExercicio) {
+  if (!idAula && AppState.uploadContext) idAula = AppState.uploadContext.idAula;
+  if (!idExercicio && AppState.uploadContext) idExercicio = AppState.uploadContext.idExercicio;
+
+  if (!confirm('Deseja realmente remover esta imagem explicativa do exercício?')) {
+    return;
+  }
+
+  showToast('Removendo imagem...', 'info');
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.sucesso) {
+          if (AppState.imagensAula[idAula]) {
+            delete AppState.imagensAula[idAula][idExercicio];
+          }
+          renderizarSlotsImagens(idAula);
+          fecharModalImagemProfessor();
+          showToast('Imagem removida com sucesso.', 'success');
+        } else {
+          showToast(res ? res.mensagem : 'Erro ao remover imagem.', 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        showToast('Erro ao remover: ' + err.message, 'error');
+      })
+      .removerImagemExercicio({
+        idAula: idAula,
+        idExercicio: idExercicio,
+        emailParam: (AppState.user && AppState.user.email) ? AppState.user.email : ''
+      });
+  } else {
+    // Mock local
+    if (AppState.imagensAula[idAula]) {
+      delete AppState.imagensAula[idAula][idExercicio];
+      try {
+        localStorage.setItem('pythonlab_imagens_' + idAula, JSON.stringify(AppState.imagensAula[idAula]));
+      } catch (e) {}
+    }
+    renderizarSlotsImagens(idAula);
+    fecharModalImagemProfessor();
+    showToast('Modo Mock: Imagem removida localmente.', 'success');
+  }
+}
+
+function abrirLightboxImagem(url, legendaCodificada) {
+  const modal = document.getElementById('modal-lightbox-imagem');
+  const imgEl = document.getElementById('lightbox-img-element');
+  const capEl = document.getElementById('lightbox-caption-element');
+
+  if (imgEl) imgEl.src = url;
+  if (capEl) capEl.textContent = legendaCodificada ? decodeURIComponent(legendaCodificada) : '';
+  if (modal) modal.style.display = 'flex';
+}
+
+function fecharLightboxImagem() {
+  const modal = document.getElementById('modal-lightbox-imagem');
+  if (modal) modal.style.display = 'none';
+}
+
+// Fechar lightbox no ESC
+window.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    fecharLightboxImagem();
+  }
+});
+</script>
+
