@@ -456,9 +456,10 @@ Todo arquivo `AulaX_Y.html` deve seguir rigidamente a seguinte hierarquia visual
 
 Cada aula deve culminar em um **Desafio Mestre**:
 1. **Casos de Teste Concretos**: No mínimo 2 casos com valores explícitos de entrada e saídas formatadas (com arredondamentos, unidades e booleanos esperados).
-2. **Botão de 1 Clique**: Função `copiarTemplateX()` que transfere o script com docstrings e chamadas de teste diretamente para a área de transferência do aluno.
-3. **Checklist Reativo de Autoavaliação**: Mínimo de 4 checkboxes (`chk-reforma-1`, `chk-reforma-2`, etc.) que acionam a função `atualizarChecklistX()`.
-4. **Proteção de Submissão**: O botão de conclusão só fica habilitado (`disabled = false`, opacidade 100%) quando **todos os checkboxes estiverem marcados**, concedendo a pontuação de XP formativa.
+2. **Botão de 1 Clique Genérico**: Chama `copiarCodigo('codigo-gabarito-nomeaula', 'Mensagem de sucesso')`, copiando diretamente o código exibido no DOM sem duplicar strings no JavaScript.
+3. **Gabarito com Toggle Universal**: Aciona `toggleGabarito('gabarito-nomeaula-body', 'gabarito-nomeaula-icon')`.
+4. **Checklist Reativo Universal**: Mínimo de 4 checkboxes (`chk-[prefixo]-1`, `chk-[prefixo]-2`, etc.) que acionam `atualizarChecklist('[prefixo]', 4)`.
+5. **Proteção de Submissão e Homologação de XP**: O botão de conclusão aciona `validarEConcluirDesafioMestre('desafio_mestre_[nome]', 'Título Amigável', [xp])` e só fica habilitado (`disabled = false`, opacidade 100%) quando **todos os checkboxes estiverem marcados**, concedendo a pontuação de XP formativa.
 
 ---
 
@@ -488,8 +489,8 @@ Em [Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs), i
 2. **Em [Script.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Script.html)**:
    - Declarar `const SIMULATION_STEPS_AULAX_Y = [ ... ];` com no mínimo 5 a 8 passos contendo: `line`, `codeHighlight`, `title`, `desc`, `stack` e `stdout`.
    - Atualizar a função `abrirAula(idAula)` para selecionar os passos correspondentes e carregar o template instantâneo.
-   - Atualizar a função `switchOficinaBloco(blocoId)` para incluir os IDs das abas da nova aula.
-   - Implementar as funções auxiliares do Desafio Mestre: `copiarTemplateX()`, `toggleGabaritoX()`, `atualizarChecklistX()` e `validarEConcluirX()`.
+   - Atualizar a função `switchOficinaBloco(blocoId)` para incluir os IDs das abas da nova aula (se houver oficinas interativas com abas).
+   - **Arquitetura Genérica do Core (Opção 1)**: O arquivo `Script.html` **NÃO deve conter strings de templates Python hardcoded nem funções duplicadas por aula**. As funções universais `copiarCodigo()`, `toggleGabarito()`, `atualizarChecklist()` e `validarEConcluirDesafioMestre()` atendem a todas as aulas de forma 100% agnóstica a conteúdo.
    - Adicionar o item correspondente no array do catálogo mock de fallback com `ordem` rigorosamente coerente.
 
 ---

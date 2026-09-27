@@ -908,7 +908,7 @@
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="copiarTemplateTotem()">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="copiarCodigo('codigo-gabarito-totem', 'Template do Totem de Bilhetagem copiado!')">
             📋 Copiar Template para Notebook
           </button>
           <a class="btn btn-outline" style="font-size: 0.8rem; padding: 0.45rem 0.9rem; background: rgba(255,255,255,0.1); color: #ffffff; border-color: rgba(255,255,255,0.3); text-decoration: none;" href="https://colab.research.google.com/" target="_blank" rel="noopener">
@@ -1015,7 +1015,7 @@
 
         <!-- Gabarito / Solução Comentada (Toggle) -->
         <div style="border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem;">
-          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabarito()">
+          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabarito('gabarito-body', 'gabarito-icon')">
             <span style="font-weight: 700; color: var(--color-primary);">👁️ Revelar Solução Modelo Comentada (Totem de Bilhetagem)</span>
             <span id="gabarito-icon">▼</span>
           </button>
@@ -1023,7 +1023,7 @@
             <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
               Compare com o código que você executou no Google Colab ou Jupyter:
             </p>
-            <div style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+            <div id="codigo-gabarito-totem" style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
               <span class="syn-comment"># Coleta com conversão explícita de tipos</span><br>
               nome = <span class="syn-kw">input</span>(<span class="syn-str">"Nome do estudante: "</span>)<br>
               cartao = <span class="syn-kw">input</span>(<span class="syn-str">"Número do cartão: "</span>)<br>
@@ -1048,25 +1048,25 @@
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 1:</strong> Conversão estrita de tipos (<code>float</code> aplicado a saldo e recarga, evitando concatenação de texto).</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 2:</strong> Utilização do operador <code>//</code> para garantir que o número de passagens seja número inteiro.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 3:</strong> Utilização do operador <code>%</code> para isolar a sobra financeira menor que uma passagem.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 4:</strong> Exibição do extrato de conferência formatado e legível no console.</span>
             </label>
           </div>
 
           <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
-            <button class="btn btn-secondary" id="btn-concluir-totem" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirTotem(50)">
+            <button class="btn btn-secondary" id="btn-concluir-totem" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirDesafioMestre('desafio_mestre_totem', 'Desafio Mestre do Totem', 50)">
               ✓ Validar Resolução do Totem & Receber +50 XP
             </button>
           </div>

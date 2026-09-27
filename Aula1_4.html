@@ -1259,23 +1259,23 @@ else:
 
           <!-- Botão Copiar Template -->
           <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;">
-            <button class="btn btn-primary" onclick="copiarTemplateMonitoria()">
+            <button class="btn btn-primary" onclick="copiarCodigo('codigo-gabarito-monitoria', 'Template do Sistema de Monitoria copiado!')">
               📋 Copiar Template para Google Colab / Jupyter
             </button>
-            <button class="btn btn-outline" onclick="toggleGabaritoMonitoria()">
+            <button class="btn btn-outline" onclick="toggleGabarito('gabarito-monitoria-body')">
               👁️ Alternar Gabarito Comentado
             </button>
           </div>
 
           <!-- Gabarito Desafio Mestre -->
           <div id="gabarito-monitoria-body" style="display: none; margin-bottom: 1.5rem; background: #0f172a; border-radius: var(--radius-md); padding: 1.25rem;">
-            <pre style="margin: 0; font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; line-height: 1.5;"><code># Solução Oficial do Desafio Mestre: Seleção de Monitoria
+            <pre style="margin: 0; font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; line-height: 1.5;"><code id="codigo-gabarito-monitoria"># Solução Oficial do Desafio Mestre: Seleção de Monitoria
 def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, carga):
     tem_susp = susp.lower() == "sim"
     tem_outra = outra_bolsa.lower() == "sim"
     
     # Validação lógica única com operadores combinados
-    apto = (nota_prog &gt;= 8.5 or media_geral &gt;= 8.0) and (freq &gt;= 80.0) and (not tem_susp) and (not tem_outra)
+    apto = (nota_prog >= 8.5 or media_geral >= 8.0) and (freq >= 80.0) and (not tem_susp) and (not tem_outra)
     
     if apto:
         if carga == 10:
@@ -1287,7 +1287,7 @@ def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, car
             return False
             
         bonus_aplicado = False
-        if media_geral &gt;= 9.5:
+        if media_geral >= 9.5:
             remuneracao += 100.0
             bonus_aplicado = True
             
@@ -1302,9 +1302,9 @@ def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, car
         print("Parecer: INSCRIÇÃO INDEFERIDA")
         if tem_susp:
             print("Motivo: Candidato possui penalidade disciplinar ativa no semestre.")
-        elif freq &lt; 80.0 and (nota_prog &lt; 8.5 and media_geral &lt; 8.0):
+        elif freq < 80.0 and (nota_prog < 8.5 and media_geral < 8.0):
             print("Motivo: Índice de frequência insuficiente e média abaixo do corte.")
-        elif freq &lt; 80.0:
+        elif freq < 80.0:
             print("Motivo: Frequência abaixo do mínimo de 80%.")
         elif tem_outra:
             print("Motivo: Acúmulo de bolsa não permitido.")
@@ -1323,23 +1323,23 @@ def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, car
             </p>
             <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
-                <input type="checkbox" id="chk-monitoria-1" onchange="atualizarChecklistMonitoria()">
+                <input type="checkbox" id="chk-monitoria-1" onchange="atualizarChecklist('monitoria', 4)">
                 <span><strong>Teste 1:</strong> Utilizei parênteses para isolar o operador <code>or</code> das notas antes da conjunção com <code>and</code>.</span>
               </label>
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
-                <input type="checkbox" id="chk-monitoria-2" onchange="atualizarChecklistMonitoria()">
+                <input type="checkbox" id="chk-monitoria-2" onchange="atualizarChecklist('monitoria', 4)">
                 <span><strong>Teste 2:</strong> Apliquei o operador <code>not</code> sobre as variáveis booleanas de impedimento (suspensão e outra bolsa).</span>
               </label>
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
-                <input type="checkbox" id="chk-monitoria-3" onchange="atualizarChecklistMonitoria()">
+                <input type="checkbox" id="chk-monitoria-3" onchange="atualizarChecklist('monitoria', 4)">
                 <span><strong>Teste 3:</strong> Mantive indentação de 4 espaços para o bloco deferido e utilizei atribuição composta <code>+= 100.0</code> para o bônus.</span>
               </label>
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
-                <input type="checkbox" id="chk-monitoria-4" onchange="atualizarChecklistMonitoria()">
+                <input type="checkbox" id="chk-monitoria-4" onchange="atualizarChecklist('monitoria', 4)">
                 <span><strong>Teste 4:</strong> Validei os 3 cenários de teste I/O com sucesso no meu ambiente de execução.</span>
               </label>
             </div>
-            <button class="btn btn-success" id="btn-concluir-monitoria" disabled style="opacity: 0.5; cursor: not-allowed;" onclick="validarEConcluirMonitoria(60)">
+            <button class="btn btn-success" id="btn-concluir-monitoria" disabled style="opacity: 0.5; cursor: not-allowed;" onclick="validarEConcluirDesafioMestre('desafio_mestre_monitoria', 'Desafio Mestre de Monitoria', 60)">
               🏆 Homologar Desafio Mestre (+60 XP)
             </button>
           </div>

@@ -1239,7 +1239,7 @@ body {
 
     <!-- 2. Tela: Aula Interativa (Carregada Dinamicamente ou Padrão Aula 1.2) -->
     <div id="dynamic-lesson-content">
-      <!-- ============================================================================
+<!-- ============================================================================
      PYTHONLAB — AULA 1.2: VARIÁVEIS, TIPOS DE DADOS E ENTRADA/SAÍDA (Aula1_2.html)
      Alinhada integralmente às diretrizes pedagógicas de aula1.2/aula1_2.md
      ============================================================================ -->
@@ -2084,7 +2084,7 @@ body {
 
     <!-- Grid dos 3 Desafios Temáticos -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-      
+
       <!-- Desafio 1 -->
       <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
@@ -2149,7 +2149,7 @@ body {
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="copiarTemplateTotem()">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="copiarCodigo('codigo-gabarito-totem', 'Template do Totem de Bilhetagem copiado!')">
             📋 Copiar Template para Notebook
           </button>
           <a class="btn btn-outline" style="font-size: 0.8rem; padding: 0.45rem 0.9rem; background: rgba(255,255,255,0.1); color: #ffffff; border-color: rgba(255,255,255,0.3); text-decoration: none;" href="https://colab.research.google.com/" target="_blank" rel="noopener">
@@ -2256,7 +2256,7 @@ body {
 
         <!-- Gabarito / Solução Comentada (Toggle) -->
         <div style="border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem;">
-          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabarito()">
+          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabarito('gabarito-body', 'gabarito-icon')">
             <span style="font-weight: 700; color: var(--color-primary);">👁️ Revelar Solução Modelo Comentada (Totem de Bilhetagem)</span>
             <span id="gabarito-icon">▼</span>
           </button>
@@ -2264,7 +2264,7 @@ body {
             <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
               Compare com o código que você executou no Google Colab ou Jupyter:
             </p>
-            <div style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+            <div id="codigo-gabarito-totem" style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
               <span class="syn-comment"># Coleta com conversão explícita de tipos</span><br>
               nome = <span class="syn-kw">input</span>(<span class="syn-str">"Nome do estudante: "</span>)<br>
               cartao = <span class="syn-kw">input</span>(<span class="syn-str">"Número do cartão: "</span>)<br>
@@ -2289,25 +2289,25 @@ body {
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 1:</strong> Conversão estrita de tipos (<code>float</code> aplicado a saldo e recarga, evitando concatenação de texto).</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 2:</strong> Utilização do operador <code>//</code> para garantir que o número de passagens seja número inteiro.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 3:</strong> Utilização do operador <code>%</code> para isolar a sobra financeira menor que uma passagem.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 4:</strong> Exibição do extrato de conferência formatado e legível no console.</span>
             </label>
           </div>
 
           <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
-            <button class="btn btn-secondary" id="btn-concluir-totem" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirTotem(50)">
+            <button class="btn btn-secondary" id="btn-concluir-totem" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirDesafioMestre('desafio_mestre_totem', 'Desafio Mestre do Totem', 50)">
               ✓ Validar Resolução do Totem & Receber +50 XP
             </button>
           </div>
@@ -3287,7 +3287,7 @@ body {
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="copiarTemplateTotem()">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="copiarCodigo('codigo-gabarito-totem', 'Template do Totem de Bilhetagem copiado!')">
             📋 Copiar Template para Notebook
           </button>
           <a class="btn btn-outline" style="font-size: 0.8rem; padding: 0.45rem 0.9rem; background: rgba(255,255,255,0.1); color: #ffffff; border-color: rgba(255,255,255,0.3); text-decoration: none;" href="https://colab.research.google.com/" target="_blank" rel="noopener">
@@ -3394,7 +3394,7 @@ body {
 
         <!-- Gabarito / Solução Comentada (Toggle) -->
         <div style="border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem;">
-          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabarito()">
+          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabarito('gabarito-body', 'gabarito-icon')">
             <span style="font-weight: 700; color: var(--color-primary);">👁️ Revelar Solução Modelo Comentada (Totem de Bilhetagem)</span>
             <span id="gabarito-icon">▼</span>
           </button>
@@ -3402,7 +3402,7 @@ body {
             <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
               Compare com o código que você executou no Google Colab ou Jupyter:
             </p>
-            <div style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+            <div id="codigo-gabarito-totem" style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
               <span class="syn-comment"># Coleta com conversão explícita de tipos</span><br>
               nome = <span class="syn-kw">input</span>(<span class="syn-str">"Nome do estudante: "</span>)<br>
               cartao = <span class="syn-kw">input</span>(<span class="syn-str">"Número do cartão: "</span>)<br>
@@ -3427,25 +3427,25 @@ body {
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 1:</strong> Conversão estrita de tipos (<code>float</code> aplicado a saldo e recarga, evitando concatenação de texto).</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 2:</strong> Utilização do operador <code>//</code> para garantir que o número de passagens seja número inteiro.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 3:</strong> Utilização do operador <code>%</code> para isolar a sobra financeira menor que uma passagem.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-totem-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistTotem()">
+              <input type="checkbox" id="chk-totem-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('totem', 4)">
               <span><strong>Teste 4:</strong> Exibição do extrato de conferência formatado e legível no console.</span>
             </label>
           </div>
 
           <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
-            <button class="btn btn-secondary" id="btn-concluir-totem" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirTotem(50)">
+            <button class="btn btn-secondary" id="btn-concluir-totem" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirDesafioMestre('desafio_mestre_totem', 'Desafio Mestre do Totem', 50)">
               ✓ Validar Resolução do Totem & Receber +50 XP
             </button>
           </div>
@@ -4473,7 +4473,7 @@ body {
         </div>
 
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.85rem;" onclick="copiarTemplateReforma()">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.85rem;" onclick="copiarCodigo('codigo-gabarito-reforma', 'Solução do Simulador de Reforma copiada com sucesso!')">
             📋 Copiar Solução Resolvida Python
           </button>
         </div>
@@ -4646,7 +4646,7 @@ body {
 
         <!-- Gabarito / Solução Comentada (Toggle) -->
         <div style="border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem;">
-          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabaritoReforma()">
+          <button class="btn btn-outline" style="width: 100%; border: none; justify-content: space-between; border-radius: 0; background: var(--color-surface-low); padding: 0.75rem 1rem;" onclick="toggleGabarito('gabarito-reforma-body', 'gabarito-reforma-icon')">
             <span style="font-weight: 700; color: var(--color-primary);">👁️ Revelar Solução Modelo Comentada (Simulador de Pintura)</span>
             <span id="gabarito-reforma-icon">▼</span>
           </button>
@@ -4654,7 +4654,7 @@ body {
             <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
               Compare com a resolução executada no Google Colab ou Jupyter:
             </p>
-            <div style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6; overflow-x: auto; white-space: pre-wrap;">preco_lata_18L = <span class="syn-num">87</span>
+            <div id="codigo-gabarito-reforma" style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6; overflow-x: auto; white-space: pre-wrap;">preco_lata_18L = <span class="syn-num">87</span>
 preco_lata_9L = <span class="syn-num">45</span>
 preco_lata_2L = <span class="syn-num">10</span>
 custos_fixo = <span class="syn-num">45</span>
@@ -4720,25 +4720,25 @@ orcamento_ok = custo_total &lt;= teto_orcamento
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-reforma-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistReforma()">
+              <input type="checkbox" id="chk-reforma-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('reforma', 4)">
               <span><strong>Teste 1:</strong> Utilização correta de parênteses no cálculo da área total: <code>2 * (comp1 * alt) + 2 * (comp2 * alt)</code>.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-reforma-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistReforma()">
+              <input type="checkbox" id="chk-reforma-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('reforma', 4)">
               <span><strong>Teste 2:</strong> Aplicação de <code>//</code> e <code>%</code> para decomposição em cascata nas embalagens de 18L, 9L e 2L.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-reforma-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistReforma()">
+              <input type="checkbox" id="chk-reforma-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('reforma', 4)">
               <span><strong>Teste 3:</strong> Ajuste com condicional <code>if</code> para fração de sobra e emprego de <code>+=</code> na taxa fixa de materiais (R$ 45,00).</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
-              <input type="checkbox" id="chk-reforma-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklistReforma()">
+              <input type="checkbox" id="chk-reforma-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('reforma', 4)">
               <span><strong>Teste 4:</strong> Validação orçamentária com tomada de decisão usando a estrutura condicional <code>if / else</code>.</span>
             </label>
           </div>
 
           <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
-            <button class="btn btn-secondary" id="btn-concluir-reforma" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirReforma(60)">
+            <button class="btn btn-secondary" id="btn-concluir-reforma" disabled style="opacity: 0.5; font-size: 0.85rem; cursor: not-allowed;" onclick="validarEConcluirDesafioMestre('desafio_mestre_reforma', 'Desafio Mestre da Reforma', 60)">
               ✓ Validar Resolução da Reforma & Receber +60 XP
             </button>
           </div>
@@ -6055,23 +6055,23 @@ else:
 
           <!-- Botão Copiar Template -->
           <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;">
-            <button class="btn btn-primary" onclick="copiarTemplateMonitoria()">
+            <button class="btn btn-primary" onclick="copiarCodigo('codigo-gabarito-monitoria', 'Template do Sistema de Monitoria copiado!')">
               📋 Copiar Template para Google Colab / Jupyter
             </button>
-            <button class="btn btn-outline" onclick="toggleGabaritoMonitoria()">
+            <button class="btn btn-outline" onclick="toggleGabarito('gabarito-monitoria-body')">
               👁️ Alternar Gabarito Comentado
             </button>
           </div>
 
           <!-- Gabarito Desafio Mestre -->
           <div id="gabarito-monitoria-body" style="display: none; margin-bottom: 1.5rem; background: #0f172a; border-radius: var(--radius-md); padding: 1.25rem;">
-            <pre style="margin: 0; font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; line-height: 1.5;"><code># Solução Oficial do Desafio Mestre: Seleção de Monitoria
+            <pre style="margin: 0; font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; line-height: 1.5;"><code id="codigo-gabarito-monitoria"># Solução Oficial do Desafio Mestre: Seleção de Monitoria
 def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, carga):
     tem_susp = susp.lower() == "sim"
     tem_outra = outra_bolsa.lower() == "sim"
     
     # Validação lógica única com operadores combinados
-    apto = (nota_prog &gt;= 8.5 or media_geral &gt;= 8.0) and (freq &gt;= 80.0) and (not tem_susp) and (not tem_outra)
+    apto = (nota_prog >= 8.5 or media_geral >= 8.0) and (freq >= 80.0) and (not tem_susp) and (not tem_outra)
     
     if apto:
         if carga == 10:
@@ -6083,7 +6083,7 @@ def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, car
             return False
             
         bonus_aplicado = False
-        if media_geral &gt;= 9.5:
+        if media_geral >= 9.5:
             remuneracao += 100.0
             bonus_aplicado = True
             
@@ -6098,9 +6098,9 @@ def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, car
         print("Parecer: INSCRIÇÃO INDEFERIDA")
         if tem_susp:
             print("Motivo: Candidato possui penalidade disciplinar ativa no semestre.")
-        elif freq &lt; 80.0 and (nota_prog &lt; 8.5 and media_geral &lt; 8.0):
+        elif freq < 80.0 and (nota_prog < 8.5 and media_geral < 8.0):
             print("Motivo: Índice de frequência insuficiente e média abaixo do corte.")
-        elif freq &lt; 80.0:
+        elif freq < 80.0:
             print("Motivo: Frequência abaixo do mínimo de 80%.")
         elif tem_outra:
             print("Motivo: Acúmulo de bolsa não permitido.")
@@ -6119,23 +6119,23 @@ def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, car
             </p>
             <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
-                <input type="checkbox" id="chk-monitoria-1" onchange="atualizarChecklistMonitoria()">
+                <input type="checkbox" id="chk-monitoria-1" onchange="atualizarChecklist('monitoria', 4)">
                 <span><strong>Teste 1:</strong> Utilizei parênteses para isolar o operador <code>or</code> das notas antes da conjunção com <code>and</code>.</span>
               </label>
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
-                <input type="checkbox" id="chk-monitoria-2" onchange="atualizarChecklistMonitoria()">
+                <input type="checkbox" id="chk-monitoria-2" onchange="atualizarChecklist('monitoria', 4)">
                 <span><strong>Teste 2:</strong> Apliquei o operador <code>not</code> sobre as variáveis booleanas de impedimento (suspensão e outra bolsa).</span>
               </label>
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
-                <input type="checkbox" id="chk-monitoria-3" onchange="atualizarChecklistMonitoria()">
+                <input type="checkbox" id="chk-monitoria-3" onchange="atualizarChecklist('monitoria', 4)">
                 <span><strong>Teste 3:</strong> Mantive indentação de 4 espaços para o bloco deferido e utilizei atribuição composta <code>+= 100.0</code> para o bônus.</span>
               </label>
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
-                <input type="checkbox" id="chk-monitoria-4" onchange="atualizarChecklistMonitoria()">
+                <input type="checkbox" id="chk-monitoria-4" onchange="atualizarChecklist('monitoria', 4)">
                 <span><strong>Teste 4:</strong> Validei os 3 cenários de teste I/O com sucesso no meu ambiente de execução.</span>
               </label>
             </div>
-            <button class="btn btn-success" id="btn-concluir-monitoria" disabled style="opacity: 0.5; cursor: not-allowed;" onclick="validarEConcluirMonitoria(60)">
+            <button class="btn btn-success" id="btn-concluir-monitoria" disabled style="opacity: 0.5; cursor: not-allowed;" onclick="validarEConcluirDesafioMestre('desafio_mestre_monitoria', 'Desafio Mestre de Monitoria', 60)">
               🏆 Homologar Desafio Mestre (+60 XP)
             </button>
           </div>
@@ -6732,16 +6732,8 @@ const SIMULATION_STEPS_AULA1_4 = [
   }
 ];
 
-
 // Inicialização do documento
 document.addEventListener('DOMContentLoaded', function() {
-  const initialAula = document.getElementById('dynamic-lesson-content');
-  if (initialAula && !document.getElementById('template-aula-1-2')) {
-    const t12 = document.createElement('template');
-    t12.id = 'template-aula-1-2';
-    t12.innerHTML = initialAula.innerHTML;
-    document.body.appendChild(t12);
-  }
   initSimulation(DEFAULT_SIMULATION_STEPS);
   loadUserSession();
   loadCatalog();
@@ -7159,72 +7151,16 @@ function switchTriadTab(tabId) {
 
 /**
  * ============================================================================
- * INTEGRAÇÃO COM GOOGLE COLAB / JUPYTER NOTEBOOK & I/O HELPER
+ * UTILITÁRIOS GENÉRICOS DE AULAS & DESAFIOS MESTRES (100% REUTILIZÁVEL)
+ * ============================================================================
+ * - Nenhuma aula nova precisará adicionar código ao Script.html.
+ * - Toda e qualquer aula usa estas funções genéricas:
+ *   1. copiarCodigo(elementoId, mensagemSucesso)
+ *   2. toggleGabarito(bodyId, iconId)
+ *   3. atualizarChecklist(prefixo, total, btnId)
+ *   4. validarEConcluirDesafioMestre(idExercicio, tituloDesafio, xp)
  * ============================================================================
  */
-
-function copiarTemplateExercicio() {
-  const codigoTemplate = `# ============================================================
-# PYTHONLAB — EXERCÍCIO PROPOSTO: CALCULADORA DE IMC (AULA 1.2)
-# Cole esta célula diretamente no Google Colab ou Jupyter Notebook
-# ============================================================
-
-def calcular_imc(peso, altura):
-    """
-    Recebe peso e altura, aplica casting defensivo para float e
-    calcula o IMC = peso / (altura ** 2).
-    Retorna o valor formatado ou mensagem de erro.
-    """
-    try:
-        peso_val = float(peso)
-        altura_val = float(altura)
-        imc = peso_val / (altura_val ** 2)
-        return f"IMC: {imc:.2f}"
-    except (ValueError, TypeError):
-        return "Erro: Entrada não numérica!"
-
-# --- CASOS DE TESTE AUTOMATIZADOS PARA VERIFICAÇÃO LOCAL ---
-print("--- TESTES DE CONFERÊNCIA ---")
-print("Caso 1 (Esperado: IMC: 22.86):", calcular_imc("70", 1.75))
-print("Caso 2 (Esperado: Erro: Entrada não numérica!):", calcular_imc("invalido", 1.75))
-`;
-
-  navigator.clipboard.writeText(codigoTemplate).then(() => {
-    showToast('Template copiado com sucesso! Cole no Google Colab ou Jupyter.', 'success');
-  }).catch(() => {
-    // Fallback caso clipboard API falhe
-    prompt('Copie o código abaixo para o seu Colab / Jupyter:', codigoTemplate);
-  });
-}
-
-function copiarTemplateDesafio() {
-  const codigoDesafio = `# ============================================================
-# PYTHONLAB — DESAFIO CPYTHON: POOL DE PEQUENOS INTEIROS (id & is)
-# Cole esta célula no Google Colab ou Jupyter Notebook
-# ============================================================
-
-def investigar_identidade_inteiros(a, b):
-    compartilham_mesmo_endereco = (a is b)
-    print(f"Objeto a: {a} | Endereço id(a): {id(a)}")
-    print(f"Objeto b: {b} | Endereço id(b): {id(b)}")
-    print(f"a is b: {compartilham_mesmo_endereco}")
-    return compartilham_mesmo_endereco
-
-# Experimento 1: Inteiros dentro do pool CPython [-5 a 256]
-print("--- Experimento 1: Números Pequenos (256) ---")
-investigar_identidade_inteiros(256, 256)
-
-# Experimento 2: Inteiros fora do pool (> 256)
-print("\\n--- Experimento 2: Números Grandes (257) ---")
-investigar_identidade_inteiros(257, 257)
-`;
-
-  navigator.clipboard.writeText(codigoDesafio).then(() => {
-    showToast('Desafio copiado! Cole no seu Notebook para comprovar a memória.', 'success');
-  }).catch(() => {
-    prompt('Copie o código do desafio:', codigoDesafio);
-  });
-}
 
 /**
  * Alternância de abas do Caderno de Oficinas (Blocos A, B e C ou Seções 1, 2, 3 e 4)
@@ -7252,314 +7188,63 @@ function switchOficinaBloco(blocoId) {
 }
 
 /**
- * Cópia do template do Desafio Mestre: Simulador de Reforma e Pintura (Aula 1.3)
+ * Copia o texto de código de qualquer elemento da tela diretamente para a área de transferência
+ * @param {string} elementoId - ID do elemento HTML que contém o código
+ * @param {string} [mensagemSucesso] - Mensagem personalizada exibida no Toast
  */
-function copiarTemplateReforma() {
-  const codigoReforma = `# ============================================================
-# PYTHONLAB — DESAFIO MESTRE: SIMULADOR DE REFORMA E PINTURA (AULA 1.3)
-# Execute esta célula diretamente no Google Colab ou Jupyter Notebook
-# Conteúdo permitido: Variáveis, input(), float(), int(),
-# Operadores Aritméticos, Precedência com () e Operador Relacional <=
-# (Sem uso de funções 'def')
-#
-# Catálogo de insumos da loja:
-# - Lata 18L: R$ 87,00 (adotada no cálculo de atacado da pintura)
-# - Lata 9L: R$ 45,00 | Galão 2L: R$ 10,00
-# - Taxa fixa de materiais (pincéis, rolos, fitas): R$ 45,00
-# - Rendimento: 1 litro de tinta cobre 6 m²
-# ============================================================
-
-preco_lata_18L = 87
-preco_lata_9L = 45
-preco_lata_2L = 10
-custos_fixo = 45
-rendimento = 6
-
-# 1. ENTRADA DE DADOS VIA INPUT() COM TYPE CASTING (FLOAT)
-print("=== SIMULADOR DE REFORMA E PINTURA DO LABORATÓRIO ===")
-comp1 = float(input("Digite o comprimento das paredes oposta P1 em metros (ex: 8.0): "))
-comp2 = float(input("Digite o comprimento das outras duas paredes oposta em metros (ex: 8.0): ")) 
-alt = float(input("Digite a altura da sala em metros (ex: 6.0): "))
-teto_orcamento = float(input("Digite o teto de orçamento da escola em R$ (ex: 200.00): "))
-
-# 2. CÁLCULO DA ÁREA TOTAL DAS 4 PAREDES (PRECEDÊNCIA COM PARÊNTESES)
-area_total = 2 * (comp1 * alt) + 2 * (comp2 * alt)
-
-# 3. CONSUMO TOTAL DE TINTA (RENDIMENTO: 6 M² POR LITRO)
-litros = area_total / rendimento
-
-# 4. DECOMPOSIÇÃO EM LATAS DE 18L 
-latas_cheias_18L = litros // 18
-litros_sobra = litros % 18
-
-# 5. DECOMPOSIÇÃO EM LATAS DE 9L 
-latas_cheias_9L = litros_sobra // 9
-litros_sobra = litros_sobra % 9
-
-# 6. DECOMPOSIÇÃO EM LATAS DE 2L
-latas_cheias_2L = litros_sobra // 2
-litros_sobra = litros_sobra % 2
-
-if litros_sobra != 0 and litros_sobra < 2:
-  latas_cheias_2L += 1
-
-# 5. CUSTO TOTAL (R$ 87/LATA) E TAXA AUXILIAR COM ATRIBUIÇÃO COMPOSTA (+=)
-custo_total = latas_cheias_18L*preco_lata_18L 
-custo_total += latas_cheias_9L*preco_lata_9L
-custo_total += latas_cheias_2L*preco_lata_2L
-custo_total += custos_fixo  # Adiciona taxa fixa de materiais auxiliares 
-
-# 6. VALIDAÇÃO RELACIONAL DE ORÇAMENTO (BOOLEANO PRODUZIDO SEM IF)
-orcamento_ok = custo_total <= teto_orcamento
-
-# 7. SAÍDA FORMATADA NO CONSOLE (STDOUT)
-print("\\n--- RELATÓRIO DE CUSTOS E VIABILIDADE ---")
-print(f"Área total: \${area_total:.1f} m²")
-print(f"Litros necessários: \${litros:.2f} L")
-print(f"Latas cheias (18L): \${latas_cheias_18L}")
-print(f"Latas cheias (9L): \${latas_cheias_9L}")
-print(f"Latas cheias (2L): \${latas_cheias_2L}")
-print(f"Litros avulsos restantes: \${litros_sobra:.2f} L")
-print(f"Custo com taxa: R$ \${custo_total:.2f}")
-if orcamento_ok:
-  print("Orçamento suficiente: Reforma Aprovada")
-else:
-  print("Orçamento insuficiente: Reforma Negada")
-`;
-
-  navigator.clipboard.writeText(codigoReforma).then(() => {
-    showToast('Solução resolvida do Simulador de Reforma copiada com sucesso!', 'success');
-  }).catch(() => {
-    showToast('Não foi possível copiar automaticamente para a área de transferência.', 'info');
-  });
-}
-
-function toggleGabaritoReforma() {
-  const body = document.getElementById('gabarito-reforma-body');
-  const icon = document.getElementById('gabarito-reforma-icon');
-  if (body) {
-    const isHidden = (body.style.display === 'none' || body.style.display === '');
-    body.style.display = isHidden ? 'block' : 'none';
-    if (icon) icon.textContent = isHidden ? '▲' : '▼';
-  }
-}
-
-function atualizarChecklistReforma() {
-  const c1 = document.getElementById('chk-reforma-1');
-  const c2 = document.getElementById('chk-reforma-2');
-  const c3 = document.getElementById('chk-reforma-3');
-  const c4 = document.getElementById('chk-reforma-4');
-  const btn = document.getElementById('btn-concluir-reforma');
-  
-  const todosConcluidos = c1 && c1.checked && c2 && c2.checked && c3 && c3.checked && c4 && c4.checked;
-  if (btn) {
-    btn.disabled = !todosConcluidos;
-    btn.style.opacity = todosConcluidos ? '1' : '0.5';
-    btn.style.cursor = todosConcluidos ? 'pointer' : 'not-allowed';
-  }
-}
-
-function validarEConcluirReforma(xp) {
-  const user = AppState.user;
-  if (user.perfil === 'visitante' || !user.autenticado) {
-    openVisitorModal();
+function copiarCodigo(elementoId, mensagemSucesso = 'Código copiado com sucesso!') {
+  const el = document.getElementById(elementoId);
+  if (!el) {
+    showToast('Elemento de código não encontrado para cópia.', 'error');
     return;
   }
-
-  const idAula = AppState.currentLessonId || 'aula_1_3';
-  const xpGanho = Number(xp) || 60;
-
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(function(resp) {
-        if (resp && resp.sucesso) {
-          AppState.user.xpTotal += xpGanho;
-          renderHeaderUser();
-          showToast(`🏆 Excelente! Desafio Mestre da Reforma homologado com sucesso! +${xpGanho} XP`, 'success');
-        } else {
-          showToast(resp.mensagem || 'Erro ao registrar progresso', 'info');
-        }
-      })
-      .salvarProgresso(idAula, 'desafio_mestre_reforma', 'concluido', true, true, true, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
-  } else {
-    AppState.user.xpTotal += xpGanho;
-    renderHeaderUser();
-    showToast(`🏆 Modo Mock: Desafio Mestre da Reforma concluído! +${xpGanho} XP adicionados.`, 'success');
-  }
-}
-
-/**
- * Cópia do template do Desafio Mestre: Seleção de Bolsas de Monitoria (Aula 1.4)
- */
-function copiarTemplateMonitoria() {
-  const codigoMonitoria = `# ============================================================
-# PYTHONLAB — DESAFIO MESTRE: SELEÇÃO DE MONITORIA (AULA 1.4)
-# Execute esta célula diretamente no Google Colab ou Jupyter Notebook
-# ============================================================
-
-def avaliar_monitoria(nome, nota_prog, media_geral, freq, susp, outra_bolsa, carga):
-    tem_susp = susp.lower() == "sim"
-    tem_outra = outra_bolsa.lower() == "sim"
-    
-    # Validação lógica única com operadores combinados
-    apto = (nota_prog >= 8.5 or media_geral >= 8.0) and (freq >= 80.0) and (not tem_susp) and (not tem_outra)
-    
-    if apto:
-        if carga == 10:
-            remuneracao = 400.0
-        elif carga == 20:
-            remuneracao = 700.0
-        else:
-            print("Carga horária inválida!")
-            return False
-            
-        bonus_aplicado = False
-        if media_geral >= 9.5:
-            remuneracao += 100.0
-            bonus_aplicado = True
-            
-        print("Parecer: INSCRIÇÃO DEFERIDA")
-        print(f"Bolsista: {nome}")
-        print(f"Carga Horária: {carga}h")
-        if bonus_aplicado:
-            print("Bônus de Excelência: Aplicado (+ R$ 100.00)")
-        print(f"Remuneração Final: R$ {remuneracao:.2f}")
-        return True
-    else:
-        print("Parecer: INSCRIÇÃO INDEFERIDA")
-        if tem_susp:
-            print("Motivo: Candidato possui penalidade disciplinar ativa no semestre.")
-        elif freq < 80.0 and (nota_prog < 8.5 and media_geral < 8.0):
-            print("Motivo: Índice de frequência insuficiente e média abaixo do corte.")
-        elif freq < 80.0:
-            print("Motivo: Frequência abaixo do mínimo de 80%.")
-        elif tem_outra:
-            print("Motivo: Acúmulo de bolsa não permitido.")
-        else:
-            print("Motivo: Média acadêmica insuficiente para o corte.")
-        return False
-
-# --- TESTES DE VALIDAÇÃO LOCAL ---
-print("--- CASO 1: CANDIDATO COM BÔNUS ---")
-avaliar_monitoria("Lucas Mendes", 9.0, 9.6, 92.0, "nao", "nao", 20)
-
-print("\\n--- CASO 2: IMPEDIMENTO DISCIPLINAR ---")
-avaliar_monitoria("Mariana Costa", 9.8, 9.5, 95.0, "sim", "nao", 20)
-
-print("\\n--- CASO 3: FREQUÊNCIA INSUFICIENTE ---")
-avaliar_monitoria("Pedro Silva", 7.5, 7.0, 72.0, "nao", "nao", 10)
-`;
-
-  navigator.clipboard.writeText(codigoMonitoria).then(() => {
-    showToast('Template do Sistema de Monitoria copiado com sucesso!', 'success');
-  }).catch(() => {
-    showToast('Não foi possível copiar automaticamente para a área de transferência.', 'info');
-  });
-}
-
-function toggleGabaritoMonitoria() {
-  const body = document.getElementById('gabarito-monitoria-body');
-  if (body) {
-    const isHidden = (body.style.display === 'none' || body.style.display === '');
-    body.style.display = isHidden ? 'block' : 'none';
-  }
-}
-
-function atualizarChecklistMonitoria() {
-  const c1 = document.getElementById('chk-monitoria-1');
-  const c2 = document.getElementById('chk-monitoria-2');
-  const c3 = document.getElementById('chk-monitoria-3');
-  const c4 = document.getElementById('chk-monitoria-4');
-  const btn = document.getElementById('btn-concluir-monitoria');
-  
-  const todosConcluidos = c1 && c1.checked && c2 && c2.checked && c3 && c3.checked && c4 && c4.checked;
-  if (btn) {
-    btn.disabled = !todosConcluidos;
-    btn.style.opacity = todosConcluidos ? '1' : '0.5';
-    btn.style.cursor = todosConcluidos ? 'pointer' : 'not-allowed';
-  }
-}
-
-function validarEConcluirMonitoria(xp) {
-  const user = AppState.user;
-  if (user.perfil === 'visitante' || !user.autenticado) {
-    openVisitorModal();
+  const texto = el.innerText || el.textContent;
+  if (!texto || !texto.trim()) {
+    showToast('Nenhum código disponível para copiar.', 'info');
     return;
   }
-
-  const idAula = AppState.currentLessonId || 'aula_1_4';
-  const xpGanho = Number(xp) || 60;
-
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(function(resp) {
-        if (resp && resp.sucesso) {
-          AppState.user.xpTotal += xpGanho;
-          renderHeaderUser();
-          showToast(`🏆 Excelente! Desafio Mestre de Monitoria homologado com sucesso! +${xpGanho} XP`, 'success');
-        } else {
-          showToast(resp.mensagem || 'Erro ao registrar progresso', 'info');
-        }
-      })
-      .salvarProgresso(idAula, 'desafio_mestre_monitoria', 'concluido', true, true, true, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
-  } else {
-    AppState.user.xpTotal += xpGanho;
-    renderHeaderUser();
-    showToast(`🏆 Modo Mock: Desafio Mestre de Monitoria concluído! +${xpGanho} XP adicionados.`, 'success');
-  }
-}
-
-/**
- * Cópia do template do Desafio Mestre: Totem de Autoatendimento de Transporte Escolar
- */
-function copiarTemplateTotem() {
-  const codigoTotem = `# ============================================================
-# PYTHONLAB — DESAFIO MESTRE: TOTEM DE TRANSPORTE ESCOLAR (AULA 1.2)
-# Execute esta célula diretamente no Google Colab ou Jupyter Notebook
-# ============================================================
-
-def processar_recarga(nome, cartao, saldo_anterior, recarga):
-    tarifa = 2.20
-    saldo_total = saldo_anterior + recarga
-    
-    # Divisão inteira (//) para passagens inteiras
-    passagens = int(saldo_total // tarifa)
-    
-    # Operador de resto (%) para resíduo financeiro
-    saldo_residual = round(saldo_total % tarifa, 2)
-    
-    print(f"Estudante: {nome} | Cartão: {cartao}")
-    print(f"Novo Saldo: R$ {saldo_total:.2f}")
-    print(f"Passagens disponíveis: {passagens}")
-    print(f"Saldo residual: R$ {saldo_residual:.2f}")
-    return passagens, saldo_residual
-
-# --- CASOS DE TESTE I/O CONCEITUAIS ---
-print("=== CENÁRIO 1: Recarga Padrão ===")
-processar_recarga("Marina Lima", "4098", 1.50, 20.00)
-
-print("\\n=== CENÁRIO 2: Saldo Exato ===")
-processar_recarga("Pedro Silva", "1022", 0.00, 22.00)
-`;
-
-  navigator.clipboard.writeText(codigoTotem).then(() => {
-    showToast('Template do Totem de Bilhetagem copiado! Cole no Colab ou Jupyter.', 'success');
+  navigator.clipboard.writeText(texto.trim()).then(() => {
+    showToast(mensagemSucesso, 'success');
   }).catch(() => {
-    prompt('Copie o código do Totem de Bilhetagem:', codigoTotem);
+    prompt('Copie o código abaixo:', texto.trim());
   });
 }
 
 /**
- * Controle de validação dos 4 testes conceituais do Totem
+ * Alterna a visibilidade de qualquer gabarito/solução comentada e inverte o ícone indicador
+ * @param {string} bodyId - ID do elemento container do gabarito
+ * @param {string} [iconId] - ID do ícone indicador (ex: ▼ / ▲). Opcional se seguir o padrão id + '-icon'
  */
-function atualizarChecklistTotem() {
-  const c1 = document.getElementById('chk-totem-1');
-  const c2 = document.getElementById('chk-totem-2');
-  const c3 = document.getElementById('chk-totem-3');
-  const c4 = document.getElementById('chk-totem-4');
-  const btn = document.getElementById('btn-concluir-totem');
+function toggleGabarito(bodyId = 'gabarito-body', iconId = null) {
+  const body = document.getElementById(bodyId);
+  if (!body) return;
+  const isHidden = (body.style.display === 'none' || body.style.display === '');
+  body.style.display = isHidden ? 'block' : 'none';
 
-  const todosConcluidos = c1 && c2 && c3 && c4 && c1.checked && c2.checked && c3.checked && c4.checked;
+  const icon = iconId ? document.getElementById(iconId) : document.getElementById(bodyId.replace(/-body$/, '') + '-icon');
+  if (icon) {
+    icon.textContent = isHidden ? '▲' : '▼';
+  }
+}
+
+/**
+ * Validação genérica de checklist conceitual (habilita botão de homologação quando todos estiverem marcados)
+ * @param {string} prefixo - Prefixo dos IDs dos checkboxes (ex: 'totem', 'reforma', 'monitoria')
+ * @param {number} [total=4] - Quantidade total de checkboxes do grupo
+ * @param {string} [btnId] - ID do botão a ser habilitado (se nulo, usa `btn-concluir-${prefixo}`)
+ */
+function atualizarChecklist(prefixo, total = 4, btnId = null) {
+  const targetBtnId = btnId || `btn-concluir-${prefixo}`;
+  const btn = document.getElementById(targetBtnId);
+  let todosConcluidos = true;
+
+  for (let i = 1; i <= total; i++) {
+    const chk = document.getElementById(`chk-${prefixo}-${i}`);
+    if (chk && !chk.checked) {
+      todosConcluidos = false;
+      break;
+    }
+  }
 
   if (btn) {
     btn.disabled = !todosConcluidos;
@@ -7569,9 +7254,12 @@ function atualizarChecklistTotem() {
 }
 
 /**
- * Registra o XP e validação do Desafio Mestre do Totem
+ * Validação universal e homologação de XP para Desafios Mestres
+ * @param {string} idExercicio - Identificador da atividade (ex: 'desafio_mestre_reforma')
+ * @param {string} tituloDesafio - Nome amigável da atividade para o Toast de feedback
+ * @param {number} [xp=50] - Quantidade de pontos de experiência a computar
  */
-function validarEConcluirTotem(xp) {
+function validarEConcluirDesafioMestre(idExercicio, tituloDesafio = 'Desafio Mestre', xp = 50) {
   const user = AppState.user;
   if (user.perfil === 'visitante' || !user.autenticado) {
     openVisitorModal();
@@ -7587,28 +7275,36 @@ function validarEConcluirTotem(xp) {
         if (resp && resp.sucesso) {
           AppState.user.xpTotal += xpGanho;
           renderHeaderUser();
-          showToast(`🏆 Excelente! Desafio Mestre do Totem homologado com sucesso! +${xpGanho} XP`, 'success');
+          showToast(`🏆 Excelente! ${tituloDesafio} homologado com sucesso! +${xpGanho} XP`, 'success');
         } else {
           showToast(resp.mensagem || 'Erro ao registrar progresso', 'info');
         }
       })
-      .salvarProgresso(idAula, 'desafio_mestre_totem', 'concluido', true, true, true, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
+      .salvarProgresso(idAula, idExercicio, 'concluido', true, true, true, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
   } else {
     AppState.user.xpTotal += xpGanho;
     renderHeaderUser();
-    showToast(`🏆 Modo Mock: Desafio Mestre do Totem concluído! +${xpGanho} XP adicionados.`, 'success');
+    showToast(`🏆 Modo Mock: ${tituloDesafio} concluído! +${xpGanho} XP adicionados.`, 'success');
   }
 }
 
-function toggleGabarito() {
-  const body = document.getElementById('gabarito-body');
-  const icon = document.getElementById('gabarito-icon');
-  if (body) {
-    const isHidden = (body.style.display === 'none' || body.style.display === '');
-    body.style.display = isHidden ? 'block' : 'none';
-    if (icon) icon.textContent = isHidden ? '▲' : '▼';
-  }
-}
+/* ============================================================================
+ * ALIASES DE COMPATIBILIDADE REVERSA (Garantem que chamadas legadas continuem funcionando)
+ * ============================================================================ */
+function copiarTemplateReforma() { copiarCodigo('codigo-gabarito-reforma', 'Solução do Simulador de Reforma copiada com sucesso!'); }
+function toggleGabaritoReforma() { toggleGabarito('gabarito-reforma-body', 'gabarito-reforma-icon'); }
+function atualizarChecklistReforma() { atualizarChecklist('reforma', 4, 'btn-concluir-reforma'); }
+function validarEConcluirReforma(xp) { validarEConcluirDesafioMestre('desafio_mestre_reforma', 'Desafio Mestre da Reforma', xp || 60); }
+
+function copiarTemplateTotem() { copiarCodigo('codigo-gabarito-totem', 'Template do Totem de Bilhetagem copiado!'); }
+function toggleGabaritoTotem() { toggleGabarito('gabarito-body', 'gabarito-icon'); }
+function atualizarChecklistTotem() { atualizarChecklist('totem', 4, 'btn-concluir-totem'); }
+function validarEConcluirTotem(xp) { validarEConcluirDesafioMestre('desafio_mestre_totem', 'Desafio Mestre do Totem', xp || 50); }
+
+function copiarTemplateMonitoria() { copiarCodigo('codigo-gabarito-monitoria', 'Template do Sistema de Monitoria copiado!'); }
+function toggleGabaritoMonitoria() { toggleGabarito('gabarito-monitoria-body'); }
+function atualizarChecklistMonitoria() { atualizarChecklist('monitoria', 4, 'btn-concluir-monitoria'); }
+function validarEConcluirMonitoria(xp) { validarEConcluirDesafioMestre('desafio_mestre_monitoria', 'Desafio Mestre de Monitoria', xp || 60); }
 
 function atualizarBotaoConclusao() {
   const checkbox = document.getElementById('check-notebook-validado');
@@ -7621,33 +7317,7 @@ function atualizarBotaoConclusao() {
 }
 
 function validarEConcluirTarefa(tipo, xp) {
-  const user = AppState.user;
-  if (user.perfil === 'visitante' || !user.autenticado) {
-    openVisitorModal();
-    return;
-  }
-
-  const idAula = AppState.currentLessonId || 'aula_1_2';
-  const xpGanho = Number(xp) || 35;
-
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(function(resp) {
-        if (resp && resp.sucesso) {
-          AppState.user.xpTotal += xpGanho;
-          renderHeaderUser();
-          showToast(`Excelente trabalho no Notebook! +${xpGanho} XP computados na sua conta.`, 'success');
-        } else {
-          showToast(resp.mensagem || 'Erro ao registrar', 'info');
-        }
-      })
-      .salvarProgresso(idAula, 'exercicio_proposto', 'concluido', true, true, false, xpGanho, '', (AppState.user && AppState.user.email) ? AppState.user.email : '');
-  } else {
-    // Mock local
-    AppState.user.xpTotal += xpGanho;
-    renderHeaderUser();
-    showToast(`Modo Mock: Tarefa do Notebook validada! +${xpGanho} XP adicionados.`, 'success');
-  }
+  validarEConcluirDesafioMestre('tarefa_notebook', 'Tarefa do Notebook', xp || 35);
 }
 
 /**
@@ -7825,9 +7495,9 @@ function abrirAula(idAula) {
   AppState.currentLessonId = idAula;
 
   let stepsAlvo = DEFAULT_SIMULATION_STEPS;
-  if (idAula === 'aula_1_4') {
+  if (idAula === 'aula_1_4' && typeof SIMULATION_STEPS_AULA1_4 !== 'undefined') {
     stepsAlvo = SIMULATION_STEPS_AULA1_4;
-  } else if (idAula === 'aula_1_3') {
+  } else if (idAula === 'aula_1_3' && typeof SIMULATION_STEPS_AULA1_3 !== 'undefined') {
     stepsAlvo = SIMULATION_STEPS_AULA1_3;
   }
   const tmplId = 'template-' + idAula.replace(/_/g, '-');
@@ -8533,6 +8203,8 @@ window.addEventListener('keydown', function(e) {
   }
 });
 </script>
+
+
 
 
 </body>
