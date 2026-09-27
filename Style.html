@@ -97,14 +97,77 @@ body {
 }
 
 /* 3. SHELL DA APLICAÇÃO & NAVEGAÇÃO */
-.app-header {
+.app-header-shell {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-sm);
+  background-color: #ffffff;
+}
+
+.institutional-top-bar {
+  background: linear-gradient(90deg, #001744 0%, #00236f 40%, #00133b 100%);
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  padding: 0.45rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.institutional-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+  flex-wrap: wrap;
+}
+
+.institutional-badge-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.institutional-icon {
+  font-size: 0.95rem;
+}
+
+.institutional-badge {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  font-family: var(--font-headline);
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-full);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  text-transform: uppercase;
+}
+
+.institutional-citation {
+  margin: 0;
+  line-height: 1.45;
+  color: #cbd5e1;
+  font-size: 0.78rem;
+}
+
+.institutional-citation strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.app-header {
+  background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-surface-high);
-  box-shadow: var(--shadow-sm);
   height: 4.5rem;
   display: flex;
   align-items: center;
@@ -1007,5 +1070,149 @@ body {
 
 .lightbox-close-btn:hover {
   background: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================================================
+   RODAPÉ INSTITUCIONAL & CITAÇÃO DE AUTORIA
+   ============================================================================ */
+.app-footer {
+  margin-top: auto;
+  background: linear-gradient(180deg, var(--color-background) 0%, var(--color-surface-lowest) 100%);
+  border-top: 1px solid var(--color-surface-high);
+  padding: 3rem 1.5rem 2.5rem;
+}
+
+.footer-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.footer-quote-card {
+  background: linear-gradient(135deg, #ffffff 0%, var(--color-surface-lowest) 100%);
+  border: 1.5px solid var(--color-surface-container);
+  border-left: 5px solid var(--color-primary);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 2rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-quote-card::after {
+  content: "“";
+  position: absolute;
+  right: 1.5rem;
+  bottom: -1rem;
+  font-family: Georgia, serif;
+  font-size: 8rem;
+  color: rgba(0, 35, 111, 0.04);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.footer-quote-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-surface-high);
+}
+
+.footer-quote-author-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-quote-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-fixed);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.footer-quote-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-outline);
+  letter-spacing: 0.04em;
+}
+
+.footer-quote-author {
+  font-family: var(--font-headline);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.footer-quote-chip {
+  background: var(--color-secondary-fixed);
+  color: var(--color-on-secondary-fixed);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+.footer-quote-body {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--color-on-surface);
+  line-height: 1.6;
+  margin: 0 0 1.25rem 0;
+  max-width: 1080px;
+}
+
+.footer-quote-body strong {
+  font-style: normal;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.footer-quote-footer {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--color-surface-container);
+  font-size: 0.8rem;
+  color: var(--color-on-surface-variant);
+}
+
+.footer-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.footer-meta-icon {
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .institutional-top-bar {
+    padding: 0.4rem 1rem;
+  }
+  .institutional-citation {
+    font-size: 0.74rem;
+  }
+  .footer-quote-card {
+    padding: 1.25rem 1.25rem;
+  }
+  .footer-quote-body {
+    font-size: 0.88rem;
+  }
 }
 </style>

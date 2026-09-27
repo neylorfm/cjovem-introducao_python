@@ -15,50 +15,66 @@
 </head>
 <body>
   <!-- ============================================================================
-       CABEÇALHO DA APLICAÇÃO (SHELL UNIFICADO)
+       CABEÇALHO DA APLICAÇÃO (SHELL UNIFICADO COM BARRA INSTITUCIONAL)
        ============================================================================ -->
-  <header class="app-header">
-    <div class="header-container">
-      <!-- Marca / Logo -->
-      <a href="#" class="brand-wrapper" onclick="navigateTo('view-dashboard'); return false;">
-        <div class="brand-icon">🐍</div>
-        <div>
-          <span class="brand-title">PythonLab</span>
-          <span class="brand-badge">Trilha 3.12</span>
+  <header class="app-header-shell">
+    <!-- Barra Institucional Superior Permanente -->
+    <div class="institutional-top-bar">
+      <div class="institutional-container">
+        <div class="institutional-badge-group">
+          <span class="institutional-icon">🎓</span>
+          <span class="institutional-badge">CJOVEM</span>
         </div>
-      </a>
+        <p class="institutional-citation">
+          Plataforma concebida e desenvolvida pelo <strong>Professor Neylor FM</strong> com o objetivo de facilitar e potencializar o aprendizado prático no curso <strong>Introdução à Programação Python</strong>, ofertado pelo <strong>CJOVEM</strong>.
+        </p>
+      </div>
+    </div>
 
-      <!-- Menu de Navegação SPA -->
-      <nav class="main-nav">
-        <button class="nav-item active" data-view="view-dashboard" onclick="navigateTo('view-dashboard')">
-          <span>📚 Módulos & Trilha</span>
-        </button>
-        <button class="nav-item" data-view="view-aula" onclick="navigateTo('view-aula')">
-          <span>🔬 Aula & Simulador</span>
-        </button>
-        <button class="nav-item" id="nav-teacher" data-view="view-professor" style="display: none;" onclick="navigateTo('view-professor')">
-          <span>📊 Painel da Turma</span>
-        </button>
-      </nav>
+    <!-- Barra Principal de Navegação e Perfil -->
+    <div class="app-header">
+      <div class="header-container">
+        <!-- Marca / Logo -->
+        <a href="#" class="brand-wrapper" onclick="navigateTo('view-dashboard'); return false;">
+          <div class="brand-icon">🐍</div>
+          <div>
+            <span class="brand-title">PythonLab</span>
+            <span class="brand-badge">Trilha 3.12</span>
+          </div>
+        </a>
 
-      <!-- Indicadores de Gamificação e Perfil -->
-      <div class="header-actions">
-        <!-- Streak Diário -->
-        <div class="streak-pill" title="Sequência ativa de estudos">
-          <span>🔥</span>
-          <span>14 dias</span>
-        </div>
+        <!-- Menu de Navegação SPA -->
+        <nav class="main-nav">
+          <button class="nav-item active" data-view="view-dashboard" onclick="navigateTo('view-dashboard')">
+            <span>📚 Módulos & Trilha</span>
+          </button>
+          <button class="nav-item" data-view="view-aula" onclick="navigateTo('view-aula')">
+            <span>🔬 Aula & Simulador</span>
+          </button>
+          <button class="nav-item" id="nav-teacher" data-view="view-professor" style="display: none;" onclick="navigateTo('view-professor')">
+            <span>📊 Painel da Turma</span>
+          </button>
+        </nav>
 
-        <!-- Pontuação XP Total -->
-        <div class="xp-badge" title="XP acumulado na plataforma">
-          <span>⭐</span>
-          <span id="header-user-xp">0 XP</span>
-        </div>
+        <!-- Indicadores de Gamificação e Perfil -->
+        <div class="header-actions">
+          <!-- Streak Diário -->
+          <div class="streak-pill" title="Sequência ativa de estudos">
+            <span>🔥</span>
+            <span>14 dias</span>
+          </div>
 
-        <!-- Badge de Perfil do Usuário -->
-        <div class="user-profile-btn" onclick="openVisitorModal()" title="Gerenciar Perfil / Login">
-          <div class="user-avatar" id="header-user-avatar">V</div>
-          <span class="role-tag role-visitante" id="header-user-role">visitante</span>
+          <!-- Pontuação XP Total -->
+          <div class="xp-badge" title="XP acumulado na plataforma">
+            <span>⭐</span>
+            <span id="header-user-xp">0 XP</span>
+          </div>
+
+          <!-- Badge de Perfil do Usuário -->
+          <div class="user-profile-btn" onclick="openVisitorModal()" title="Gerenciar Perfil / Login">
+            <div class="user-avatar" id="header-user-avatar">V</div>
+            <span class="role-tag role-visitante" id="header-user-role">visitante</span>
+          </div>
         </div>
       </div>
     </div>
@@ -130,8 +146,46 @@
           </table>
         </div>
       </div>
-    </div>
   </main>
+
+  <!-- ============================================================================
+       RODAPÉ INSTITUCIONAL & CITAÇÃO DE AUTORIA (SEMPRE VISÍVEL NO FINAL DE TODAS AS TELAS)
+       ============================================================================ -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-quote-card">
+        <div class="footer-quote-header">
+          <div class="footer-quote-author-wrap">
+            <div class="footer-quote-avatar">🎓</div>
+            <div>
+              <div class="footer-quote-label">Autoria & Desenvolvimento</div>
+              <div class="footer-quote-author">Professor Neylor FM</div>
+            </div>
+          </div>
+          <span class="footer-quote-chip">CJOVEM • Introdução à Programação Python</span>
+        </div>
+        
+        <blockquote class="footer-quote-body">
+          “Plataforma concebida e desenvolvida pelo <strong>Professor Neylor FM</strong> com o objetivo de facilitar e potencializar o aprendizado prático no curso <strong>Introdução à Programação Python</strong>, ofertado pelo <strong>CJOVEM</strong>.”
+        </blockquote>
+
+        <div class="footer-quote-footer">
+          <div class="footer-meta-item">
+            <span class="footer-meta-icon">🐍</span>
+            <span><strong>PythonLab</strong> • Ambiente Interativo de Ensino</span>
+          </div>
+          <div class="footer-meta-item">
+            <span class="footer-meta-icon">🏢</span>
+            <span>Programa CJOVEM</span>
+          </div>
+          <div class="footer-meta-item">
+            <span class="footer-meta-icon">💻</span>
+            <span>CPython 3.12 Standard Track</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <!-- ============================================================================
        MODAL DE PERFIL / LOGIN POR E-MAIL
