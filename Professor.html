@@ -95,4 +95,83 @@
       </table>
     </div>
   </div>
+
+  <!-- 3. Roleta de Sorteio Síncrona da Turma (Roda da Fortuna) -->
+  <div class="card" style="margin-bottom: 2rem; border: 1.5px solid rgba(245, 158, 11, 0.35); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #fef3c7; color: #b45309; padding: 0.2rem 0.6rem; border-radius: var(--radius-full); display: inline-flex; align-items: center; gap: 0.3rem;">
+          <span>🎰</span> Dinâmica Ativa & Sorteio
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin-top: 0.35rem;">
+          Roleta de Sorteio Síncrona da Turma
+        </h2>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <button class="btn btn-outline" onclick="carregarDadosSorteioProfessor()" style="font-size: 0.82rem;">
+          🔄 Atualizar Alunos
+        </button>
+        <button class="btn btn-outline" onclick="confirmarResetarSorteio()" style="font-size: 0.82rem; color: #b45309; border-color: #fde68a;">
+          🔁 Resetar Rodada
+        </button>
+        <button class="btn btn-primary" id="btn-iniciar-sorteio-painel" onclick="iniciarSorteioPeloProfessor()" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-weight: 800; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35); font-size: 0.9rem; padding: 0.65rem 1.25rem;">
+          🎰 Girar Roleta da Turma
+        </button>
+      </div>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); margin-bottom: 1.25rem; line-height: 1.5;">
+      Sorteie estudantes em tempo real durante a aula para responderem a exercícios ou apresentarem seus códigos. Os alunos já sorteados são excluídos automaticamente da rodada para garantir rotatividade justa.
+    </p>
+
+    <!-- Resumo de Contadores -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+        <div style="font-size: 2rem;">👥</div>
+        <div>
+          <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">Alunos Elegíveis</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary);" id="sorteio-contagem-elegiveis">0</div>
+        </div>
+      </div>
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+        <div style="font-size: 2rem;">🏆</div>
+        <div>
+          <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">Já Sorteados na Rodada</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #b45309;" id="sorteio-contagem-sorteados">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid: Presença/Elegibilidade (Esquerda) vs Histórico de Sorteados (Direita) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+      <!-- Coluna 1: Presença e Elegibilidade -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-outline-variant); border-radius: var(--radius-md); padding: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-surface-high);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--color-primary); display: flex; align-items: center; gap: 0.35rem;">
+            <span>📋</span> Frequência & Participação
+          </div>
+          <div style="display: flex; gap: 0.35rem;">
+            <button type="button" class="btn btn-outline" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;" onclick="marcarTodosAlunosSorteio(true)">Todos</button>
+            <button type="button" class="btn btn-outline" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;" onclick="marcarTodosAlunosSorteio(false)">Nenhum</button>
+          </div>
+        </div>
+        <div id="sorteio-lista-presenca" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.45rem;">
+          <div style="text-align: center; padding: 1.5rem; color: var(--color-outline); font-size: 0.85rem;">Carregando estudantes...</div>
+        </div>
+      </div>
+
+      <!-- Coluna 2: Histórico de Sorteados -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-outline-variant); border-radius: var(--radius-md); padding: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-surface-high);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #b45309; display: flex; align-items: center; gap: 0.35rem;">
+            <span>🏆</span> Histórico da Rodada
+          </div>
+          <span style="font-size: 0.72rem; color: var(--color-outline);">Ordem de Sorteio</span>
+        </div>
+        <div id="sorteio-lista-historico" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.45rem;">
+          <div style="text-align: center; padding: 1.5rem; color: var(--color-outline); font-size: 0.85rem;">Nenhum aluno sorteado ainda nesta rodada.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div> <!-- Fim de #view-professor -->

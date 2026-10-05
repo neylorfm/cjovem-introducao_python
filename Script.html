@@ -595,10 +595,13 @@ function navigateTo(viewId) {
     carregarAvaliacaoAtivaDashboard();
   }
 
-  // Se a rota for o painel do professor, carrega o relatório consolidado e as avaliações
+  // Se a rota for o painel do professor, carrega o relatório consolidado, as avaliações e a roleta
   if (viewId === 'view-professor') {
     carregarRelatorioProfessor();
     carregarAvaliacoesProfessor();
+    if (typeof carregarDadosSorteioProfessor === 'function') {
+      carregarDadosSorteioProfessor();
+    }
   }
 }
 

@@ -14511,6 +14511,85 @@ print("=" * 50)</code></pre>
       </table>
     </div>
   </div>
+
+  <!-- 3. Roleta de Sorteio Síncrona da Turma (Roda da Fortuna) -->
+  <div class="card" style="margin-bottom: 2rem; border: 1.5px solid rgba(245, 158, 11, 0.35); box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08);">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #fef3c7; color: #b45309; padding: 0.2rem 0.6rem; border-radius: var(--radius-full); display: inline-flex; align-items: center; gap: 0.3rem;">
+          <span>🎰</span> Dinâmica Ativa & Sorteio
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin-top: 0.35rem;">
+          Roleta de Sorteio Síncrona da Turma
+        </h2>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        <button class="btn btn-outline" onclick="carregarDadosSorteioProfessor()" style="font-size: 0.82rem;">
+          🔄 Atualizar Alunos
+        </button>
+        <button class="btn btn-outline" onclick="confirmarResetarSorteio()" style="font-size: 0.82rem; color: #b45309; border-color: #fde68a;">
+          🔁 Resetar Rodada
+        </button>
+        <button class="btn btn-primary" id="btn-iniciar-sorteio-painel" onclick="iniciarSorteioPeloProfessor()" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-weight: 800; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35); font-size: 0.9rem; padding: 0.65rem 1.25rem;">
+          🎰 Girar Roleta da Turma
+        </button>
+      </div>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); margin-bottom: 1.25rem; line-height: 1.5;">
+      Sorteie estudantes em tempo real durante a aula para responderem a exercícios ou apresentarem seus códigos. Os alunos já sorteados são excluídos automaticamente da rodada para garantir rotatividade justa.
+    </p>
+
+    <!-- Resumo de Contadores -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+        <div style="font-size: 2rem;">👥</div>
+        <div>
+          <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">Alunos Elegíveis</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary);" id="sorteio-contagem-elegiveis">0</div>
+        </div>
+      </div>
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+        <div style="font-size: 2rem;">🏆</div>
+        <div>
+          <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">Já Sorteados na Rodada</div>
+          <div style="font-size: 1.5rem; font-weight: 800; color: #b45309;" id="sorteio-contagem-sorteados">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid: Presença/Elegibilidade (Esquerda) vs Histórico de Sorteados (Direita) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+      <!-- Coluna 1: Presença e Elegibilidade -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-outline-variant); border-radius: var(--radius-md); padding: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-surface-high);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--color-primary); display: flex; align-items: center; gap: 0.35rem;">
+            <span>📋</span> Frequência & Participação
+          </div>
+          <div style="display: flex; gap: 0.35rem;">
+            <button type="button" class="btn btn-outline" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;" onclick="marcarTodosAlunosSorteio(true)">Todos</button>
+            <button type="button" class="btn btn-outline" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;" onclick="marcarTodosAlunosSorteio(false)">Nenhum</button>
+          </div>
+        </div>
+        <div id="sorteio-lista-presenca" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.45rem;">
+          <div style="text-align: center; padding: 1.5rem; color: var(--color-outline); font-size: 0.85rem;">Carregando estudantes...</div>
+        </div>
+      </div>
+
+      <!-- Coluna 2: Histórico de Sorteados -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-outline-variant); border-radius: var(--radius-md); padding: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-surface-high);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #b45309; display: flex; align-items: center; gap: 0.35rem;">
+            <span>🏆</span> Histórico da Rodada
+          </div>
+          <span style="font-size: 0.72rem; color: var(--color-outline);">Ordem de Sorteio</span>
+        </div>
+        <div id="sorteio-lista-historico" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.45rem;">
+          <div style="text-align: center; padding: 1.5rem; color: var(--color-outline); font-size: 0.85rem;">Nenhum aluno sorteado ainda nesta rodada.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div> <!-- Fim de #view-professor -->
 
   </main>
@@ -15377,9 +15456,12 @@ function navigateTo(viewId) {
     renderizarOndePareiDashboard();
   }
 
-  // Se a rota for o painel do professor, carrega o relatório consolidado
+  // Se a rota for o painel do professor, carrega o relatório consolidado e a roleta
   if (viewId === 'view-professor') {
     carregarRelatorioProfessor();
+    if (typeof carregarDadosSorteioProfessor === 'function') {
+      carregarDadosSorteioProfessor();
+    }
   }
 }
 
@@ -18000,6 +18082,1179 @@ if (document.readyState === 'loading') {
 }
 </script>
 
+
+
+<!-- ============================================================================
+     PYTHONLAB — MODAL DA ROLETA DE SORTEIO SÍNCRONA (ModalRoleta.html)
+     Componente Modular de Sorteio da Turma (Markup HTML + Motor JavaScript)
+     ============================================================================ -->
+<style>
+/* ============================================================================
+   ESTILOS VISUAIS DA ROLETA DE SORTEIO SÍNCRONA (MODALROLETA.HTML)
+   ============================================================================ */
+.modal-roleta-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 30, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-roleta-card {
+  position: relative;
+  background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+  border: 2px solid rgba(245, 158, 11, 0.4);
+  border-radius: var(--radius-xl, 24px);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 35px rgba(245, 158, 11, 0.2);
+  width: 100%;
+  max-width: 540px;
+  max-height: 94vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  color: #f8fafc;
+  text-align: center;
+}
+
+.roleta-confetti-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  border-radius: inherit;
+}
+
+.roleta-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 10;
+}
+
+.roleta-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.roleta-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+  animation: roletaPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes roletaPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.35); }
+}
+
+.roleta-modal-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #94a3b8;
+  font-size: 1.1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.roleta-modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+.roleta-countdown-banner {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.25) 100%);
+  border: 1.5px solid rgba(245, 158, 11, 0.5);
+  border-radius: var(--radius-md, 12px);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  text-align: left;
+  animation: roletaGlow 2s infinite alternate;
+}
+
+@keyframes roletaGlow {
+  0% { box-shadow: 0 0 5px rgba(245, 158, 11, 0.2); }
+  100% { box-shadow: 0 0 18px rgba(245, 158, 11, 0.45); }
+}
+
+.roleta-countdown-icon {
+  font-size: 1.75rem;
+  animation: roletaBounce 0.8s ease infinite alternate;
+}
+
+@keyframes roletaBounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+.roleta-countdown-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fef08a;
+}
+
+.roleta-countdown-subtitle {
+  font-size: 0.78rem;
+  color: #fde68a;
+  margin-top: 0.15rem;
+}
+
+.roleta-wheel-outer-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem auto 1rem auto;
+  max-width: 420px;
+}
+
+.roleta-pointer-wrapper {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+}
+
+.roleta-pointer-needle {
+  width: 0;
+  height: 0;
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-top: 36px solid #fbbf24;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7));
+}
+
+.roleta-canvas-box {
+  position: relative;
+  border-radius: 50%;
+  padding: 6px;
+  background: radial-gradient(circle, #334155 0%, #0f172a 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+#roleta-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.roleta-spin-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin: 0.75rem 0;
+}
+
+.roleta-spin-spinner {
+  display: inline-block;
+  font-size: 1.25rem;
+  animation: roletaSpin 1.2s linear infinite;
+}
+
+@keyframes roletaSpin {
+  100% { transform: rotate(360deg); }
+}
+
+.roleta-resultado-container {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border: 2px solid #f59e0b;
+  border-radius: var(--radius-lg, 16px);
+  padding: 1.25rem 1.5rem;
+  margin-top: 1rem;
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.25);
+  animation: roletaPopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes roletaPopIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.roleta-trophy-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.25rem;
+  animation: roletaBounce 0.6s infinite alternate;
+}
+
+.roleta-resultado-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #f59e0b;
+  text-transform: uppercase;
+}
+
+.roleta-vencedor-nome {
+  font-family: var(--font-headline, sans-serif);
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #fef08a;
+  text-shadow: 0 2px 10px rgba(245, 158, 11, 0.5);
+  margin: 0.35rem 0;
+}
+
+.roleta-resultado-msg {
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.roleta-resultado-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Itens da Lista de Presença no Painel Docente */
+.sorteio-presenca-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface-low, #f8fafc);
+  border: 1px solid var(--color-surface-high, #e2e8f0);
+  transition: all 0.2s;
+}
+
+.sorteio-presenca-item:hover {
+  background: var(--color-surface-container, #f1f5f9);
+}
+
+.sorteio-presenca-item.ja-sorteado {
+  opacity: 0.65;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.sorteio-badge-sorteado {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #fef3c7;
+  color: #b45309;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sorteio-badge-elegivel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #dcfce7;
+  color: #15803d;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+}
+
+/* Card do Histórico de Sorteados */
+.sorteio-historico-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-md, 8px);
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  margin-bottom: 0.35rem;
+}
+</style>
+
+<!-- ============================================================================
+     MODAL SÍNCRONO: ROLETA DE SORTEIO DA TURMA (RODA DA FORTUNA)
+     ============================================================================ -->
+<div class="modal-overlay modal-roleta-overlay" id="modal-roleta-sorteio" style="display: none;">
+    <div class="modal-roleta-card" id="modal-roleta-card">
+      <!-- Confetti Canvas por cima de todo o modal -->
+      <canvas id="roleta-confetti-canvas" class="roleta-confetti-canvas"></canvas>
+
+      <!-- Cabeçalho do Modal -->
+      <div class="roleta-modal-header">
+        <div class="roleta-live-badge">
+          <span class="roleta-pulse-dot"></span>
+          <span>SORTEIO DA TURMA AO VIVO</span>
+        </div>
+        <!-- Botão Fechar: Inicialmente oculto durante o giro, exibido apenas após o resultado -->
+        <button class="roleta-modal-close-btn" id="btn-fechar-roleta" onclick="fecharModalRoleta()" style="display: none;" title="Fechar Roleta (Disponível após a revelação do sorteado)">✕</button>
+      </div>
+
+      <!-- Banner de Contagem Regressiva / Sincronização Pré-Giro -->
+      <div class="roleta-countdown-banner" id="roleta-countdown-banner">
+        <div class="roleta-countdown-icon">🔔</div>
+        <div class="roleta-countdown-info">
+          <div class="roleta-countdown-title">O Professor iniciou o sorteio da turma!</div>
+          <div class="roleta-countdown-subtitle">Sincronizando todos os alunos... a roleta começará em <strong id="roleta-countdown-timer">4</strong>s</div>
+        </div>
+      </div>
+
+      <!-- Container Visual da Roleta Circular -->
+      <div class="roleta-wheel-outer-wrapper">
+        <div class="roleta-pointer-wrapper">
+          <div class="roleta-pointer-needle"></div>
+        </div>
+        <div class="roleta-canvas-box">
+          <canvas id="roleta-canvas" width="460" height="460"></canvas>
+        </div>
+      </div>
+
+      <!-- Status Intermediário (Durante o Giro) -->
+      <div class="roleta-spin-status" id="roleta-spin-status">
+        <span class="roleta-spin-spinner">🌀</span>
+        <span id="roleta-spin-status-text">Girando a roleta... quem será o sorteado?</span>
+      </div>
+
+      <!-- Card de Resultado & Vitória (Aparece ao terminar) -->
+      <div class="roleta-resultado-container" id="roleta-resultado-container" style="display: none;">
+        <div class="roleta-trophy-icon">🏆</div>
+        <div class="roleta-resultado-label">ESTUDANTE SORTEADO(A):</div>
+        <div class="roleta-vencedor-nome" id="roleta-vencedor-nome">Nome do Aluno</div>
+        <div class="roleta-resultado-msg" id="roleta-resultado-msg">
+          🎉 Parabéns! Sua participação foi sorteada pela roleta!
+        </div>
+        <div class="roleta-resultado-actions" id="roleta-resultado-actions">
+          <button class="btn btn-secondary" onclick="fecharModalRoleta()">
+            Fechar Janela
+          </button>
+          <button class="btn btn-primary" id="btn-sortear-proximo-modal" style="display: none; background: linear-gradient(135deg, #f59e0b, #d97706); border: none;" onclick="iniciarSorteioPeloProfessor()">
+            🎰 Sortear Próximo Aluno
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/**
+ * ============================================================================
+ * MOTOR DA ROLETA DE SORTEIO SÍNCRONA DA TURMA (RODA DA FORTUNA)
+ * ============================================================================
+ * - Sorteio acionado exclusivamente pelo professor
+ * - Sincronização em tempo real de todos os alunos via CacheService / Polling
+ * - Contagem regressiva pré-giro para garantir sincronização entre dispositivos
+ * - Roda visual desenhada em Canvas com física de desaceleração suave (easeOutQuart)
+ * - Efeitos sonoros via Web Audio API e celebração com confetes dinâmicos
+ * - Bloqueio de saída enquanto o sorteio estiver em andamento
+ * - Exclusão de alunos já sorteados até o professor resetar o sorteio
+ * - Filtro de frequência (presença/ausência) no painel do professor
+ * ============================================================================
+ */
+
+const SorteioEngine = {
+  participantesTodos: [],
+  historicoSorteados: [],
+  ausentesSet: new Set(),
+  sorteioAtivo: null,
+  animando: false,
+  anguloAtual: 0,
+  animationFrameId: null,
+  pollingIntervalId: null,
+  countdownIntervalId: null,
+  lastHandledSorteioId: null,
+  confettiAnimationId: null,
+  bloquearSaida: false
+};
+
+const CORES_ROLETA = [
+  '#2563eb', // Royal Blue
+  '#0d9488', // Teal
+  '#d97706', // Amber
+  '#7c3aed', // Purple
+  '#059669', // Emerald
+  '#dc2626', // Red
+  '#0284c7', // Cerulean
+  '#db2777', // Pink
+  '#4f46e5', // Indigo
+  '#ea580c', // Orange
+  '#0891b2', // Cyan
+  '#16a34a'  // Green
+];
+
+let roletaAudioCtx = null;
+
+function playRoletaTick() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    if (!roletaAudioCtx) roletaAudioCtx = new AudioContext();
+    if (roletaAudioCtx.state === 'suspended') roletaAudioCtx.resume();
+
+    const osc = roletaAudioCtx.createOscillator();
+    const gain = roletaAudioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(580, roletaAudioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(140, roletaAudioCtx.currentTime + 0.035);
+    gain.gain.setValueAtTime(0.12, roletaAudioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, roletaAudioCtx.currentTime + 0.035);
+    osc.connect(gain);
+    gain.connect(roletaAudioCtx.destination);
+    osc.start();
+    osc.stop(roletaAudioCtx.currentTime + 0.035);
+  } catch (e) {}
+}
+
+function playRoletaFanfarra() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    if (!roletaAudioCtx) roletaAudioCtx = new AudioContext();
+    if (roletaAudioCtx.state === 'suspended') roletaAudioCtx.resume();
+
+    const notas = [523.25, 659.25, 783.99, 1046.50]; // Acorde Dó Maior triunfante
+    notas.forEach((freq, idx) => {
+      const osc = roletaAudioCtx.createOscillator();
+      const gain = roletaAudioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const start = roletaAudioCtx.currentTime + (idx * 0.12);
+      gain.gain.setValueAtTime(0.18, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.55);
+      osc.connect(gain);
+      gain.connect(roletaAudioCtx.destination);
+      osc.start(start);
+      osc.stop(start + 0.55);
+    });
+  } catch (e) {}
+}
+
+function desenharRoletaCanvas(participantes, anguloRotacao) {
+  const canvas = document.getElementById('roleta-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const radius = width / 2 - 8;
+
+  ctx.clearRect(0, 0, width, height);
+
+  const numSlices = (participantes && participantes.length > 0) ? participantes.length : 0;
+
+  if (numSlices === 0) {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = '#1e293b';
+    ctx.fill();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = 'bold 16px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Nenhum aluno elegível', centerX, centerY);
+    return;
+  }
+
+  const sliceAngle = (2 * Math.PI) / numSlices;
+
+  // Desenha cada fatia com nome radial
+  for (let i = 0; i < numSlices; i++) {
+    const startAngle = anguloRotacao + (i * sliceAngle);
+    const endAngle = startAngle + sliceAngle;
+
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    ctx.closePath();
+
+    ctx.fillStyle = CORES_ROLETA[i % CORES_ROLETA.length];
+    ctx.fill();
+
+    // Linha divisória entre fatias
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Texto com o nome do aluno
+    ctx.save();
+    const textAngle = startAngle + (sliceAngle / 2);
+    ctx.translate(centerX, centerY);
+    ctx.rotate(textAngle);
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff';
+
+    let fontSize = 15;
+    if (numSlices > 18) fontSize = 11;
+    else if (numSlices > 12) fontSize = 13;
+    ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+
+    const aluno = participantes[i];
+    let nomeExibicao = (aluno.nome || aluno.email || 'Aluno').trim();
+    if (nomeExibicao.length > 16) {
+      const partes = nomeExibicao.split(' ');
+      if (partes.length > 1) {
+        nomeExibicao = `${partes[0]} ${partes[partes.length - 1]}`;
+        if (nomeExibicao.length > 16) nomeExibicao = nomeExibicao.substring(0, 14) + '..';
+      } else {
+        nomeExibicao = nomeExibicao.substring(0, 14) + '..';
+      }
+    }
+
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+    ctx.shadowBlur = 4;
+    ctx.fillText(nomeExibicao, radius - 24, 0);
+    ctx.restore();
+  }
+
+  // Borda metálica dourada externa
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 7;
+  ctx.stroke();
+
+  // Pino Central Dourado (Center Hub)
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, 32, 0, 2 * Math.PI);
+  const gradCenter = ctx.createRadialGradient(centerX - 8, centerY - 8, 4, centerX, centerY, 32);
+  gradCenter.addColorStop(0, '#fef08a');
+  gradCenter.addColorStop(0.45, '#f59e0b');
+  gradCenter.addColorStop(1, '#92400e');
+  ctx.fillStyle = gradCenter;
+  ctx.fill();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 3.5;
+  ctx.stroke();
+
+  // Ícone central
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 20px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('⚡', centerX, centerY);
+}
+
+function dispararConfettiRoleta() {
+  const canvas = document.getElementById('roleta-confetti-canvas');
+  if (!canvas) return;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width || 500;
+  canvas.height = rect.height || 600;
+  const ctx = canvas.getContext('2d');
+
+  const particles = [];
+  const colors = ['#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6', '#fbbf24', '#06b6d4'];
+  for (let i = 0; i < 90; i++) {
+    particles.push({
+      x: canvas.width / 2,
+      y: canvas.height * 0.45,
+      vx: (Math.random() - 0.5) * 15,
+      vy: (Math.random() - 0.7) * 16,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 360,
+      vRot: (Math.random() - 0.5) * 10,
+      alpha: 1,
+      decay: Math.random() * 0.008 + 0.005
+    });
+  }
+
+  if (SorteioEngine.confettiAnimationId) {
+    cancelAnimationFrame(SorteioEngine.confettiAnimationId);
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let active = 0;
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.35;
+      p.rot += p.vRot;
+      p.alpha -= p.decay;
+      if (p.alpha > 0) {
+        active++;
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rot * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      }
+    }
+    if (active > 0) {
+      SorteioEngine.confettiAnimationId = requestAnimationFrame(loop);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  SorteioEngine.confettiAnimationId = requestAnimationFrame(loop);
+}
+
+function iniciarAnimacaoRoletaSincrona(sorteio) {
+  const participantes = sorteio.participantes || [];
+  const numSlices = participantes.length;
+  if (numSlices === 0) return;
+
+  const winnerIndex = sorteio.winnerIndex !== undefined ? sorteio.winnerIndex : 0;
+  const sliceAngle = (2 * Math.PI) / numSlices;
+
+  // Ponteiro apontado para 12 horas (3*PI/2 radianos no padrão canvas)
+  const targetPointerAngle = (3 * Math.PI) / 2;
+  const winnerCenterAngle = (winnerIndex * sliceAngle) + (sliceAngle / 2);
+  let finalBaseAngle = targetPointerAngle - winnerCenterAngle;
+  while (finalBaseAngle < 0) finalBaseAngle += 2 * Math.PI;
+
+  const numVoltas = 6;
+  const totalRotation = (numVoltas * 2 * Math.PI) + finalBaseAngle;
+
+  const spinStart = sorteio.spinTimestamp;
+  const spinEnd = sorteio.fimTimestamp;
+  const totalDuration = spinEnd - spinStart;
+
+  if (SorteioEngine.animationFrameId) {
+    cancelAnimationFrame(SorteioEngine.animationFrameId);
+  }
+
+  let lastTickSlice = -1;
+
+  function frame() {
+    const now = Date.now();
+
+    if (now >= spinEnd) {
+      SorteioEngine.anguloAtual = totalRotation;
+      desenharRoletaCanvas(participantes, SorteioEngine.anguloAtual);
+      finalizarSorteioVisual(sorteio);
+      return;
+    }
+
+    if (now < spinStart) {
+      SorteioEngine.anguloAtual = 0;
+      desenharRoletaCanvas(participantes, 0);
+      SorteioEngine.animationFrameId = requestAnimationFrame(frame);
+      return;
+    }
+
+    const elapsed = now - spinStart;
+    const t = Math.min(Math.max(elapsed / totalDuration, 0), 1);
+
+    // Easing easeOutQuart para desaceleração realista
+    const progress = 1 - Math.pow(1 - t, 4);
+    const currentAngle = progress * totalRotation;
+
+    SorteioEngine.anguloAtual = currentAngle;
+    desenharRoletaCanvas(participantes, currentAngle);
+
+    const currentSlice = Math.floor((currentAngle % (2 * Math.PI)) / sliceAngle);
+    if (currentSlice !== lastTickSlice) {
+      lastTickSlice = currentSlice;
+      playRoletaTick();
+    }
+
+    SorteioEngine.animationFrameId = requestAnimationFrame(frame);
+  }
+
+  SorteioEngine.animationFrameId = requestAnimationFrame(frame);
+}
+
+function finalizarSorteioVisual(sorteio) {
+  SorteioEngine.animando = false;
+  SorteioEngine.bloquearSaida = false; // Desbloqueia fechamento da janela
+
+  const countdownBanner = document.getElementById('roleta-countdown-banner');
+  const spinStatus = document.getElementById('roleta-spin-status');
+  if (countdownBanner) countdownBanner.style.display = 'none';
+  if (spinStatus) spinStatus.style.display = 'none';
+
+  const resContainer = document.getElementById('roleta-resultado-container');
+  const nomeVencedor = document.getElementById('roleta-vencedor-nome');
+  const msgVencedor = document.getElementById('roleta-resultado-msg');
+  const btnFechar = document.getElementById('btn-fechar-roleta');
+  const btnSortearProximo = document.getElementById('btn-sortear-proximo-modal');
+
+  if (nomeVencedor) {
+    nomeVencedor.textContent = sorteio.vencedor ? sorteio.vencedor.nome : 'Estudante Selecionado';
+  }
+
+  if (msgVencedor && AppState.user) {
+    const isVencedor = sorteio.vencedor && AppState.user.email && (sorteio.vencedor.email.toLowerCase() === AppState.user.email.toLowerCase());
+    if (isVencedor) {
+      msgVencedor.innerHTML = '🎉 <strong>Sensacional! Você é o(a) grande sorteado(a) da rodada!</strong>';
+    } else {
+      msgVencedor.textContent = '🎉 Parabéns ao estudante selecionado nesta rodada!';
+    }
+  }
+
+  if (resContainer) resContainer.style.display = 'block';
+  if (btnFechar) btnFechar.style.display = 'inline-flex';
+
+  if (btnSortearProximo) {
+    btnSortearProximo.style.display = (AppState.user && AppState.user.isProfessor) ? 'inline-flex' : 'none';
+  }
+
+  playRoletaFanfarra();
+  dispararConfettiRoleta();
+
+  // Se professor, atualiza dados da tabela
+  if (AppState.user && AppState.user.isProfessor) {
+    carregarDadosSorteioProfessor();
+  }
+}
+
+function abrirModalRoletaParaSorteio(sorteio) {
+  const modal = document.getElementById('modal-roleta-sorteio');
+  if (!modal) return;
+
+  modal.classList.add('active');
+  modal.style.display = 'flex';
+
+  // Bloqueia saída durante o sorteio
+  SorteioEngine.bloquearSaida = true;
+  const btnFechar = document.getElementById('btn-fechar-roleta');
+  if (btnFechar) btnFechar.style.display = 'none';
+
+  const resContainer = document.getElementById('roleta-resultado-container');
+  if (resContainer) resContainer.style.display = 'none';
+
+  const countdownBanner = document.getElementById('roleta-countdown-banner');
+  const spinStatus = document.getElementById('roleta-spin-status');
+
+  const now = Date.now();
+
+  // 1. Fase de contagem regressiva pré-giro (buffer de sincronização para todos receberem)
+  if (now < sorteio.spinTimestamp) {
+    if (countdownBanner) countdownBanner.style.display = 'flex';
+    if (spinStatus) spinStatus.style.display = 'none';
+
+    desenharRoletaCanvas(sorteio.participantes, 0);
+
+    if (SorteioEngine.countdownIntervalId) clearInterval(SorteioEngine.countdownIntervalId);
+    SorteioEngine.countdownIntervalId = setInterval(() => {
+      const curNow = Date.now();
+      const restanteMs = sorteio.spinTimestamp - curNow;
+      const segRestantes = Math.max(0, Math.ceil(restanteMs / 1000));
+      const timerSpan = document.getElementById('roleta-countdown-timer');
+      if (timerSpan) timerSpan.textContent = segRestantes;
+
+      if (restanteMs <= 0) {
+        clearInterval(SorteioEngine.countdownIntervalId);
+        if (countdownBanner) countdownBanner.style.display = 'none';
+        if (spinStatus) spinStatus.style.display = 'flex';
+        iniciarAnimacaoRoletaSincrona(sorteio);
+      }
+    }, 200);
+
+  } else if (now < sorteio.fimTimestamp) {
+    // 2. O giro já está em andamento (aluno que recebeu o sinal logo após o início)
+    if (countdownBanner) countdownBanner.style.display = 'none';
+    if (spinStatus) spinStatus.style.display = 'flex';
+    iniciarAnimacaoRoletaSincrona(sorteio);
+  } else {
+    // 3. Chegou após o término do giro
+    if (countdownBanner) countdownBanner.style.display = 'none';
+    if (spinStatus) spinStatus.style.display = 'none';
+    desenharRoletaCanvas(sorteio.participantes, 0);
+    finalizarSorteioVisual(sorteio);
+  }
+}
+
+function fecharModalRoleta() {
+  if (SorteioEngine.bloquearSaida) {
+    showToast('Aguarde a finalização do sorteio para fechar.', 'warning');
+    return;
+  }
+  const modal = document.getElementById('modal-roleta-sorteio');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+}
+
+// Bloqueia tecla ESC durante o sorteio
+window.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' || e.keyCode === 27) {
+    const modalRoleta = document.getElementById('modal-roleta-sorteio');
+    if (modalRoleta && modalRoleta.classList.contains('active')) {
+      if (SorteioEngine.bloquearSaida) {
+        e.preventDefault();
+        e.stopPropagation();
+        showToast('O sorteio está em andamento. Aguarde o resultado!', 'warning');
+      } else {
+        fecharModalRoleta();
+      }
+    }
+  }
+});
+
+function verificarStatusSorteioPeriodico() {
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(onStatusSorteioRecebido)
+      .verificarStatusSorteio();
+  } else {
+    // Mock local em dev
+    const mockAtivo = localStorage.getItem('pythonlab_mock_sorteio_ativo');
+    if (mockAtivo) {
+      try {
+        const sorteio = JSON.parse(mockAtivo);
+        onStatusSorteioRecebido(sorteio);
+      } catch (e) {}
+    }
+  }
+}
+
+function onStatusSorteioRecebido(resposta) {
+  if (!resposta) return;
+  const sorteio = (resposta && resposta.sorteioAtivo) ? resposta.sorteioAtivo : resposta;
+  if (!sorteio || !sorteio.ativo) return;
+
+  // Se o sorteio já terminou há mais de 45 segundos, não abre a janela modal automaticamente
+  const now = Date.now();
+  if (sorteio.fimTimestamp && now > (sorteio.fimTimestamp + 45000)) {
+    return;
+  }
+
+  if (SorteioEngine.lastHandledSorteioId === sorteio.idSorteio) {
+    return;
+  }
+
+  SorteioEngine.lastHandledSorteioId = sorteio.idSorteio;
+  SorteioEngine.sorteioAtivo = sorteio;
+  abrirModalRoletaParaSorteio(sorteio);
+}
+
+function iniciarMonitorSorteioSincrono() {
+  if (SorteioEngine.pollingIntervalId) clearInterval(SorteioEngine.pollingIntervalId);
+  SorteioEngine.pollingIntervalId = setInterval(verificarStatusSorteioPeriodico, 2500);
+}
+
+/**
+ * ============================================================================
+ * PAINEL DOCENTE: GESTÃO DO SORTEIO, FREQUÊNCIA E HISTÓRICO
+ * ============================================================================
+ */
+
+function carregarDadosSorteioProfessor() {
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(renderizarDadosSorteioProfessor)
+      .withFailureHandler(err => {
+        showToast('Erro ao carregar lista de alunos: ' + err.message, 'error');
+      })
+      .obterDadosSorteioProfessor(emailParam);
+  } else {
+    renderizarDadosSorteioProfessor(mockObterDadosSorteioProfessor());
+  }
+}
+
+function renderizarDadosSorteioProfessor(dados) {
+  if (!dados || !dados.sucesso) {
+    showToast(dados ? dados.mensagem : 'Erro ao obter dados de sorteio', 'error');
+    return;
+  }
+
+  SorteioEngine.participantesTodos = dados.alunos || [];
+  SorteioEngine.historicoSorteados = dados.historico || [];
+
+  const historicoEmails = new Set(SorteioEngine.historicoSorteados.map(h => h.email.toLowerCase()));
+
+  // 1. Renderiza Lista de Presença
+  const containerPresenca = document.getElementById('sorteio-lista-presenca');
+  let htmlPresenca = '';
+  let elegiveisCount = 0;
+
+  if (SorteioEngine.participantesTodos.length === 0) {
+    htmlPresenca = '<div style="text-align: center; padding: 1.5rem; color: var(--color-outline); font-size: 0.85rem;">Nenhum aluno cadastrado na planilha.</div>';
+  } else {
+    SorteioEngine.participantesTodos.forEach(aluno => {
+      const emailLower = aluno.email.toLowerCase();
+      const jaSorteado = historicoEmails.has(emailLower);
+      const isAusente = SorteioEngine.ausentesSet.has(emailLower);
+
+      if (!jaSorteado && !isAusente) {
+        elegiveisCount++;
+      }
+
+      htmlPresenca += `
+        <div class="sorteio-presenca-item ${jaSorteado ? 'ja-sorteado' : ''}">
+          <label style="display: flex; align-items: center; gap: 0.65rem; cursor: ${jaSorteado ? 'not-allowed' : 'pointer'}; flex: 1;">
+            <input type="checkbox"
+              ${jaSorteado ? 'disabled' : ''}
+              ${(!jaSorteado && !isAusente) ? 'checked' : ''}
+              onchange="alternarPresencaAlunoSorteio('${emailLower}', this.checked)"
+              style="width: 1.05rem; height: 1.05rem; accent-color: #2563eb; cursor: ${jaSorteado ? 'not-allowed' : 'pointer'};">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: ${jaSorteado ? 'var(--color-outline)' : 'var(--color-on-surface)'};">
+                ${aluno.nome}
+              </div>
+              <div style="font-size: 0.72rem; color: var(--color-outline);">
+                ${aluno.email}
+              </div>
+            </div>
+          </label>
+          <div>
+            ${jaSorteado 
+              ? '<span class="sorteio-badge-sorteado">🏆 Já sorteado</span>' 
+              : (isAusente 
+                  ? '<span style="font-size: 0.7rem; color: var(--color-error); font-weight: 700;">Ausente</span>' 
+                  : '<span class="sorteio-badge-elegivel">✓ Elegível</span>')
+            }
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  if (containerPresenca) containerPresenca.innerHTML = htmlPresenca;
+
+  const spanElegiveis = document.getElementById('sorteio-contagem-elegiveis');
+  if (spanElegiveis) spanElegiveis.textContent = elegiveisCount;
+
+  // 2. Renderiza Histórico de Sorteados
+  const containerHistorico = document.getElementById('sorteio-lista-historico');
+  const spanSorteados = document.getElementById('sorteio-contagem-sorteados');
+  if (spanSorteados) spanSorteados.textContent = SorteioEngine.historicoSorteados.length;
+
+  if (SorteioEngine.historicoSorteados.length === 0) {
+    if (containerHistorico) {
+      containerHistorico.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--color-outline); font-size: 0.85rem;">Nenhum aluno sorteado ainda nesta rodada.</div>';
+    }
+  } else {
+    let htmlHistorico = '';
+    SorteioEngine.historicoSorteados.forEach((item, idx) => {
+      const dataFormatada = item.data ? new Date(item.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+      htmlHistorico += `
+        <div class="sorteio-historico-card">
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <div style="background: #f59e0b; color: #ffffff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">
+              ${idx + 1}
+            </div>
+            <div>
+              <div style="font-size: 0.88rem; font-weight: 700; color: #78350f;">
+                ${item.nome}
+              </div>
+              <div style="font-size: 0.72rem; color: #b45309;">
+                ${item.email}
+              </div>
+            </div>
+          </div>
+          <div style="font-size: 0.75rem; color: #92400e; font-weight: 600;">
+            ${dataFormatada ? `às ${dataFormatada}` : 'Rodada atual'}
+          </div>
+        </div>
+      `;
+    });
+    if (containerHistorico) containerHistorico.innerHTML = htmlHistorico;
+  }
+}
+
+function alternarPresencaAlunoSorteio(email, isPresente) {
+  if (isPresente) {
+    SorteioEngine.ausentesSet.delete(email.toLowerCase());
+  } else {
+    SorteioEngine.ausentesSet.add(email.toLowerCase());
+  }
+  const historicoEmails = new Set(SorteioEngine.historicoSorteados.map(h => h.email.toLowerCase()));
+  let count = 0;
+  SorteioEngine.participantesTodos.forEach(aluno => {
+    const e = aluno.email.toLowerCase();
+    if (!historicoEmails.has(e) && !SorteioEngine.ausentesSet.has(e)) {
+      count++;
+    }
+  });
+  const span = document.getElementById('sorteio-contagem-elegiveis');
+  if (span) span.textContent = count;
+}
+
+function marcarTodosAlunosSorteio(marcar) {
+  if (marcar) {
+    SorteioEngine.ausentesSet.clear();
+  } else {
+    SorteioEngine.participantesTodos.forEach(a => SorteioEngine.ausentesSet.add(a.email.toLowerCase()));
+  }
+  renderizarDadosSorteioProfessor({
+    sucesso: true,
+    alunos: SorteioEngine.participantesTodos,
+    historico: SorteioEngine.historicoSorteados
+  });
+}
+
+function iniciarSorteioPeloProfessor() {
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+  const ausentesEmails = Array.from(SorteioEngine.ausentesSet);
+
+  const btn = document.getElementById('btn-iniciar-sorteio-painel');
+  if (btn) btn.disabled = true;
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(res => {
+        if (btn) btn.disabled = false;
+        if (!res || !res.sucesso) {
+          showToast(res ? res.mensagem : 'Erro ao iniciar sorteio', 'error');
+          return;
+        }
+        onStatusSorteioRecebido(res);
+      })
+      .withFailureHandler(err => {
+        if (btn) btn.disabled = false;
+        showToast('Erro ao iniciar sorteio: ' + err.message, 'error');
+      })
+      .iniciarSorteioTurma({
+        emailParam: emailParam,
+        ausentesEmails: ausentesEmails
+      });
+  } else {
+    if (btn) btn.disabled = false;
+    const res = mockIniciarSorteioTurma({ emailParam, ausentesEmails });
+    if (!res.sucesso) {
+      showToast(res.mensagem, 'error');
+      return;
+    }
+    onStatusSorteioRecebido(res);
+  }
+}
+
+function confirmarResetarSorteio() {
+  if (!confirm('Deseja resetar o sorteio da turma?\n\nIsso limpará a lista de alunos já sorteados para que todos possam participar novamente.')) {
+    return;
+  }
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(res => {
+        showToast(res.mensagem || 'Sorteio resetado com sucesso!', 'success');
+        carregarDadosSorteioProfessor();
+      })
+      .withFailureHandler(err => {
+        showToast('Erro ao resetar sorteio: ' + err.message, 'error');
+      })
+      .resetarSorteioTurma(emailParam);
+  } else {
+    mockResetarSorteioTurma();
+    showToast('Sorteio resetado com sucesso! (Modo Local)', 'success');
+    carregarDadosSorteioProfessor();
+  }
+}
+
+/**
+ * Handlers Mock para Testes em Ambiente Local (Offline / Preview)
+ */
+function mockObterDadosSorteioProfessor() {
+  let alunos = JSON.parse(localStorage.getItem('pythonlab_mock_students') || '[]');
+  if (alunos.length === 0) {
+    alunos = [
+      { nome: 'Ana Carolina Silva', email: 'ana.silva@cjovem.ce.gov.br', xpTotal: 520, concluiu: true },
+      { nome: 'Bruno Castro', email: 'bruno.castro@cjovem.ce.gov.br', xpTotal: 410, concluiu: true },
+      { nome: 'Carlos Eduardo Lima', email: 'carlos.lima@cjovem.ce.gov.br', xpTotal: 380, concluiu: false },
+      { nome: 'Daniela Ferreira', email: 'daniela.ferreira@cjovem.ce.gov.br', xpTotal: 490, concluiu: true },
+      { nome: 'Gabriel Rocha', email: 'gabriel.rocha@cjovem.ce.gov.br', xpTotal: 450, concluiu: true },
+      { nome: 'Helena Ribeiro', email: 'helena.ribeiro@cjovem.ce.gov.br', xpTotal: 340, concluiu: false },
+      { nome: 'Lucas Oliveira', email: 'lucas.oliveira@cjovem.ce.gov.br', xpTotal: 510, concluiu: true },
+      { nome: 'Mariana Santos', email: 'mariana.santos@cjovem.ce.gov.br', xpTotal: 470, concluiu: true },
+      { nome: 'Pedro Henrique Alves', email: 'pedro.alves@cjovem.ce.gov.br', xpTotal: 430, concluiu: true },
+      { nome: 'Rafaela Costa', email: 'rafaela.costa@cjovem.ce.gov.br', xpTotal: 390, concluiu: false }
+    ];
+    localStorage.setItem('pythonlab_mock_students', JSON.stringify(alunos));
+  }
+  const historico = JSON.parse(localStorage.getItem('pythonlab_sorteio_historico') || '[]');
+  return {
+    sucesso: true,
+    alunos: alunos,
+    historico: historico
+  };
+}
+
+function mockIniciarSorteioTurma(params) {
+  const dados = mockObterDadosSorteioProfessor();
+  const ausentesSet = new Set((params.ausentesEmails || []).map(e => e.toLowerCase()));
+  const historicoSet = new Set((dados.historico || []).map(h => h.email.toLowerCase()));
+
+  const elegiveis = dados.alunos.filter(a => !ausentesSet.has(a.email.toLowerCase()) && !historicoSet.has(a.email.toLowerCase()));
+
+  if (elegiveis.length === 0) {
+    return {
+      sucesso: false,
+      mensagem: 'Todos os alunos presentes já foram sorteados nesta rodada! Clique em "Resetar Sorteio" para começar novamente.'
+    };
+  }
+
+  const winnerIndex = Math.floor(Math.random() * elegiveis.length);
+  const vencedor = elegiveis[winnerIndex];
+
+  const now = Date.now();
+  const inicioTimestamp = now;
+  const spinTimestamp = now + 4000;
+  const fimTimestamp = spinTimestamp + 6500;
+
+  const sorteio = {
+    ativo: true,
+    sucesso: true,
+    idSorteio: 'sorteio_mock_' + now,
+    inicioTimestamp: inicioTimestamp,
+    spinTimestamp: spinTimestamp,
+    fimTimestamp: fimTimestamp,
+    vencedor: {
+      email: vencedor.email,
+      nome: vencedor.nome
+    },
+    participantes: elegiveis.map(e => ({ email: e.email, nome: e.nome })),
+    winnerIndex: winnerIndex
+  };
+
+  localStorage.setItem('pythonlab_mock_sorteio_ativo', JSON.stringify(sorteio));
+
+  const historico = dados.historico || [];
+  historico.push({
+    email: vencedor.email,
+    nome: vencedor.nome,
+    data: new Date().toISOString(),
+    indice: historico.length + 1
+  });
+  localStorage.setItem('pythonlab_sorteio_historico', JSON.stringify(historico));
+
+  return sorteio;
+}
+
+function mockResetarSorteioTurma() {
+  localStorage.removeItem('pythonlab_sorteio_historico');
+  localStorage.removeItem('pythonlab_mock_sorteio_ativo');
+  return { sucesso: true, mensagem: 'Sorteio resetado com sucesso!' };
+}
+</script>
 
 </body>
 </html>

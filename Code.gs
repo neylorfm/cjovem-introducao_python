@@ -21,6 +21,7 @@ var CONFIG = {
   SHEET_IMAGES: 'Imagens_Exercicios',
   SHEET_AVALIACOES: 'Avaliacoes',
   SHEET_ENVIOS: 'Envios_Avaliacoes',
+  SHEET_SORTEIOS: 'Sorteios_Historico',
   DEFAULT_XP_RESOLVIDO: 20,
   DEFAULT_XP_PROPOSTO: 35,
   DEFAULT_XP_DESAFIO: 50
@@ -676,9 +677,10 @@ function ensureDatabase() {
     var sheetImg = ss.getSheetByName(CONFIG.SHEET_IMAGES);
     var sheetEval = ss.getSheetByName(CONFIG.SHEET_AVALIACOES);
     var sheetEnv = ss.getSheetByName(CONFIG.SHEET_ENVIOS);
+    var sheetSorteios = ss.getSheetByName(CONFIG.SHEET_SORTEIOS);
     
     // Se qualquer uma das abas essenciais não existir, provisiona automaticamente
-    if (!sheetUsers || !sheetCat || !sheetProg || !sheetImg || !sheetEval || !sheetEnv) {
+    if (!sheetUsers || !sheetCat || !sheetProg || !sheetImg || !sheetEval || !sheetEnv || !sheetSorteios) {
       setupDatabase(false);
       sheetCat = ss.getSheetByName(CONFIG.SHEET_CATALOG);
     }
@@ -961,6 +963,28 @@ function setupDatabase(forcarRecriacao) {
       .setFontColor('#ffffff')
       .setFontWeight('bold');
     sheetEnvios.setFrozenRows(1);
+  }
+
+  // 7. Aba Sorteios_Historico
+  var sheetSorteios = ss.getSheetByName(CONFIG.SHEET_SORTEIOS);
+  if (!sheetSorteios) {
+    sheetSorteios = ss.insertSheet(CONFIG.SHEET_SORTEIOS);
+  }
+  if (forcarRecriacao || sheetSorteios.getLastRow() === 0) {
+    sheetSorteios.clear();
+    var headersSorteios = [
+      'id_sorteio',
+      'email_aluno',
+      'nome_aluno',
+      'data_sorteio',
+      'criado_por'
+    ];
+    sheetSorteios.appendRow(headersSorteios);
+    sheetSorteios.getRange(1, 1, 1, headersSorteios.length)
+      .setBackground('#d97706')
+      .setFontColor('#ffffff')
+      .setFontWeight('bold');
+    sheetSorteios.setFrozenRows(1);
   }
 
   // Remove aba padrão vazia ('Página1' ou 'Sheet1') se houver outras abas
@@ -2851,5 +2875,230 @@ function testarEnvioSubstituicaoAluno() {
     }
 
     return relatorio;
+  }
+}
+
+/**
+ * ============================================================================
+ * ENDPOINTS RPC: MOTOR DE SORTEIO SÍNCRONO DA TURMA (ROLETA)
+ * ============================================================================
+ */
+
+/**
+ * Retorna os estudantes cadastrados e o histórico da rodada de sorteio
+ */
+function obterDadosSorteioProfessor(emailParam) {
+  try {
+    var ss = ensureDatabase();
+    if (!ss) return { sucesso: false, mensagem: 'Erro ao conectar à planilha.' };
+
+    var sheetUsers = ss.getSheetByName(CONFIG.SHEET_USERS);
+    var sheetSorteios = ss.getSheetByName(CONFIG.SHEET_SORTEIOS);
+
+    var alunos = [];
+    if (sheetUsers && sheetUsers.getLastRow() > 1) {
+      var dadosUsers = sheetUsers.getDataRange().getValues();
+      for (var i = 1; i < dadosUsers.length; i++) {
+        var email = String(dadosUsers[i][0] || '').trim();
+        var nome = String(dadosUsers[i][1] || '').trim();
+        var perfil = String(dadosUsers[i][2] || '').trim().toLowerCase();
+        var xp = Number(dadosUsers[i][4]) || 0;
+
+        if (perfil === 'aluno' && email) {
+          alunos.push({
+            nome: nome || formatarNomeDeEmail(email),
+            email: email,
+            xpTotal: xp
+          });
+        }
+      }
+    }
+
+    // Se a aba Usuarios ainda não tiver alunos, gera mock inicial para visualização do professor
+    if (alunos.length === 0) {
+      alunos = [
+        { nome: 'Ana Carolina Silva', email: 'ana.silva@aluno.ce.gov.br', xpTotal: 520 },
+        { nome: 'Bruno Castro', email: 'bruno.castro@aluno.ce.gov.br', xpTotal: 410 },
+        { nome: 'Carlos Eduardo Lima', email: 'carlos.lima@aluno.ce.gov.br', xpTotal: 380 },
+        { nome: 'Daniela Ferreira', email: 'daniela.ferreira@aluno.ce.gov.br', xpTotal: 490 },
+        { nome: 'Gabriel Rocha', email: 'gabriel.rocha@aluno.ce.gov.br', xpTotal: 450 },
+        { nome: 'Helena Ribeiro', email: 'helena.ribeiro@aluno.ce.gov.br', xpTotal: 340 },
+        { nome: 'Lucas Oliveira', email: 'lucas.oliveira@aluno.ce.gov.br', xpTotal: 510 },
+        { nome: 'Mariana Santos', email: 'mariana.santos@aluno.ce.gov.br', xpTotal: 470 },
+        { nome: 'Pedro Henrique Alves', email: 'pedro.alves@aluno.ce.gov.br', xpTotal: 430 },
+        { nome: 'Rafaela Costa', email: 'rafaela.costa@aluno.ce.gov.br', xpTotal: 390 }
+      ];
+    }
+
+    var historico = [];
+    if (sheetSorteios && sheetSorteios.getLastRow() > 1) {
+      var dadosSorteios = sheetSorteios.getDataRange().getValues();
+      for (var j = 1; j < dadosSorteios.length; j++) {
+        var idS = String(dadosSorteios[j][0] || '');
+        var emailA = String(dadosSorteios[j][1] || '').trim();
+        var nomeA = String(dadosSorteios[j][2] || '').trim();
+        var dataS = dadosSorteios[j][3];
+        if (emailA) {
+          historico.push({
+            idSorteio: idS,
+            email: emailA,
+            nome: nomeA || formatarNomeDeEmail(emailA),
+            data: dataS ? new Date(dataS).toISOString() : new Date().toISOString()
+          });
+        }
+      }
+    }
+
+    return {
+      sucesso: true,
+      alunos: alunos,
+      historico: historico
+    };
+  } catch (err) {
+    Logger.log('Erro em obterDadosSorteioProfessor: ' + err.message);
+    return { sucesso: false, mensagem: 'Erro ao carregar dados de sorteio: ' + err.message };
+  }
+}
+
+/**
+ * Acionado pelo professor para sortear um aluno elegível
+ */
+function iniciarSorteioTurma(params) {
+  try {
+    params = params || {};
+    var emailParam = params.emailParam || '';
+    var ausentesEmails = params.ausentesEmails || [];
+    var ausentesSet = {};
+    for (var a = 0; a < ausentesEmails.length; a++) {
+      ausentesSet[String(ausentesEmails[a]).toLowerCase()] = true;
+    }
+
+    var ss = ensureDatabase();
+    if (!ss) return { sucesso: false, mensagem: 'Erro ao conectar à planilha.' };
+
+    var sheetSorteios = ss.getSheetByName(CONFIG.SHEET_SORTEIOS);
+
+    var dados = obterDadosSorteioProfessor(emailParam);
+    if (!dados || !dados.sucesso) return dados;
+
+    var historicoSet = {};
+    for (var h = 0; h < (dados.historico || []).length; h++) {
+      historicoSet[String(dados.historico[h].email).toLowerCase()] = true;
+    }
+
+    var elegiveis = [];
+    for (var i = 0; i < dados.alunos.length; i++) {
+      var al = dados.alunos[i];
+      var elow = al.email.toLowerCase();
+      if (!ausentesSet[elow] && !historicoSet[elow]) {
+        elegiveis.push(al);
+      }
+    }
+
+    if (elegiveis.length === 0) {
+      return {
+        sucesso: false,
+        mensagem: 'Todos os alunos presentes já foram sorteados nesta rodada! Clique em "Resetar Rodada" para começar novamente.'
+      };
+    }
+
+    var winnerIndex = Math.floor(Math.random() * elegiveis.length);
+    var vencedor = elegiveis[winnerIndex];
+
+    var now = Date.now();
+    var inicioTimestamp = now;
+    var spinTimestamp = now + 4000;
+    var fimTimestamp = spinTimestamp + 6500;
+    var idSorteio = 'sorteio_' + now;
+
+    var criador = '';
+    try {
+      criador = Session.getActiveUser().getEmail() || emailParam || '';
+    } catch (e) {
+      criador = emailParam || '';
+    }
+
+    var sorteio = {
+      ativo: true,
+      sucesso: true,
+      idSorteio: idSorteio,
+      inicioTimestamp: inicioTimestamp,
+      spinTimestamp: spinTimestamp,
+      fimTimestamp: fimTimestamp,
+      vencedor: {
+        email: vencedor.email,
+        nome: vencedor.nome
+      },
+      participantes: elegiveis.map(function(e) { return { email: e.email, nome: e.nome }; }),
+      winnerIndex: winnerIndex
+    };
+
+    // Salva no CacheService para que alunos recebam em tempo real
+    try {
+      var cache = CacheService.getScriptCache();
+      if (cache) {
+        cache.put('PYTHONLAB_SORTEIO_ATIVO', JSON.stringify(sorteio), 120);
+      }
+    } catch(errCache) {
+      Logger.log('Erro no cache de sorteio: ' + errCache.message);
+    }
+
+    // Persiste na planilha Google Sheets
+    if (sheetSorteios) {
+      sheetSorteios.appendRow([
+        idSorteio,
+        vencedor.email,
+        vencedor.nome,
+        new Date().toISOString(),
+        criador
+      ]);
+    }
+
+    return sorteio;
+  } catch (err) {
+    Logger.log('Erro em iniciarSorteioTurma: ' + err.message);
+    return { sucesso: false, mensagem: 'Erro ao iniciar sorteio: ' + err.message };
+  }
+}
+
+/**
+ * Reseta o histórico da rodada de sorteio
+ */
+function resetarSorteioTurma(emailParam) {
+  try {
+    var ss = ensureDatabase();
+    if (!ss) return { sucesso: false, mensagem: 'Erro ao acessar planilha.' };
+
+    var sheetSorteios = ss.getSheetByName(CONFIG.SHEET_SORTEIOS);
+    if (sheetSorteios && sheetSorteios.getLastRow() > 1) {
+      sheetSorteios.deleteRows(2, sheetSorteios.getLastRow() - 1);
+    }
+
+    try {
+      var cache = CacheService.getScriptCache();
+      if (cache) {
+        cache.remove('PYTHONLAB_SORTEIO_ATIVO');
+      }
+    } catch (e) {}
+
+    return { sucesso: true, mensagem: 'Rodada de sorteio resetada com sucesso!' };
+  } catch (err) {
+    return { sucesso: false, mensagem: 'Erro ao resetar sorteio: ' + err.message };
+  }
+}
+
+/**
+ * Consulta o status atual do sorteio (chamado periodicamente pelos alunos conectados)
+ */
+function verificarStatusSorteio() {
+  try {
+    var cache = CacheService.getScriptCache();
+    if (!cache) return { sucesso: true, sorteioAtivo: null };
+    var cached = cache.get('PYTHONLAB_SORTEIO_ATIVO');
+    if (!cached) return { sucesso: true, sorteioAtivo: null };
+    var sorteio = JSON.parse(cached);
+    return { sucesso: true, sorteioAtivo: sorteio };
+  } catch (err) {
+    return { sucesso: false, sorteioAtivo: null };
   }
 }
