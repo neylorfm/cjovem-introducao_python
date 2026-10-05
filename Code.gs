@@ -15,7 +15,6 @@ var CONFIG = {
   APP_NAME: 'PythonLab',
   VERSION: '1.2.0',
   SPREADSHEET_ID: '', // Preencha com o ID da planilha se o projeto Apps Script for Standalone (script.google.com)
-  GOOGLE_CLIENT_ID: '978990674292-lq8ne6tdijr0kpqbb9lheh86632hhj6q.apps.googleusercontent.com',
   SHEET_USERS: 'Usuarios',
   SHEET_PROGRESS: 'Progresso',
   SHEET_CATALOG: 'Catalogo_Aulas',
@@ -40,7 +39,6 @@ function doGet(e) {
   // Parâmetros de rota inicial opcionais via query string
   template.initialRoute = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'dashboard';
   template.initialLessonId = (e && e.parameter && e.parameter.id) ? e.parameter.id : '';
-  template.googleClientId = CONFIG.GOOGLE_CLIENT_ID;
   
   // Obtém identidade do usuário autenticado no Workspace/Gmail
   var activeEmail = '';
