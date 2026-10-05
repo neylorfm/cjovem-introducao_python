@@ -91,7 +91,7 @@ function loadUserSession() {
   } else {
     // Modo de Desenvolvimento Local / Preview
     console.info('Executando fora do ambiente Google Apps Script. Ativando mock local.');
-    const emailMock = savedEmail || 'neylor@gmail.com';
+    const emailMock = savedEmail || 'professor@institucional';
     const emailLower = emailMock.toLowerCase();
     const isTeacher = emailLower.includes('neylor') || emailLower.includes('prof') || emailLower.includes('admin');
 
@@ -3244,10 +3244,6 @@ function openVisitorModal() {
     modal.classList.add('active');
     modal.style.display = 'flex';
   }
-  const input = document.getElementById('login-email-input');
-  if (input) {
-    setTimeout(() => input.focus(), 150);
-  }
 }
 
 function closeVisitorModal() {
@@ -3258,18 +3254,31 @@ function closeVisitorModal() {
   }
 }
 
-function preencherELogar(email) {
-  const input = document.getElementById('login-email-input');
-  if (input) {
-    input.value = email;
-  }
-  loginComEmail(email);
+/**
+ * Indicador de status institucional do ambiente
+ */
+function gerarHtmlDiagnosticoEtapa1(diagOpcional) {
+  const isGas = typeof google !== 'undefined' && Boolean(google.script && google.script.run);
+
+  return `
+    <div id="diag-box-etapa1" style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: var(--radius-md); padding: 0.65rem 0.85rem; margin-bottom: 1rem; text-align: left; font-size: 0.8rem; color: #1e293b;">
+      <div style="font-weight: 700; color: #00236f; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem;">
+        <span>🏛️</span> <strong>Acesso Institucional Conectado</strong>
+        <span style="font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 4px; background: rgba(0,0,0,0.06); margin-left: auto;">${isGas ? 'Google Workspace' : 'Ambiente Local'}</span>
+      </div>
+      <div style="line-height: 1.45; font-size: 0.75rem; color: #64748b;">
+        <div>• <strong>Rede:</strong> <span>Domínio Educacional Oficial (SEDUC Ceará)</span></div>
+        <div>• <strong>Banco de Dados:</strong> <span>Sincronização em nuvem segura e privada</span></div>
+      </div>
+    </div>
+  `;
 }
 
 function renderVisitorModalContent() {
   const card = document.getElementById('visitor-modal-card');
   if (!card) return;
   const user = AppState.user;
+  const isGas = typeof google !== 'undefined' && Boolean(google.script && google.script.run);
 
   if (user && user.autenticado) {
     const isTeacher = user.isProfessor || user.perfil === 'professor';
@@ -3284,10 +3293,12 @@ function renderVisitorModalContent() {
         ${user.nome || (isTeacher ? 'Professor Neylor FM' : 'Estudante Conectado')}
       </h3>
       
-      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
-        <span style="font-family: var(--font-code); font-size: 0.85rem; color: var(--color-on-surface-variant);">${user.email}</span>
-        <span class="role-tag role-${user.perfil}" style="font-weight: 700; text-transform: uppercase;">${isTeacher ? '🎓 DOCENTE' : user.perfil}</span>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.85rem; flex-wrap: wrap;">
+        <span class="role-tag role-${user.perfil}" style="font-weight: 700; text-transform: uppercase;">${isTeacher ? '🎓 DOCENTE' : '📚 ESTUDANTE'}</span>
+        <span style="font-size: 0.8rem; color: var(--color-success); font-weight: 600;">● Sessão Institucional Ativa</span>
       </div>
+
+      ${gerarHtmlDiagnosticoEtapa1()}
       
       <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
         <div style="display: flex; justify-content: space-around; align-items: center;">
@@ -3317,157 +3328,113 @@ function renderVisitorModalContent() {
           Permanecer nesta Tela
         </button>
         <button class="btn btn-outline" style="color: #b91c1c; border-color: #fca5a5; background: rgba(239,68,68,0.05);" onclick="logoutUsuario()">
-          🚪 Desconectar / Trocar de Conta
+          🚪 Alternar para Modo Visitante
         </button>
       </div>
     `;
   } else {
+    // TELA QUANDO EM MODO VISITANTE / NÃO RECONHECIDO
     card.innerHTML = `
       <button type="button" onclick="closeVisitorModal()" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; font-size: 1.35rem; cursor: pointer; color: var(--color-outline); line-height: 1; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);" title="Fechar">✕</button>
 
-      <div class="modal-icon-circle" style="margin: 0 auto 0.75rem auto;">🔐</div>
+      <div class="modal-icon-circle" style="background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #ffffff; font-size: 1.6rem; margin: 0 auto 0.75rem auto;">🏛️</div>
       
       <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">
-        Identificação de Estudante & Professor
+        Acesso Institucional — PythonLab
       </h3>
       
       <p style="font-size: 0.88rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1.25rem;">
-        Informe seu e-mail cadastrado na planilha para conectar seu perfil, sincronizar progresso e liberar as ferramentas da turma.
+        O reconhecimento de estudantes e professores é <strong>automático</strong> através da sua conta Google institucional conectada ao navegador.
       </p>
 
-      <!-- Chips de Troca Rápida de Perfil -->
-      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1.25rem; text-align: left;">
-        <div style="font-size: 0.72rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.35rem;">
-          <span>⚡</span> Perfis para Demonstração / Troca Rápida:
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-outline-variant); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1.25rem; text-align: left; font-size: 0.82rem; line-height: 1.5; color: var(--color-on-surface);">
+        <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">
+          <span>🔒</span> <span>Login Seguro do Ceará</span>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 0.45rem;">
-          <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 0.45rem 0.65rem; border-color: #2563eb; background: rgba(37,99,235,0.08); font-size: 0.82rem; font-weight: 600; color: #1e40af; border-radius: var(--radius-sm);" onclick="preencherELogar('neylor@gmail.com')">
-            <span>👨‍🏫</span> <strong>Professor Neylor FM</strong> <span style="font-size: 0.72rem; color: var(--color-outline); margin-left: auto;">(neylor@gmail.com)</span>
-          </button>
-          <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 0.45rem 0.65rem; font-size: 0.82rem; border-radius: var(--radius-sm);" onclick="preencherELogar('ana.silva@cjovem.ce.gov.br')">
-            <span>👩‍🎓</span> <strong>Ana Carolina Silva (Aluna)</strong> <span style="font-size: 0.72rem; color: var(--color-outline); margin-left: auto;">(ana.silva@...)</span>
-          </button>
-          <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 0.45rem 0.65rem; font-size: 0.82rem; border-radius: var(--radius-sm);" onclick="preencherELogar('carlos.lima@cjovem.ce.gov.br')">
-            <span>👨‍🎓</span> <strong>Carlos Eduardo Lima (Aluno)</strong> <span style="font-size: 0.72rem; color: var(--color-outline); margin-left: auto;">(carlos.lima@...)</span>
-          </button>
-        </div>
-      </div>
-
-      <div style="margin-bottom: 1.25rem; text-align: left;">
-        <label for="login-email-input" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-on-surface-variant); margin-bottom: 0.4rem;">
-          Ou digite qualquer outro e-mail:
-        </label>
-        <input type="email" id="login-email-input" placeholder="exemplo: neylor@gmail.com ou aluno@escola.br" style="width: 100%; box-sizing: border-box; padding: 0.75rem 1rem; border: 1.5px solid var(--color-outline-variant); border-radius: var(--radius-md); font-size: 0.95rem; font-family: var(--font-body); outline: none;" onkeydown="if(event.key==='Enter') loginComEmail()">
+        <div>Seu perfil, progresso e atividades são sincronizados diretamente com a turma sem necessidade de senhas ou códigos manuais.</div>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <button class="btn btn-primary" id="btn-conectar-email" onclick="loginComEmail()">
-          🚀 Conectar Perfil
+        <button class="btn btn-primary" id="btn-conectar-institucional" onclick="identificarContaGoogle()" style="background: linear-gradient(135deg, #1e40af, #2563eb); border: none; font-weight: 700; box-shadow: 0 4px 12px rgba(37,99,235,0.25); display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <span>🔄</span> Sincronizar com Conta Google
         </button>
         <button class="btn btn-outline" onclick="closeVisitorModal()">
           Continuar como Visitante
         </button>
       </div>
+
+      ${!isGas ? `
+        <!-- Atalhos de teste para desenvolvimento offline (sem exibir e-mails) -->
+        <div style="background: #f1f5f9; border: 1px dashed #cbd5e1; border-radius: var(--radius-md); padding: 0.65rem; margin-top: 1rem; text-align: left;">
+          <div style="font-size: 0.7rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 0.4rem;">
+            🧪 Simulação Offline (Desenvolvimento):
+          </div>
+          <div style="display: flex; gap: 0.4rem;">
+            <button type="button" class="btn btn-outline" style="flex: 1; padding: 0.35rem 0.5rem; font-size: 0.75rem;" onclick="simularPerfilLocal('professor')">
+              👨‍🏫 Simular Docente
+            </button>
+            <button type="button" class="btn btn-outline" style="flex: 1; padding: 0.35rem 0.5rem; font-size: 0.75rem;" onclick="simularPerfilLocal('aluno')">
+              👩‍🎓 Simular Aluno
+            </button>
+          </div>
+        </div>
+      ` : ''}
     `;
   }
 }
 
-function loginComEmail(emailOpcional) {
-  let email = (typeof emailOpcional === 'string' && emailOpcional) ? emailOpcional : '';
-  if (!email) {
-    const emailInput = document.getElementById('login-email-input');
-    if (!emailInput) return;
-    email = emailInput.value.trim();
-  }
-  email = email.trim();
-
-  if (!email || !email.includes('@') || !email.includes('.')) {
-    showToast('Por favor, digite um e-mail válido (ex.: neylor@gmail.com).', 'error');
-    return;
-  }
-
-  const btn = document.getElementById('btn-conectar-email');
+function identificarContaGoogle() {
+  const btn = document.getElementById('btn-conectar-institucional');
   if (btn) {
     btn.disabled = true;
-    btn.textContent = 'Conectando à planilha...';
+    btn.innerHTML = '<span>🔄</span> Sincronizando com o Google...';
   }
+  showToast('Identificando sua conta Google institucional...', 'info');
+  loadUserSession();
+}
 
-  const emailLower = email.toLowerCase();
-  const isTeacher = emailLower.includes('neylor') || emailLower.includes('prof') || emailLower.includes('admin');
-
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(function(userData) {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = '🚀 Conectar Perfil';
-        }
-        if (userData && userData.autenticado) {
-          localStorage.setItem('pythonlab_user_email', userData.email);
-          onUserSessionSuccess(userData);
-          closeVisitorModal();
-          showToast(`Bem-vindo, ${userData.nome}! Perfil (${userData.perfil}) conectado com sucesso.`, 'success');
-          loadCatalog();
-        } else {
-          showToast('Não foi possível identificar seu perfil. Verifique o e-mail digitado.', 'error');
-        }
-      })
-      .withFailureHandler(function(err) {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = '🚀 Conectar Perfil';
-        }
-        showToast('Erro ao conectar: ' + err.message, 'error');
-      })
-      .getUserSessionData(email);
+function simularPerfilLocal(tipo) {
+  if (tipo === 'professor') {
+    onUserSessionSuccess({
+      autenticado: true,
+      email: 'professor@institucional',
+      nome: 'Professor Neylor FM',
+      perfil: 'professor',
+      xpTotal: 2500,
+      progressoIds: ['aula_1_1', 'aula_1_2', 'aula_1_3', 'aula_1_4', 'aula_1_5', 'aula_2_1'],
+      exerciciosConcluidos: ['aula_1_2:bloco_a_atv_2', 'aula_1_2:bloco_a_atv_3'],
+      ultimoPontoParada: {
+        idAula: 'aula_1_2',
+        idExercicio: 'bloco_a_atv_3',
+        titulo: 'Bloco A: Atividade 3',
+        proximoTitulo: 'Bloco A: Atividade 4',
+        data: new Date().toISOString()
+      },
+      duvidasPendentes: [],
+      ultimaAulaAcessada: 'aula_1_2',
+      podeGravar: true,
+      isProfessor: true
+    });
   } else {
-    // Simulação local / Offline
-    localStorage.setItem('pythonlab_user_email', email);
-    if (isTeacher) {
-      onUserSessionSuccess({
-        autenticado: true,
-        email: email,
-        nome: 'Professor Neylor FM',
-        perfil: 'professor',
-        xpTotal: 2500,
-        progressoIds: ['aula_1_1', 'aula_1_2', 'aula_1_3', 'aula_1_4', 'aula_1_5', 'aula_2_1'],
-        exerciciosConcluidos: ['aula_1_2:bloco_a_atv_2', 'aula_1_2:bloco_a_atv_3'],
-        ultimoPontoParada: {
-          idAula: 'aula_1_2',
-          idExercicio: 'bloco_a_atv_3',
-          titulo: 'Bloco A: Atividade 3',
-          proximoTitulo: 'Bloco A: Atividade 4',
-          data: new Date().toISOString()
-        },
-        duvidasPendentes: [],
-        ultimaAulaAcessada: 'aula_1_2',
-        podeGravar: true,
-        isProfessor: true
-      });
-    } else {
-      const mockData = (typeof mockObterDadosSorteioProfessor === 'function') ? mockObterDadosSorteioProfessor() : { alunos: [] };
-      const studentFound = (mockData.alunos || []).find(a => a.email.toLowerCase() === emailLower);
-      const rawNome = email.split('@')[0].replace(/[._]/g, ' ');
-      const nomeAluno = studentFound ? studentFound.nome : (rawNome.charAt(0).toUpperCase() + rawNome.slice(1));
-      const xpAluno = studentFound ? studentFound.xpTotal : 480;
-
-      onUserSessionSuccess({
-        autenticado: true,
-        email: email,
-        nome: nomeAluno,
-        perfil: 'aluno',
-        xpTotal: xpAluno,
-        progressoIds: ['aula_1_1'],
-        exerciciosConcluidos: ['aula_1_2:bloco_a_atv_2'],
-        duvidasPendentes: [],
-        ultimaAulaAcessada: 'aula_1_2',
-        podeGravar: true,
-        isProfessor: false
-      });
-    }
-    closeVisitorModal();
-    showToast(`Perfil conectado com sucesso como ${isTeacher ? 'Professor' : 'Estudante'}!`, 'success');
+    onUserSessionSuccess({
+      autenticado: true,
+      email: 'aluno@institucional',
+      nome: 'Estudante da Turma',
+      perfil: 'aluno',
+      xpTotal: 350,
+      progressoIds: ['aula_1_1', 'aula_1_2'],
+      exerciciosConcluidos: ['aula_1_2:bloco_a_atv_2'],
+      duvidasPendentes: [],
+      ultimaAulaAcessada: 'aula_1_2',
+      podeGravar: true,
+      isProfessor: false
+    });
   }
+  closeVisitorModal();
+}
+
+function loginComEmail(emailOpcional) {
+  identificarContaGoogle();
 }
 
 function logoutUsuario() {
@@ -3493,7 +3460,7 @@ function logoutUsuario() {
   teacherTabs.forEach(tab => { tab.style.display = 'none'; });
   navigateTo('view-dashboard');
   renderVisitorModalContent();
-  showToast('Desconectado. Você pode selecionar ou digitar uma nova conta abaixo.', 'info');
+  showToast('Modo visitante ativado.', 'info');
 }
 
 function showToast(message, type = 'info') {

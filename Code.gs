@@ -15,6 +15,7 @@ var CONFIG = {
   APP_NAME: 'PythonLab',
   VERSION: '1.2.0',
   SPREADSHEET_ID: '', // Preencha com o ID da planilha se o projeto Apps Script for Standalone (script.google.com)
+  GOOGLE_CLIENT_ID: '978990674292-lq8ne6tdijr0kpqbb9lheh86632hhj6q.apps.googleusercontent.com',
   SHEET_USERS: 'Usuarios',
   SHEET_PROGRESS: 'Progresso',
   SHEET_CATALOG: 'Catalogo_Aulas',
@@ -39,15 +40,60 @@ function doGet(e) {
   // Parâmetros de rota inicial opcionais via query string
   template.initialRoute = (e && e.parameter && e.parameter.page) ? e.parameter.page : 'dashboard';
   template.initialLessonId = (e && e.parameter && e.parameter.id) ? e.parameter.id : '';
+  template.googleClientId = CONFIG.GOOGLE_CLIENT_ID;
   
   // Obtém identidade do usuário autenticado no Workspace/Gmail
-  var activeEmail = Session.getActiveUser().getEmail();
-  template.activeEmail = activeEmail || '';
+  var activeEmail = '';
+  try {
+    activeEmail = Session.getActiveUser().getEmail() || '';
+  } catch(errActive) {
+    Logger.log('Aviso ao obter activeEmail no doGet: ' + errActive.message);
+  }
+  template.activeEmail = activeEmail;
   
   return template.evaluate()
     .setTitle('PythonLab — Reforço Didático Interativo')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1.0')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+/**
+ * ETAPA 1: Diagnóstico da Sessão Google Apps Script
+ * Permite inspecionar em tempo real qual conta o Google entrega via RPC (google.script.run)
+ */
+function getGoogleSessionDiagnostic() {
+  var activeEmail = '';
+  var effectiveEmail = '';
+  try {
+    activeEmail = Session.getActiveUser().getEmail() || '';
+  } catch (e) {
+    activeEmail = 'Erro: ' + e.message;
+  }
+  try {
+    effectiveEmail = Session.getEffectiveUser().getEmail() || '';
+  } catch (e) {
+    effectiveEmail = 'Erro: ' + e.message;
+  }
+  return {
+    activeEmail: activeEmail,
+    effectiveEmail: effectiveEmail,
+    timestamp: new Date().toISOString()
+  };
+}
+
+/**
+ * Formata um nome amigável a partir do identificador da conta institucional
+ * Exemplo: 'ana.silva8872@aluno.ce.gov.br' -> 'Ana Silva'
+ */
+function formatarNomeDeEmail(email) {
+  if (!email) return 'Estudante';
+  var usuario = email.split('@')[0];
+  usuario = usuario.replace(/\d+$/, ''); // Remove dígitos finais
+  var partes = usuario.split(/[._-]/).filter(Boolean);
+  if (!partes.length) return 'Estudante';
+  return partes.map(function(p) {
+    return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+  }).join(' ');
 }
 
 /**
@@ -947,7 +993,15 @@ function setupDatabase(forcarRecriacao) {
  */
 function getUserSessionData(emailParam) {
   try {
-    var email = (emailParam ? emailParam.toString().trim() : '') || Session.getActiveUser().getEmail();
+    var activeSessionEmail = '';
+    try {
+      activeSessionEmail = Session.getActiveUser().getEmail() || '';
+    } catch(eSession) {
+      Logger.log('Aviso ao consultar Session.getActiveUser: ' + eSession.message);
+    }
+
+    // A sessão Google da conta institucional é a prioridade máxima
+    var email = (activeSessionEmail || (emailParam ? emailParam.toString().trim() : '')).toLowerCase();
     
     // Caso de Visitante sem e-mail ou não autenticado
     if (!email) {
@@ -969,7 +1023,12 @@ function getUserSessionData(emailParam) {
     var sheetUsers = ss ? ss.getSheetByName(CONFIG.SHEET_USERS) : null;
     var userData = null;
     var emailLower = email.toLowerCase();
-    var isKnownTeacher = (emailLower.indexOf('neylor') !== -1 || emailLower.indexOf('prof') !== -1 || emailLower.indexOf('admin') !== -1);
+    var isKnownTeacher = (
+      emailLower.indexOf('@prof.ce.gov.br') !== -1 ||
+      emailLower.indexOf('neylor') !== -1 ||
+      emailLower.indexOf('prof') !== -1 ||
+      emailLower.indexOf('admin') !== -1
+    );
     
     if (sheetUsers) {
       var rows = sheetUsers.getDataRange().getValues();
@@ -977,7 +1036,7 @@ function getUserSessionData(emailParam) {
         var rowEmail = rows[i][0] ? rows[i][0].toString().trim().toLowerCase() : '';
         if (rowEmail && rowEmail === emailLower) {
           var rowPerfil = rows[i][2] ? rows[i][2].toString().trim().toLowerCase() : 'aluno';
-          // Se for o professor Neylor ou conter 'prof'/'admin', assegura perfil de professor
+          // Se for conta de professor (@prof.ce.gov.br ou Neylor), garante perfil de professor
           if (isKnownTeacher && rowPerfil !== 'professor') {
             rowPerfil = 'professor';
             try {
@@ -991,7 +1050,7 @@ function getUserSessionData(emailParam) {
           userData = {
             rowIndex: i + 1,
             email: rows[i][0].toString().trim(),
-            nome: nomeBanco || email.split('@')[0],
+            nome: nomeBanco || (isKnownTeacher ? 'Professor Neylor FM' : formatarNomeDeEmail(email)),
             perfil: rowPerfil,
             dataCadastro: rows[i][3] || new Date().toISOString(),
             xpTotal: Number(rows[i][4]) || (isKnownTeacher ? 2500 : 0)
@@ -1005,12 +1064,9 @@ function getUserSessionData(emailParam) {
       }
     }
     
-    // Se o usuário informou um e-mail válido mas ainda não está cadastrado na planilha, realiza o auto-cadastro
+    // Se o usuário possui e-mail institucional mas ainda não consta na planilha, auto-cadastra com nome formatado
     if (!userData && sheetUsers) {
-      var nomeExtraido = isKnownTeacher ? 'Professor Neylor FM' : email.split('@')[0].replace(/[._]/g, ' ');
-      if (!isKnownTeacher) {
-        nomeExtraido = nomeExtraido.charAt(0).toUpperCase() + nomeExtraido.slice(1);
-      }
+      var nomeExtraido = isKnownTeacher ? 'Professor Neylor FM' : formatarNomeDeEmail(email);
       var perfilNovo = isKnownTeacher ? 'professor' : 'aluno';
       var xpNovo = isKnownTeacher ? 2500 : 0;
       var agora = new Date().toISOString();
