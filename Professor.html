@@ -46,4 +46,53 @@
       </table>
     </div>
   </div>
+
+  <!-- 2. Gestão de Avaliações e Provas Práticas (.ipynb / .py) -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Módulo Avaliativo
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin-top: 0.35rem;">
+          Gestão de Avaliações & Provas Práticas (.ipynb)
+        </h2>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button class="btn btn-outline" onclick="carregarAvaliacoesProfessor()">
+          🔄 Atualizar Provas
+        </button>
+        <button class="btn btn-primary" onclick="abrirModalNovaAvaliacao()">
+          ➕ Nova Avaliação
+        </button>
+      </div>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); margin-bottom: 1.5rem; line-height: 1.5;">
+      Crie simulados e provas práticas. Ao criar uma avaliação, o sistema provisiona automaticamente uma subpasta dedicada no Google Drive da turma para centralizar os cadernos <code>.ipynb</code> ou <code>.py</code> submetidos pelos estudantes.
+    </p>
+
+    <!-- Tabela de Avaliações -->
+    <div class="trace-table-container">
+      <table class="trace-table">
+        <thead>
+          <tr>
+            <th>Prova / Avaliação</th>
+            <th>Status</th>
+            <th>Pasta no Drive</th>
+            <th>Submissões</th>
+            <th>Data de Criação</th>
+            <th style="text-align: right;">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="teacher-evaluations-tbody">
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 1.5rem; color: var(--color-outline);">
+              Carregando avaliações...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div> <!-- Fim de #view-professor -->

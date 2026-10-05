@@ -52,6 +52,100 @@
     </div>
   </div>
 
+  <!-- 1.5. Card de Avaliação / Prova Prática Ativa (.ipynb / .py) -->
+  <div class="card" id="dash-avaliacao-card" style="display: none; margin-bottom: 2rem; border: 2px solid var(--color-primary); background: linear-gradient(135deg, var(--color-surface-lowest) 0%, var(--color-surface-low) 100%);">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <span style="font-size: 1.6rem;">📝</span>
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-family: var(--font-headline); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; background: #dcfce7; color: #15803d; padding: 0.15rem 0.55rem; border-radius: var(--radius-full);">
+              Avaliação Ativa
+            </span>
+            <span id="dash-eval-status-badge" style="font-size: 0.75rem; font-weight: 600; color: #b45309;">
+              ⏳ Pendente de Envio
+            </span>
+          </div>
+          <h2 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 800; color: var(--color-primary); margin: 0.25rem 0 0 0;" id="dash-eval-titulo">
+            Carregando avaliação...
+          </h2>
+        </div>
+      </div>
+      <button class="btn btn-outline" style="font-size: 0.78rem; padding: 0.3rem 0.65rem;" onclick="carregarAvaliacaoAtivaDashboard()">
+        🔄 Atualizar Status
+      </button>
+    </div>
+
+    <p style="font-size: 0.88rem; color: var(--color-on-surface-variant); margin-bottom: 1.25rem; line-height: 1.5;" id="dash-eval-instrucoes">
+      Faça o upload do seu notebook <code>.ipynb</code> ou script <code>.py</code> resolvido. Seu arquivo será salvo diretamente na nuvem do Google Drive da turma.
+    </p>
+
+    <!-- Estado de Arquivo Já Enviado Anteriormente -->
+    <div id="dash-eval-enviado-box" style="display: none; background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+          <span style="font-size: 1.35rem;">✅</span>
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: #15803d;">
+              Você já enviou sua solução para esta avaliação
+            </div>
+            <div style="font-family: var(--font-code); font-size: 0.78rem; color: #166534; margin-top: 0.15rem; word-break: break-all;" id="dash-eval-arquivo-enviado-nome">
+              arquivo_enviado.ipynb
+            </div>
+            <div style="font-size: 0.72rem; color: #15803d; margin-top: 0.15rem;" id="dash-eval-arquivo-enviado-data">
+              Enviado em: —
+            </div>
+          </div>
+        </div>
+        <a href="#" id="dash-eval-arquivo-enviado-link" target="_blank" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; border-color: #86efac; color: #15803d; text-decoration: none;">
+          📄 Ver no Google Drive
+        </a>
+      </div>
+      <div style="font-size: 0.75rem; color: #166534; margin-top: 0.6rem; border-top: 1px dashed #bbf7d0; padding-top: 0.5rem;">
+        💡 <strong>Substituição Formativa:</strong> Você pode reenviar seu arquivo enquanto a prova estiver ativa. O novo arquivo substituirá o anterior no Drive.
+      </div>
+    </div>
+
+    <!-- Dropzone e Formulário de Upload do Aluno -->
+    <div id="dash-eval-upload-area">
+      <div id="dash-eval-dropzone" style="border: 2px dashed var(--color-outline-variant); border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; background: var(--color-surface-lowest); cursor: pointer; margin-bottom: 1rem; transition: border-color 0.2s;" onclick="document.getElementById('dash-eval-file-input').click()">
+        <input type="file" id="dash-eval-file-input" accept=".ipynb, .py" style="display: none;" onchange="aoSelecionarArquivoAvaliacao(event)">
+        
+        <div id="dash-eval-placeholder">
+          <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">📂</div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: var(--color-primary);" id="dash-eval-dropzone-label">
+            Clique ou arraste seu arquivo .ipynb ou .py aqui
+          </div>
+          <div style="font-size: 0.75rem; color: var(--color-outline); margin-top: 0.25rem;">
+            Formatos aceitos: Jupyter Notebook (<code>.ipynb</code>) ou Script Python (<code>.py</code>)
+          </div>
+        </div>
+
+        <div id="dash-eval-file-selected" style="display: none;">
+          <div style="font-size: 2rem; margin-bottom: 0.25rem;">📄</div>
+          <div style="font-family: var(--font-code); font-size: 0.9rem; font-weight: 700; color: var(--color-secondary);" id="dash-eval-selected-filename">
+            meu_exercicio.ipynb
+          </div>
+          <div style="font-size: 0.75rem; color: var(--color-outline); margin-top: 0.2rem;" id="dash-eval-selected-filesize">
+            0 KB
+          </div>
+          <div style="font-size: 0.75rem; color: var(--color-primary); margin-top: 0.4rem; font-weight: 600;">
+            Clique para escolher outro arquivo
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+        <span style="font-size: 0.75rem; color: var(--color-outline);" id="dash-eval-upload-hint">
+          Certifique-se de que o notebook está salvo antes de enviar.
+        </span>
+        <button class="btn btn-primary" id="btn-enviar-avaliacao" style="padding: 0.65rem 1.25rem; font-size: 0.9rem; font-weight: 700;" disabled onclick="solicitarEnvioAvaliacaoAluno()">
+          🚀 Enviar Resolução da Prova
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- 2. Cursos & Módulos de Aprendizagem (Seleção Otimizada de Cursos) -->
   <div style="margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
     <div>

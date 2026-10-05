@@ -19,6 +19,8 @@ var CONFIG = {
   SHEET_PROGRESS: 'Progresso',
   SHEET_CATALOG: 'Catalogo_Aulas',
   SHEET_IMAGES: 'Imagens_Exercicios',
+  SHEET_AVALIACOES: 'Avaliacoes',
+  SHEET_ENVIOS: 'Envios_Avaliacoes',
   DEFAULT_XP_RESOLVIDO: 20,
   DEFAULT_XP_PROPOSTO: 35,
   DEFAULT_XP_DESAFIO: 50
@@ -57,6 +59,9 @@ function onOpen() {
       .createMenu('🐍 PythonLab')
       .addItem('⚙️ Inicializar / Reparar Banco de Dados', 'setupDatabase')
       .addItem('🔍 Testar Conexão com a Planilha', 'testarConexaoPlanilha')
+      .addItem('📋 Testar Estrutura de Avaliações', 'testarEstruturaAbasAvaliacoes')
+      .addItem('🧪 Testar Ciclo de Vida de Avaliações (Estágio 2)', 'testarCicloVidaAvaliacao')
+      .addItem('🚀 Testar Envio e Substituição (Estágio 3)', 'testarEnvioSubstituicaoAluno')
       .addItem('🧹 Redefinir Catálogo para Aulas Existentes (Apenas Aula 1.2)', 'limparCatalogoParaAulasExistentes')
       .addToUi();
   } catch (e) {
@@ -457,6 +462,161 @@ function testarConexaoPlanilha() {
 }
 
 /**
+ * ============================================================================
+ * TESTE ESPECÍFICO: ESTRUTURA DAS ABAS DE AVALIAÇÕES E PROVAS PRÁTICAS
+ * ============================================================================
+ * Como executar:
+ * 1. No Google Apps Script, selecione a função "testarEstruturaAbasAvaliacoes".
+ * 2. Clique em "Executar".
+ * 3. Analise o "Registro de execução" (Execution Log).
+ * ============================================================================
+ */
+function testarEstruturaAbasAvaliacoes() {
+  var relatorio = {
+    sucesso: false,
+    timestamp: new Date().toISOString(),
+    planilhaNome: '',
+    abaAvaliacoes: { existe: false, colunasEsperadas: 6, colunasEncontradas: 0, cabecalhosOk: false, detalhes: [] },
+    abaEnvios: { existe: false, colunasEsperadas: 10, colunasEncontradas: 0, cabecalhosOk: false, detalhes: [] },
+    erros: [],
+    mensagens: []
+  };
+
+  Logger.log('=====================================================');
+  Logger.log('🔍 [PYTHONLAB] TESTANDO ESTRUTURA DAS ABAS DE AVALIAÇÕES');
+  Logger.log('=====================================================');
+
+  try {
+    var ss = ensureDatabase();
+    if (!ss) {
+      throw new Error('Não foi possível conectar à planilha. Verifique se o script está associado ao Sheets ou preencha CONFIG.SPREADSHEET_ID.');
+    }
+
+    relatorio.planilhaNome = ss.getName();
+    Logger.log('📄 Planilha: ' + relatorio.planilhaNome);
+
+    // 1. Verificação da aba 'Avaliacoes'
+    var colunasEsperadasAvaliacoes = [
+      'id_avaliacao',
+      'nome',
+      'status',
+      'data_criacao',
+      'criado_por',
+      'pasta_drive_id'
+    ];
+    var sheetEval = ss.getSheetByName(CONFIG.SHEET_AVALIACOES);
+    if (!sheetEval) {
+      relatorio.erros.push('Aba "' + CONFIG.SHEET_AVALIACOES + '" não existe.');
+      Logger.log('❌ Aba [' + CONFIG.SHEET_AVALIACOES + ']: NÃO ENCONTRADA');
+    } else {
+      relatorio.abaAvaliacoes.existe = true;
+      var lastColEval = sheetEval.getLastColumn();
+      var lastRowEval = sheetEval.getLastRow();
+      relatorio.abaAvaliacoes.colunasEncontradas = lastColEval;
+      
+      var cabecalhosEval = lastColEval > 0 && lastRowEval > 0 
+        ? sheetEval.getRange(1, 1, 1, lastColEval).getValues()[0] 
+        : [];
+      
+      relatorio.abaAvaliacoes.detalhes = cabecalhosEval;
+      var evalOk = (cabecalhosEval.length >= colunasEsperadasAvaliacoes.length);
+      for (var i = 0; i < colunasEsperadasAvaliacoes.length; i++) {
+        if (!cabecalhosEval[i] || cabecalhosEval[i].toString().trim() !== colunasEsperadasAvaliacoes[i]) {
+          evalOk = false;
+          relatorio.erros.push('Aba ' + CONFIG.SHEET_AVALIACOES + ': Coluna ' + (i + 1) + ' deveria ser "' + colunasEsperadasAvaliacoes[i] + '", mas é "' + (cabecalhosEval[i] || 'VAZIA') + '".');
+        }
+      }
+      relatorio.abaAvaliacoes.cabecalhosOk = evalOk;
+      if (evalOk) {
+        Logger.log('✅ Aba [' + CONFIG.SHEET_AVALIACOES + ']: 100% OK! Cabeçalhos verificados (' + cabecalhosEval.join(', ') + ')');
+      } else {
+        Logger.log('⚠️ Aba [' + CONFIG.SHEET_AVALIACOES + ']: Divergência nos cabeçalhos.');
+        Logger.log('⚙️ Auto-reparando cabeçalhos da aba [' + CONFIG.SHEET_AVALIACOES + '] para o padrão oficial...');
+        sheetEval.getRange(1, 1, 1, colunasEsperadasAvaliacoes.length).setValues([colunasEsperadasAvaliacoes]);
+        sheetEval.getRange(1, 1, 1, colunasEsperadasAvaliacoes.length)
+          .setBackground('#0284c7')
+          .setFontColor('#ffffff')
+          .setFontWeight('bold');
+        sheetEval.setFrozenRows(1);
+        relatorio.abaAvaliacoes.cabecalhosOk = true;
+        Logger.log('✅ Cabeçalhos da aba [' + CONFIG.SHEET_AVALIACOES + '] reparados com sucesso!');
+      }
+    }
+
+    // 2. Verificação da aba 'Envios_Avaliacoes'
+    var colunasEsperadasEnvios = [
+      'id_envio',
+      'id_avaliacao',
+      'nome_avaliacao',
+      'email_aluno',
+      'nome_aluno',
+      'nome_arquivo_drive',
+      'drive_file_id',
+      'drive_file_url',
+      'data_envio',
+      'tamanho_bytes'
+    ];
+    var sheetEnv = ss.getSheetByName(CONFIG.SHEET_ENVIOS);
+    if (!sheetEnv) {
+      relatorio.erros.push('Aba "' + CONFIG.SHEET_ENVIOS + '" não existe.');
+      Logger.log('❌ Aba [' + CONFIG.SHEET_ENVIOS + ']: NÃO ENCONTRADA');
+    } else {
+      relatorio.abaEnvios.existe = true;
+      var lastColEnv = sheetEnv.getLastColumn();
+      var lastRowEnv = sheetEnv.getLastRow();
+      relatorio.abaEnvios.colunasEncontradas = lastColEnv;
+      
+      var cabecalhosEnv = lastColEnv > 0 && lastRowEnv > 0 
+        ? sheetEnv.getRange(1, 1, 1, lastColEnv).getValues()[0] 
+        : [];
+      
+      relatorio.abaEnvios.detalhes = cabecalhosEnv;
+      var envOk = (cabecalhosEnv.length >= colunasEsperadasEnvios.length);
+      for (var j = 0; j < colunasEsperadasEnvios.length; j++) {
+        if (!cabecalhosEnv[j] || cabecalhosEnv[j].toString().trim() !== colunasEsperadasEnvios[j]) {
+          envOk = false;
+          relatorio.erros.push('Aba ' + CONFIG.SHEET_ENVIOS + ': Coluna ' + (j + 1) + ' deveria ser "' + colunasEsperadasEnvios[j] + '", mas é "' + (cabecalhosEnv[j] || 'VAZIA') + '".');
+        }
+      }
+      if (envOk) {
+        relatorio.abaEnvios.cabecalhosOk = true;
+        Logger.log('✅ Aba [' + CONFIG.SHEET_ENVIOS + ']: 100% OK! Cabeçalhos verificados (' + cabecalhosEnv.join(', ') + ')');
+      } else {
+        Logger.log('⚠️ Aba [' + CONFIG.SHEET_ENVIOS + ']: Divergência detectada.');
+        Logger.log('⚙️ Auto-reparando cabeçalhos da linha 1 de [' + CONFIG.SHEET_ENVIOS + '] para o padrão oficial da especificação...');
+        sheetEnv.getRange(1, 1, 1, colunasEsperadasEnvios.length).setValues([colunasEsperadasEnvios]);
+        sheetEnv.getRange(1, 1, 1, colunasEsperadasEnvios.length)
+          .setBackground('#0d9488')
+          .setFontColor('#ffffff')
+          .setFontWeight('bold');
+        sheetEnv.setFrozenRows(1);
+        relatorio.abaEnvios.cabecalhosOk = true;
+        relatorio.erros = []; // Divergência resolvida pelo auto-reparo
+        Logger.log('✅ Cabeçalhos de [' + CONFIG.SHEET_ENVIOS + '] reparados com sucesso! Linha 1 agora contém os 10 campos oficiais: (' + colunasEsperadasEnvios.join(', ') + ')');
+      }
+    }
+
+    relatorio.sucesso = (relatorio.abaAvaliacoes.existe && relatorio.abaAvaliacoes.cabecalhosOk && 
+                         relatorio.abaEnvios.existe && relatorio.abaEnvios.cabecalhosOk);
+
+    Logger.log('-----------------------------------------------------');
+    if (relatorio.sucesso) {
+      Logger.log('🎉 SUCESSO: Estrutura das duas abas de Avaliações validada e 100% operacional!');
+    } else {
+      Logger.log('⚠️ AVISO: Foram encontrados problemas na validação: ' + relatorio.erros.join(' | '));
+    }
+    Logger.log('=====================================================');
+
+    return relatorio;
+  } catch (err) {
+    Logger.log('❌ ERRO AO TESTAR ESTRUTURA: ' + err.message);
+    relatorio.sucesso = false;
+    relatorio.erros.push(err.message);
+    return relatorio;
+  }
+}
+
+/**
  * Garante que a estrutura do banco de dados (abas, cabeçalhos e configurações)
  * exista na planilha. Se alguma aba não existir, ela é criada automaticamente no primeiro acesso.
  * Também sincroniza novas aulas publicadas na aba Catalogo_Aulas sem apagar dados existentes.
@@ -707,6 +867,56 @@ function setupDatabase(forcarRecriacao) {
       .setFontColor('#ffffff')
       .setFontWeight('bold');
     sheetImagens.setFrozenRows(1);
+  }
+
+  // 5. Aba Avaliacoes
+  var sheetAvaliacoes = ss.getSheetByName(CONFIG.SHEET_AVALIACOES);
+  if (!sheetAvaliacoes) {
+    sheetAvaliacoes = ss.insertSheet(CONFIG.SHEET_AVALIACOES);
+  }
+  if (forcarRecriacao || sheetAvaliacoes.getLastRow() === 0) {
+    sheetAvaliacoes.clear();
+    var headersAvaliacoes = [
+      'id_avaliacao',
+      'nome',
+      'status',
+      'data_criacao',
+      'criado_por',
+      'pasta_drive_id'
+    ];
+    sheetAvaliacoes.appendRow(headersAvaliacoes);
+    sheetAvaliacoes.getRange(1, 1, 1, headersAvaliacoes.length)
+      .setBackground('#0284c7')
+      .setFontColor('#ffffff')
+      .setFontWeight('bold');
+    sheetAvaliacoes.setFrozenRows(1);
+  }
+
+  // 6. Aba Envios_Avaliacoes
+  var sheetEnvios = ss.getSheetByName(CONFIG.SHEET_ENVIOS);
+  if (!sheetEnvios) {
+    sheetEnvios = ss.insertSheet(CONFIG.SHEET_ENVIOS);
+  }
+  if (forcarRecriacao || sheetEnvios.getLastRow() === 0) {
+    sheetEnvios.clear();
+    var headersEnvios = [
+      'id_envio',
+      'id_avaliacao',
+      'nome_avaliacao',
+      'email_aluno',
+      'nome_aluno',
+      'nome_arquivo_drive',
+      'drive_file_id',
+      'drive_file_url',
+      'data_envio',
+      'tamanho_bytes'
+    ];
+    sheetEnvios.appendRow(headersEnvios);
+    sheetEnvios.getRange(1, 1, 1, headersEnvios.length)
+      .setBackground('#0d9488')
+      .setFontColor('#ffffff')
+      .setFontWeight('bold');
+    sheetEnvios.setFrozenRows(1);
   }
 
   // Remove aba padrão vazia ('Página1' ou 'Sheet1') se houver outras abas
@@ -1450,5 +1660,1142 @@ function removerImagemExercicio(params) {
       sucesso: false,
       mensagem: err.message
     };
+  }
+}
+
+/**
+ * ============================================================================
+ * GOOGLE DRIVE & GESTÃO DE AVALIAÇÕES / PROVAS PRÁTICAS (ESTÁGIO 2)
+ * ============================================================================
+ */
+
+/**
+ * Localiza ou cria a pasta raiz 'Avaliacoes' dentro do diretório onde reside a planilha.
+ */
+function obterOuCriarPastaRaizAvaliacoes() {
+  try {
+    var ss = getSpreadsheet();
+    if (!ss) throw new Error('Planilha não encontrada.');
+    var planilhaId = ss.getId();
+    var arquivoPlanilha = DriveApp.getFileById(planilhaId);
+    var pais = arquivoPlanilha.getParents();
+    var pastaPai = pais.hasNext() ? pais.next() : DriveApp.getRootFolder();
+    
+    var pastas = pastaPai.getFoldersByName('Avaliacoes');
+    if (pastas.hasNext()) {
+      return pastas.next();
+    } else {
+      var novaPasta = pastaPai.createFolder('Avaliacoes');
+      return novaPasta;
+    }
+  } catch (err) {
+    Logger.log('Erro em obterOuCriarPastaRaizAvaliacoes: ' + err.message);
+    throw new Error('Falha ao acessar pasta raiz Avaliacoes no Google Drive: ' + err.message);
+  }
+}
+
+/**
+ * Cria ou recupera a subpasta específica de uma avaliação dentro da pasta raiz 'Avaliacoes'.
+ */
+function obterOuCriarSubpastaAvaliacao(nomeAvaliacao, pastaDriveIdExistente) {
+  try {
+    if (pastaDriveIdExistente) {
+      try {
+        var pastaExistente = DriveApp.getFolderById(pastaDriveIdExistente);
+        if (pastaExistente && !pastaExistente.isTrashed()) {
+          return pastaExistente;
+        }
+      } catch (e) {
+        Logger.log('Subpasta com ID ' + pastaDriveIdExistente + ' não encontrada ou inacessível. Criando nova subpasta.');
+      }
+    }
+    
+    var pastaRaiz = obterOuCriarPastaRaizAvaliacoes();
+    var nomeSanitizado = (nomeAvaliacao || 'Avaliacao').toString().trim();
+    
+    // Procura se já existe subpasta com esse nome
+    var subpastas = pastaRaiz.getFoldersByName(nomeSanitizado);
+    if (subpastas.hasNext()) {
+      return subpastas.next();
+    }
+    
+    var novaSubpasta = pastaRaiz.createFolder(nomeSanitizado);
+    try {
+      novaSubpasta.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch (eShare) {
+      Logger.log('Aviso ao ajustar compartilhamento da subpasta de avaliação: ' + eShare.message);
+    }
+    return novaSubpasta;
+  } catch (err) {
+    Logger.log('Erro em obterOuCriarSubpastaAvaliacao: ' + err.message);
+    throw new Error('Falha ao gerenciar subpasta da avaliação no Drive: ' + err.message);
+  }
+}
+
+/**
+ * Sanitiza texto removendo caracteres especiais e acentos para uso seguro em nomes de arquivos/pastas.
+ */
+function limparTexto(texto) {
+  if (!texto) return '';
+  return texto.toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9_\-\. ]/g, '')
+    .trim()
+    .replace(/\s+/g, '_');
+}
+
+/**
+ * Lista todas as avaliações cadastradas com total de envios (Restrito ao Professor).
+ */
+function listarAvaliacoes(emailParam) {
+  try {
+    var session = getUserSessionData(emailParam);
+    if (!session.isProfessor) {
+      return {
+        sucesso: false,
+        mensagem: 'Acesso restrito: Funcionalidade restrita a professores.'
+      };
+    }
+    
+    var ss = ensureDatabase();
+    var sheetEval = ss ? ss.getSheetByName(CONFIG.SHEET_AVALIACOES) : null;
+    var sheetEnv = ss ? ss.getSheetByName(CONFIG.SHEET_ENVIOS) : null;
+    
+    if (!sheetEval) {
+      return { sucesso: true, avaliacoes: [] };
+    }
+    
+    // Contagem de envios por id_avaliacao
+    var contagemEnvios = {};
+    if (sheetEnv && sheetEnv.getLastRow() > 1) {
+      var dadosEnvios = sheetEnv.getDataRange().getValues();
+      for (var e = 1; e < dadosEnvios.length; e++) {
+        var idAvalEnvio = dadosEnvios[e][1] ? dadosEnvios[e][1].toString().trim() : '';
+        if (idAvalEnvio) {
+          contagemEnvios[idAvalEnvio] = (contagemEnvios[idAvalEnvio] || 0) + 1;
+        }
+      }
+    }
+    
+    var lista = [];
+    if (sheetEval.getLastRow() > 1) {
+      var rows = sheetEval.getDataRange().getValues();
+      for (var i = 1; i < rows.length; i++) {
+        var idEval = rows[i][0] ? rows[i][0].toString().trim() : '';
+        if (!idEval) continue;
+        
+        var pastaId = rows[i][5] ? rows[i][5].toString().trim() : '';
+        var pastaUrl = pastaId ? ('https://drive.google.com/drive/folders/' + pastaId) : '';
+        
+        lista.push({
+          id_avaliacao: idEval,
+          nome: rows[i][1] ? rows[i][1].toString().trim() : '',
+          status: rows[i][2] ? rows[i][2].toString().trim().toLowerCase() : 'inativa',
+          data_criacao: rows[i][3] ? rows[i][3].toString() : '',
+          criado_por: rows[i][4] ? rows[i][4].toString() : '',
+          pasta_drive_id: pastaId,
+          pasta_drive_url: pastaUrl,
+          total_envios: contagemEnvios[idEval] || 0
+        });
+      }
+    }
+    
+    // Ordena da mais recente para a mais antiga
+    lista.sort(function(a, b) {
+      return new Date(b.data_criacao || 0) - new Date(a.data_criacao || 0);
+    });
+    
+    return {
+      sucesso: true,
+      avaliacoes: lista
+    };
+  } catch (err) {
+    Logger.log('Erro em listarAvaliacoes: ' + err.message);
+    return {
+      sucesso: false,
+      mensagem: err.message,
+      avaliacoes: []
+    };
+  }
+}
+
+/**
+ * Salva (cria ou edita) uma avaliação e provisiona sua pasta dedicada no Google Drive.
+ */
+function salvarAvaliacao(dados, emailParam) {
+  try {
+    var session = getUserSessionData(emailParam);
+    if (!session.isProfessor) {
+      return {
+        sucesso: false,
+        mensagem: 'Acesso restrito: Apenas professores podem criar ou editar avaliações.'
+      };
+    }
+    
+    if (!dados || !dados.nome || dados.nome.toString().trim().length < 3) {
+      return {
+        sucesso: false,
+        mensagem: 'O nome da avaliação deve ter no mínimo 3 caracteres.'
+      };
+    }
+    
+    var ss = ensureDatabase();
+    var sheetEval = ss ? ss.getSheetByName(CONFIG.SHEET_AVALIACOES) : null;
+    if (!sheetEval) {
+      setupDatabase(false);
+      sheetEval = ss.getSheetByName(CONFIG.SHEET_AVALIACOES);
+    }
+    
+    var nome = dados.nome.toString().trim();
+    var status = (dados.status === 'ativa' || dados.status === true) ? 'ativa' : 'inativa';
+    var idAvaliacao = dados.id_avaliacao ? dados.id_avaliacao.toString().trim() : '';
+    var agora = new Date().toISOString();
+    var emailProf = session.email || 'professor';
+    
+    var rows = sheetEval.getDataRange().getValues();
+    var rowIndex = -1;
+    var pastaIdExistente = '';
+    
+    if (idAvaliacao) {
+      for (var i = 1; i < rows.length; i++) {
+        if (rows[i][0] && rows[i][0].toString().trim() === idAvaliacao) {
+          rowIndex = i + 1;
+          pastaIdExistente = rows[i][5] ? rows[i][5].toString().trim() : '';
+          break;
+        }
+      }
+    }
+    
+    // Regra: se status for 'ativa', desativa qualquer outra avaliação ativa
+    if (status === 'ativa') {
+      for (var j = 1; j < rows.length; j++) {
+        if ((!idAvaliacao || rows[j][0] !== idAvaliacao) && rows[j][2] === 'ativa') {
+          sheetEval.getRange(j + 1, 3).setValue('inativa');
+        }
+      }
+    }
+    
+    // Provisiona subpasta no Drive
+    var subpasta = obterOuCriarSubpastaAvaliacao(nome, pastaIdExistente);
+    var pastaDriveId = subpasta.getId();
+    
+    // Se for edição e o nome mudou, renomeia a subpasta no Drive
+    if (rowIndex > 0) {
+      try {
+        if (subpasta.getName() !== nome) {
+          subpasta.setName(nome);
+        }
+      } catch (eName) {
+        Logger.log('Aviso ao renomear subpasta no Drive: ' + eName.message);
+      }
+      
+      sheetEval.getRange(rowIndex, 2).setValue(nome);
+      sheetEval.getRange(rowIndex, 3).setValue(status);
+      sheetEval.getRange(rowIndex, 6).setValue(pastaDriveId);
+      
+      var dataCriacaoExistente = sheetEval.getRange(rowIndex, 4).getValue();
+      
+      return {
+        sucesso: true,
+        mensagem: 'Avaliação atualizada com sucesso!',
+        avaliacao: {
+          id_avaliacao: idAvaliacao,
+          nome: nome,
+          status: status,
+          data_criacao: dataCriacaoExistente ? dataCriacaoExistente.toString() : agora,
+          criado_por: sheetEval.getRange(rowIndex, 5).getValue() || emailProf,
+          pasta_drive_id: pastaDriveId,
+          pasta_drive_url: 'https://drive.google.com/drive/folders/' + pastaDriveId
+        }
+      };
+    } else {
+      idAvaliacao = 'eval_' + new Date().getTime();
+      
+      sheetEval.appendRow([
+        idAvaliacao,
+        nome,
+        status,
+        agora,
+        emailProf,
+        pastaDriveId
+      ]);
+      
+      return {
+        sucesso: true,
+        mensagem: 'Avaliação criada com sucesso!',
+        avaliacao: {
+          id_avaliacao: idAvaliacao,
+          nome: nome,
+          status: status,
+          data_criacao: agora,
+          criado_por: emailProf,
+          pasta_drive_id: pastaDriveId,
+          pasta_drive_url: 'https://drive.google.com/drive/folders/' + pastaDriveId
+        }
+      };
+    }
+  } catch (err) {
+    Logger.log('Erro em salvarAvaliacao: ' + err.message);
+    return {
+      sucesso: false,
+      mensagem: err.message
+    };
+  }
+}
+
+/**
+ * Alterna o status de uma avaliação entre 'ativa' e 'inativa'.
+ * Se ativar, garante que todas as outras fiquem inativas (apenas 1 ativa por vez).
+ */
+function alternarStatusAvaliacao(idAvaliacao, ativar, emailParam) {
+  try {
+    var session = getUserSessionData(emailParam);
+    if (!session.isProfessor) {
+      return {
+        sucesso: false,
+        mensagem: 'Acesso restrito: Apenas professores podem alterar o status de avaliações.'
+      };
+    }
+    
+    if (!idAvaliacao) {
+      return { sucesso: false, mensagem: 'ID da avaliação não informado.' };
+    }
+    
+    var ss = ensureDatabase();
+    var sheetEval = ss ? ss.getSheetByName(CONFIG.SHEET_AVALIACOES) : null;
+    if (!sheetEval) {
+      return { sucesso: false, mensagem: 'Aba de avaliações não encontrada.' };
+    }
+    
+    var rows = sheetEval.getDataRange().getValues();
+    var rowIndex = -1;
+    var novoStatus = ativar ? 'ativa' : 'inativa';
+    
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][0] && rows[i][0].toString().trim() === idAvaliacao.toString().trim()) {
+        rowIndex = i + 1;
+        break;
+      }
+    }
+    
+    if (rowIndex === -1) {
+      return { sucesso: false, mensagem: 'Avaliação com ID "' + idAvaliacao + '" não foi encontrada.' };
+    }
+    
+    if (ativar) {
+      for (var j = 1; j < rows.length; j++) {
+        if (rows[j][2] === 'ativa') {
+          sheetEval.getRange(j + 1, 3).setValue('inativa');
+        }
+      }
+    }
+    
+    sheetEval.getRange(rowIndex, 3).setValue(novoStatus);
+    
+    return {
+      sucesso: true,
+      idAvaliacao: idAvaliacao,
+      status: novoStatus,
+      mensagem: 'Status da avaliação alterado para: ' + novoStatus
+    };
+  } catch (err) {
+    Logger.log('Erro em alternarStatusAvaliacao: ' + err.message);
+    return {
+      sucesso: false,
+      mensagem: err.message
+    };
+  }
+}
+
+/**
+ * Exclui uma avaliação e remove sua pasta correspondente do Google Drive.
+ */
+function excluirAvaliacao(idAvaliacao, emailParam) {
+  try {
+    var session = getUserSessionData(emailParam);
+    if (!session.isProfessor) {
+      return {
+        sucesso: false,
+        mensagem: 'Acesso restrito: Apenas professores podem excluir avaliações.'
+      };
+    }
+    
+    if (!idAvaliacao) {
+      return { sucesso: false, mensagem: 'ID da avaliação não informado.' };
+    }
+    
+    var ss = ensureDatabase();
+    var sheetEval = ss ? ss.getSheetByName(CONFIG.SHEET_AVALIACOES) : null;
+    if (!sheetEval) {
+      return { sucesso: false, mensagem: 'Aba de avaliações não encontrada.' };
+    }
+    
+    var rows = sheetEval.getDataRange().getValues();
+    var rowIndex = -1;
+    var pastaId = '';
+    
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][0] && rows[i][0].toString().trim() === idAvaliacao.toString().trim()) {
+        rowIndex = i + 1;
+        pastaId = rows[i][5] ? rows[i][5].toString().trim() : '';
+        break;
+      }
+    }
+    
+    if (rowIndex === -1) {
+      return { sucesso: false, mensagem: 'Avaliação com ID "' + idAvaliacao + '" não encontrada.' };
+    }
+    
+    sheetEval.deleteRow(rowIndex);
+    
+    if (pastaId) {
+      try {
+        DriveApp.getFolderById(pastaId).setTrashed(true);
+      } catch (eDrive) {
+        Logger.log('Aviso ao enviar pasta da avaliação para a lixeira: ' + eDrive.message);
+      }
+    }
+    
+    return {
+      sucesso: true,
+      mensagem: 'Avaliação excluída com sucesso!'
+    };
+  } catch (err) {
+    Logger.log('Erro em excluirAvaliacao: ' + err.message);
+    return {
+      sucesso: false,
+      mensagem: err.message
+    };
+  }
+}
+
+/**
+ * ============================================================================
+ * TESTE ESPECÍFICO: CICLO DE VIDA DE AVALIAÇÕES (ESTÁGIO 2)
+ * ============================================================================
+ * Como executar:
+ * 1. No Google Apps Script, selecione a função "testarCicloVidaAvaliacao".
+ * 2. Clique em "Executar".
+ * 3. Analise o "Registro de execução" (Execution Log).
+ * ============================================================================
+ */
+function testarCicloVidaAvaliacao() {
+  Logger.log('=====================================================');
+  Logger.log('🔍 [PYTHONLAB] INICIANDO TESTE DO CICLO DE VIDA DE AVALIAÇÃO (ESTÁGIO 2)');
+  Logger.log('=====================================================');
+
+  var relatorio = {
+    sucesso: false,
+    etapa1_pastaRaiz: false,
+    etapa2_criacao: false,
+    etapa3_listagem: false,
+    etapa4_alternarStatus: false,
+    etapa5_exclusao: false,
+    idAvaliacaoCriada: null,
+    pastaDriveIdCriada: null,
+    erros: []
+  };
+
+  var emailTeste = Session.getActiveUser().getEmail() || '';
+  var sessionCheck = getUserSessionData(emailTeste);
+  if (!sessionCheck.isProfessor) {
+    var ss = ensureDatabase();
+    var sheetUsers = ss ? ss.getSheetByName(CONFIG.SHEET_USERS) : null;
+    if (sheetUsers) {
+      var uData = sheetUsers.getDataRange().getValues();
+      for (var u = 1; u < uData.length; u++) {
+        if ((uData[u][2] || '').toString().toLowerCase() === 'professor') {
+          emailTeste = uData[u][0];
+          break;
+        }
+      }
+    }
+  }
+
+  try {
+    // Passo 1: Teste de Acesso/Criação da Pasta Raiz 'Avaliacoes' no Drive
+    Logger.log('📁 Passo 1: Verificando pasta raiz "Avaliacoes" no Google Drive...');
+    var pastaRaiz = obterOuCriarPastaRaizAvaliacoes();
+    if (!pastaRaiz || !pastaRaiz.getId()) {
+      throw new Error('Falha ao obter ou criar a pasta raiz "Avaliacoes" no Drive.');
+    }
+    relatorio.etapa1_pastaRaiz = true;
+    Logger.log('   ✅ Pasta Raiz "Avaliacoes" pronta! ID: ' + pastaRaiz.getId());
+
+    // Passo 2: Teste de Criação de Avaliação via salvarAvaliacao
+    var nomeTeste = '__Teste_Automatizado_Prova_1__';
+    Logger.log('📝 Passo 2: Criando avaliação de teste "' + nomeTeste + '"...');
+    
+    var resultadoCriacao = salvarAvaliacao({
+      nome: nomeTeste,
+      status: 'ativa'
+    }, emailTeste);
+
+    if (!resultadoCriacao.sucesso || !resultadoCriacao.avaliacao) {
+      throw new Error('Falha ao criar avaliação: ' + (resultadoCriacao.mensagem || 'Erro desconhecido'));
+    }
+
+    var aval = resultadoCriacao.avaliacao;
+    relatorio.idAvaliacaoCriada = aval.id_avaliacao;
+    relatorio.pastaDriveIdCriada = aval.pasta_drive_id;
+    relatorio.etapa2_criacao = true;
+
+    Logger.log('   ✅ Avaliação criada com sucesso!');
+    Logger.log('      - ID: ' + aval.id_avaliacao);
+    Logger.log('      - Nome: ' + aval.nome);
+    Logger.log('      - Status: ' + aval.status);
+    Logger.log('      - Subpasta no Drive: ' + aval.pasta_drive_url);
+
+    // Passo 3: Teste de Listagem de Avaliações
+    Logger.log('📋 Passo 3: Listando avaliações via listarAvaliacoes...');
+    var resultadoListagem = listarAvaliacoes(emailTeste);
+    if (!resultadoListagem.sucesso || !resultadoListagem.avaliacoes) {
+      throw new Error('Falha ao listar avaliações: ' + resultadoListagem.mensagem);
+    }
+    
+    var encontrada = resultadoListagem.avaliacoes.find(function(a) {
+      return a.id_avaliacao === aval.id_avaliacao;
+    });
+
+    if (!encontrada) {
+      throw new Error('A avaliação recém-criada não foi encontrada na listagem.');
+    }
+    relatorio.etapa3_listagem = true;
+    Logger.log('   ✅ Avaliação listada com sucesso! Total no banco: ' + resultadoListagem.avaliacoes.length);
+
+    // Passo 4: Teste de Alternância de Status
+    Logger.log('🔄 Passo 4: Alternando status da avaliação para "inativa" e depois "ativa"...');
+    var resDesativar = alternarStatusAvaliacao(aval.id_avaliacao, false, emailTeste);
+    if (!resDesativar.sucesso || resDesativar.status !== 'inativa') {
+      throw new Error('Falha ao inativar avaliação: ' + resDesativar.mensagem);
+    }
+
+    var resReativar = alternarStatusAvaliacao(aval.id_avaliacao, true, emailTeste);
+    if (!resReativar.sucesso || resReativar.status !== 'ativa') {
+      throw new Error('Falha ao reativar avaliação: ' + resReativar.mensagem);
+    }
+    relatorio.etapa4_alternarStatus = true;
+    Logger.log('   ✅ Alternância de status validada com sucesso (ativa <-> inativa)!');
+
+    // Passo 5: Teste de Limpeza / Exclusão da Avaliação de Teste
+    Logger.log('🧹 Passo 5: Excluindo avaliação de teste para manter a planilha e Drive limpos...');
+    var resExclusao = excluirAvaliacao(aval.id_avaliacao, emailTeste);
+    if (!resExclusao.sucesso) {
+      throw new Error('Falha ao excluir avaliação de teste: ' + resExclusao.mensagem);
+    }
+    relatorio.etapa5_exclusao = true;
+    Logger.log('   ✅ Avaliação de teste e subpasta excluídas com sucesso!');
+
+    relatorio.sucesso = true;
+    Logger.log('-----------------------------------------------------');
+    Logger.log('🎉 SUCESSO TOTAL: Todos os 5 passos do ciclo de vida de Avaliações foram validados com êxito!');
+    Logger.log('=====================================================');
+
+    return relatorio;
+  } catch (err) {
+    Logger.log('❌ ERRO NO TESTE DE CICLO DE VIDA: ' + err.message);
+    relatorio.sucesso = false;
+    relatorio.erros.push(err.message);
+    
+    if (relatorio.idAvaliacaoCriada) {
+      try {
+        excluirAvaliacao(relatorio.idAvaliacaoCriada, emailTeste);
+      } catch (eLimpeza) {}
+    }
+    
+    return relatorio;
+  }
+}
+
+/**
+ * ============================================================================
+ * UPLOAD DE ARQUIVOS (.ipynb/.py) & SUBMISSÕES DOS ALUNOS (ESTÁGIO 3)
+ * ============================================================================
+ */
+
+/**
+ * Retorna a avaliação atualmente aberta (status === 'ativa') e se o aluno já enviou.
+ * Utilizado pelo Dashboard do estudante para exibir a prova ativa e histórico de entrega.
+ */
+function obterAvaliacaoAtiva(emailAluno) {
+  try {
+    var ss = ensureDatabase();
+    var sheetEval = ss ? ss.getSheetByName(CONFIG.SHEET_AVALIACOES) : null;
+    var sheetEnv = ss ? ss.getSheetByName(CONFIG.SHEET_ENVIOS) : null;
+    
+    if (!sheetEval || sheetEval.getLastRow() <= 1) {
+      return { sucesso: true, ativa: null, envioAluno: null, jaEnviou: false };
+    }
+    
+    var rows = sheetEval.getDataRange().getValues();
+    var evalAtiva = null;
+    
+    for (var i = 1; i < rows.length; i++) {
+      var status = (rows[i][2] || '').toString().trim().toLowerCase();
+      if (status === 'ativa') {
+        var pastaId = rows[i][5] ? rows[i][5].toString().trim() : '';
+        evalAtiva = {
+          id_avaliacao: rows[i][0] ? rows[i][0].toString().trim() : '',
+          nome: rows[i][1] ? rows[i][1].toString().trim() : '',
+          status: 'ativa',
+          data_criacao: rows[i][3] ? rows[i][3].toString() : '',
+          criado_por: rows[i][4] ? rows[i][4].toString() : '',
+          pasta_drive_id: pastaId,
+          pasta_drive_url: pastaId ? ('https://drive.google.com/drive/folders/' + pastaId) : ''
+        };
+        break;
+      }
+    }
+    
+    if (!evalAtiva) {
+      return { sucesso: true, ativa: null, envioAluno: null, jaEnviou: false };
+    }
+    
+    // Verifica se este aluno já realizou envio para esta avaliação ativa
+    var envioAluno = null;
+    var emailBusca = (emailAluno || '').toString().trim().toLowerCase();
+    
+    if (emailBusca && sheetEnv && sheetEnv.getLastRow() > 1) {
+      var envRows = sheetEnv.getDataRange().getValues();
+      for (var e = 1; e < envRows.length; e++) {
+        var eIdAval = (envRows[e][1] || '').toString().trim();
+        var eEmail = (envRows[e][3] || '').toString().trim().toLowerCase();
+        if (eIdAval === evalAtiva.id_avaliacao && eEmail === emailBusca) {
+          envioAluno = {
+            id_envio: envRows[e][0] ? envRows[e][0].toString().trim() : '',
+            id_avaliacao: eIdAval,
+            nome_avaliacao: envRows[e][2] ? envRows[e][2].toString().trim() : '',
+            email_aluno: envRows[e][3] ? envRows[e][3].toString().trim() : '',
+            nome_aluno: envRows[e][4] ? envRows[e][4].toString().trim() : '',
+            nome_arquivo_drive: envRows[e][5] ? envRows[e][5].toString().trim() : '',
+            drive_file_id: envRows[e][6] ? envRows[e][6].toString().trim() : '',
+            drive_file_url: envRows[e][7] ? envRows[e][7].toString().trim() : '',
+            data_envio: envRows[e][8] ? envRows[e][8].toString() : '',
+            tamanho_bytes: Number(envRows[e][9]) || 0
+          };
+          break;
+        }
+      }
+    }
+    
+    return {
+      sucesso: true,
+      ativa: evalAtiva,
+      jaEnviou: (envioAluno !== null),
+      envioAluno: envioAluno
+    };
+  } catch (err) {
+    Logger.log('Erro em obterAvaliacaoAtiva: ' + err.message);
+    return {
+      sucesso: false,
+      mensagem: err.message,
+      ativa: null,
+      envioAluno: null,
+      jaEnviou: false
+    };
+  }
+}
+
+/**
+ * Recebe base64 de arquivo .ipynb ou .py do aluno, salva na subpasta do Drive
+ * com convenção padronizada e registra ou atualiza na aba Envios_Avaliacoes.
+ * Se o aluno já tiver enviado anteriormente, aplica a Substituição Formativa (lixeira no Drive e update na linha).
+ */
+function enviarArquivoAvaliacao(params) {
+  try {
+    if (!params || !params.idAvaliacao || !params.emailAluno || !params.base64Data) {
+      return {
+        sucesso: false,
+        mensagem: 'Dados incompletos para envio da avaliação (id, email e arquivo são obrigatórios).'
+      };
+    }
+    
+    var emailAluno = params.emailAluno.toString().trim().toLowerCase();
+    var idAvaliacao = params.idAvaliacao.toString().trim();
+    
+    var ss = ensureDatabase();
+    var sheetEval = ss ? ss.getSheetByName(CONFIG.SHEET_AVALIACOES) : null;
+    var sheetEnv = ss ? ss.getSheetByName(CONFIG.SHEET_ENVIOS) : null;
+    var sheetUsers = ss ? ss.getSheetByName(CONFIG.SHEET_USERS) : null;
+    
+    if (!sheetEval || !sheetEnv) {
+      throw new Error('Abas de Avaliações não encontradas.');
+    }
+    
+    // 1. Valida se a avaliação existe e está com status 'ativa'
+    var rowsEval = sheetEval.getDataRange().getValues();
+    var avaliacaoEncontrada = null;
+    for (var i = 1; i < rowsEval.length; i++) {
+      if (rowsEval[i][0] && rowsEval[i][0].toString().trim() === idAvaliacao) {
+        avaliacaoEncontrada = {
+          id_avaliacao: rowsEval[i][0].toString().trim(),
+          nome: rowsEval[i][1] ? rowsEval[i][1].toString().trim() : '',
+          status: rowsEval[i][2] ? rowsEval[i][2].toString().trim().toLowerCase() : 'inativa',
+          pasta_drive_id: rowsEval[i][5] ? rowsEval[i][5].toString().trim() : ''
+        };
+        break;
+      }
+    }
+    
+    if (!avaliacaoEncontrada) {
+      return { sucesso: false, mensagem: 'Avaliação não encontrada na planilha.' };
+    }
+    
+    if (avaliacaoEncontrada.status !== 'ativa') {
+      return {
+        sucesso: false,
+        mensagem: 'Esta avaliação já foi encerrada e não aceita mais envios de arquivos.'
+      };
+    }
+    
+    // 2. Determina o nome do aluno
+    var nomeAluno = (params.nomeAluno || '').toString().trim();
+    if (!nomeAluno && sheetUsers) {
+      var rowsU = sheetUsers.getDataRange().getValues();
+      for (var u = 1; u < rowsU.length; u++) {
+        if (rowsU[u][0] && rowsU[u][0].toString().trim().toLowerCase() === emailAluno) {
+          nomeAluno = rowsU[u][1] ? rowsU[u][1].toString().trim() : '';
+          break;
+        }
+      }
+    }
+    if (!nomeAluno) {
+      var parteEmail = emailAluno.split('@')[0].replace(/[._]/g, ' ');
+      nomeAluno = parteEmail.charAt(0).toUpperCase() + parteEmail.slice(1);
+    }
+    
+    // 3. Processa dados do arquivo e convenção padronizada de nome
+    var nomeOriginal = params.nomeOriginalArquivo || 'notebook.ipynb';
+    var pontoIdx = nomeOriginal.lastIndexOf('.');
+    var ext = (pontoIdx > -1) ? nomeOriginal.substring(pontoIdx + 1).toLowerCase() : 'ipynb';
+    var nomeBaseOriginal = (pontoIdx > -1) ? nomeOriginal.substring(0, pontoIdx) : nomeOriginal;
+    
+    // Garantir extensão permitida (.ipynb ou .py)
+    if (ext !== 'ipynb' && ext !== 'py') {
+      ext = 'ipynb';
+    }
+    
+    var timeZone = Session.getScriptTimeZone() || 'America/Sao_Paulo';
+    var timestampStr = Utilities.formatDate(new Date(), timeZone, 'HH_mm_dd_MM');
+    
+    // [Nome_da_Avaliacao]_[Nome_do_Aluno]_[Nome_Original]_[HH_mm_dd_MM].[ext]
+    var nomePadronizado = limparTexto(avaliacaoEncontrada.nome) + '_' +
+                          limparTexto(nomeAluno) + '_' +
+                          limparTexto(nomeBaseOriginal) + '_' +
+                          timestampStr + '.' + ext;
+    
+    // 4. Salva o arquivo na subpasta correspondente no Google Drive
+    var subpasta = obterOuCriarSubpastaAvaliacao(avaliacaoEncontrada.nome, avaliacaoEncontrada.pasta_drive_id);
+    
+    var cleanBase64 = params.base64Data;
+    if (cleanBase64.indexOf(',') > -1) {
+      cleanBase64 = cleanBase64.split(',')[1];
+    }
+    var bytes = Utilities.base64Decode(cleanBase64);
+    var mime = params.mimeType || (ext === 'py' ? 'text/plain' : 'application/x-ipynb+json');
+    var blob = Utilities.newBlob(bytes, mime, nomePadronizado);
+    
+    var driveFile = subpasta.createFile(blob);
+    try {
+      driveFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch (eShare) {}
+    
+    var fileId = driveFile.getId();
+    var fileUrl = 'https://drive.google.com/file/d/' + fileId + '/view?usp=sharing';
+    var agora = new Date().toISOString();
+    var tamanhoFinal = Number(params.tamanhoBytes) || bytes.length;
+    
+    // 5. Substituição Formativa: verifica se já existe envio anterior deste aluno
+    var rowsEnv = sheetEnv.getDataRange().getValues();
+    var rowIndexExistente = -1;
+    var oldFileId = '';
+    var idEnvioExistente = '';
+    
+    for (var r = 1; r < rowsEnv.length; r++) {
+      var rowIdAval = (rowsEnv[r][1] || '').toString().trim();
+      var rowEmail = (rowsEnv[r][3] || '').toString().trim().toLowerCase();
+      if (rowIdAval === idAvaliacao && rowEmail === emailAluno) {
+        rowIndexExistente = r + 1;
+        idEnvioExistente = rowsEnv[r][0] ? rowsEnv[r][0].toString().trim() : '';
+        oldFileId = (rowsEnv[r][6] || '').toString().trim();
+        break;
+      }
+    }
+    
+    var foiSubstituido = false;
+    var idEnvioFinal = '';
+    
+    if (rowIndexExistente > 0) {
+      foiSubstituido = true;
+      idEnvioFinal = idEnvioExistente || ('sub_' + idAvaliacao + '_' + new Date().getTime());
+      
+      // Move o arquivo anterior para a lixeira do Drive
+      if (oldFileId && oldFileId !== fileId) {
+        try {
+          DriveApp.getFileById(oldFileId).setTrashed(true);
+          Logger.log('Arquivo anterior descartado no Drive: ' + oldFileId);
+        } catch (eTrash) {
+          Logger.log('Aviso ao descartar arquivo anterior: ' + eTrash.message);
+        }
+      }
+      
+      // Atualiza a linha existente na planilha
+      // [id_envio, id_avaliacao, nome_avaliacao, email_aluno, nome_aluno, nome_arquivo_drive, drive_file_id, drive_file_url, data_envio, tamanho_bytes]
+      sheetEnv.getRange(rowIndexExistente, 5).setValue(nomeAluno);
+      sheetEnv.getRange(rowIndexExistente, 6).setValue(nomePadronizado);
+      sheetEnv.getRange(rowIndexExistente, 7).setValue(fileId);
+      sheetEnv.getRange(rowIndexExistente, 8).setValue(fileUrl);
+      sheetEnv.getRange(rowIndexExistente, 9).setValue(agora);
+      sheetEnv.getRange(rowIndexExistente, 10).setValue(tamanhoFinal);
+    } else {
+      // Inserção de novo envio
+      idEnvioFinal = 'sub_' + idAvaliacao + '_' + new Date().getTime();
+      sheetEnv.appendRow([
+        idEnvioFinal,
+        idAvaliacao,
+        avaliacaoEncontrada.nome,
+        emailAluno,
+        nomeAluno,
+        nomePadronizado,
+        fileId,
+        fileUrl,
+        agora,
+        tamanhoFinal
+      ]);
+    }
+    
+    return {
+      sucesso: true,
+      substituido: foiSubstituido,
+      mensagem: foiSubstituido 
+        ? 'Arquivo reexaminado e substituído com sucesso na nuvem!' 
+        : 'Arquivo da avaliação enviado com sucesso!',
+      envio: {
+        id_envio: idEnvioFinal,
+        id_avaliacao: idAvaliacao,
+        nome_avaliacao: avaliacaoEncontrada.nome,
+        email_aluno: emailAluno,
+        nome_aluno: nomeAluno,
+        nome_arquivo_drive: nomePadronizado,
+        drive_file_id: fileId,
+        drive_file_url: fileUrl,
+        data_envio: agora,
+        tamanho_bytes: tamanhoFinal
+      }
+    };
+  } catch (err) {
+    Logger.log('Erro em enviarArquivoAvaliacao: ' + err.message);
+    return {
+      sucesso: false,
+      mensagem: err.message
+    };
+  }
+}
+
+/**
+ * Retorna a lista detalhada de submissões dos estudantes para uma avaliação (Exclusivo Professor).
+ */
+function listarEnviosAvaliacao(idAvaliacao, emailParam) {
+  try {
+    var session = getUserSessionData(emailParam);
+    if (!session.isProfessor) {
+      return {
+        sucesso: false,
+        mensagem: 'Acesso restrito: Funcionalidade restrita a professores.'
+      };
+    }
+    
+    if (!idAvaliacao) {
+      return { sucesso: false, mensagem: 'ID da avaliação não informado.' };
+    }
+    
+    var ss = ensureDatabase();
+    var sheetEval = ss ? ss.getSheetByName(CONFIG.SHEET_AVALIACOES) : null;
+    var sheetEnv = ss ? ss.getSheetByName(CONFIG.SHEET_ENVIOS) : null;
+    
+    var dadosAvaliacao = null;
+    if (sheetEval && sheetEval.getLastRow() > 1) {
+      var rowsEval = sheetEval.getDataRange().getValues();
+      for (var i = 1; i < rowsEval.length; i++) {
+        if (rowsEval[i][0] && rowsEval[i][0].toString().trim() === idAvaliacao.toString().trim()) {
+          var pastaId = rowsEval[i][5] ? rowsEval[i][5].toString().trim() : '';
+          dadosAvaliacao = {
+            id_avaliacao: rowsEval[i][0].toString().trim(),
+            nome: rowsEval[i][1] ? rowsEval[i][1].toString().trim() : '',
+            status: rowsEval[i][2] ? rowsEval[i][2].toString().trim() : '',
+            pasta_drive_id: pastaId,
+            pasta_drive_url: pastaId ? ('https://drive.google.com/drive/folders/' + pastaId) : ''
+          };
+          break;
+        }
+      }
+    }
+    
+    var envios = [];
+    if (sheetEnv && sheetEnv.getLastRow() > 1) {
+      var rowsEnv = sheetEnv.getDataRange().getValues();
+      for (var j = 1; j < rowsEnv.length; j++) {
+        var rowIdAval = (rowsEnv[j][1] || '').toString().trim();
+        if (rowIdAval === idAvaliacao.toString().trim()) {
+          var fId = (rowsEnv[j][6] || '').toString().trim();
+          var fUrl = (rowsEnv[j][7] || '').toString().trim();
+          if (!fUrl && fId) {
+            fUrl = 'https://drive.google.com/open?id=' + fId;
+          }
+          
+          envios.push({
+            id_envio: rowsEnv[j][0] ? rowsEnv[j][0].toString().trim() : '',
+            id_avaliacao: rowIdAval,
+            nome_avaliacao: rowsEnv[j][2] ? rowsEnv[j][2].toString().trim() : '',
+            email_aluno: rowsEnv[j][3] ? rowsEnv[j][3].toString().trim() : '',
+            nome_aluno: rowsEnv[j][4] ? rowsEnv[j][4].toString().trim() : '',
+            nome_arquivo_drive: rowsEnv[j][5] ? rowsEnv[j][5].toString().trim() : '',
+            drive_file_id: fId,
+            drive_file_url: fUrl,
+            data_envio: rowsEnv[j][8] ? rowsEnv[j][8].toString() : '',
+            tamanho_bytes: Number(rowsEnv[j][9]) || 0
+          });
+        }
+      }
+    }
+    
+    // Ordena por data decrescente (envios mais recentes primeiro)
+    envios.sort(function(a, b) {
+      return new Date(b.data_envio || 0) - new Date(a.data_envio || 0);
+    });
+    
+    return {
+      sucesso: true,
+      avaliacao: dadosAvaliacao,
+      total: envios.length,
+      envios: envios
+    };
+  } catch (err) {
+    Logger.log('Erro em listarEnviosAvaliacao: ' + err.message);
+    return {
+      sucesso: false,
+      mensagem: err.message,
+      envios: []
+    };
+  }
+}
+
+/**
+ * ============================================================================
+ * TESTE ESPECÍFICO: ENVIO E SUBSTITUIÇÃO FORMATIVA DE ARQUIVOS (ESTÁGIO 3)
+ * ============================================================================
+ * Como executar:
+ * 1. No Google Apps Script, selecione a função "testarEnvioSubstituicaoAluno".
+ * 2. Clique em "Executar".
+ * 3. Analise o "Registro de execução" (Execution Log).
+ * ============================================================================
+ */
+function testarEnvioSubstituicaoAluno() {
+  Logger.log('=====================================================');
+  Logger.log('🔍 [PYTHONLAB] INICIANDO TESTE DE ENVIO E SUBSTITUIÇÃO (ESTÁGIO 3)');
+  Logger.log('=====================================================');
+
+  var relatorio = {
+    sucesso: false,
+    etapa1_provaAtiva: false,
+    etapa2_primeiroEnvio: false,
+    etapa3_statusAposEnvio: false,
+    etapa4_substituicaoFormativa: false,
+    etapa5_listagemEnvios: false,
+    etapa6_limpeza: false,
+    idAvaliacaoCriada: null,
+    erros: []
+  };
+
+  var emailProf = Session.getActiveUser().getEmail() || '';
+  var sessionCheck = getUserSessionData(emailProf);
+  if (!sessionCheck.isProfessor) {
+    var ss = ensureDatabase();
+    var sheetUsers = ss ? ss.getSheetByName(CONFIG.SHEET_USERS) : null;
+    if (sheetUsers) {
+      var uData = sheetUsers.getDataRange().getValues();
+      for (var u = 1; u < uData.length; u++) {
+        if ((uData[u][2] || '').toString().toLowerCase() === 'professor') {
+          emailProf = uData[u][0];
+          break;
+        }
+      }
+    }
+  }
+
+  var emailAlunoTeste = 'aluno.automacao@exemplo.com';
+  var nomeAlunoTeste = 'Marina Silva Santos';
+
+  try {
+    // 1. Cria uma avaliação de teste ativa para o ensaio
+    Logger.log('📝 Preparando avaliação de teste ativa "__Prova_Teste_Envios__"...');
+    var resCriacao = salvarAvaliacao({
+      nome: '__Prova_Teste_Envios__',
+      status: 'ativa'
+    }, emailProf);
+
+    if (!resCriacao.sucesso || !resCriacao.avaliacao) {
+      throw new Error('Falha ao criar avaliação de teste: ' + resCriacao.mensagem);
+    }
+    var aval = resCriacao.avaliacao;
+    relatorio.idAvaliacaoCriada = aval.id_avaliacao;
+
+    // Etapa 1: Verificar obterAvaliacaoAtiva para aluno que ainda não enviou
+    Logger.log('🔍 Etapa 1: Consultando obterAvaliacaoAtiva para o aluno...');
+    var resAtivaAntes = obterAvaliacaoAtiva(emailAlunoTeste);
+    if (!resAtivaAntes.sucesso || !resAtivaAntes.ativa || resAtivaAntes.jaEnviou !== false) {
+      throw new Error('obterAvaliacaoAtiva falhou: deveria retornar ativa=true e jaEnviou=false.');
+    }
+    relatorio.etapa1_provaAtiva = true;
+    Logger.log('   ✅ Prova ativa localizada e aluno confirmado como sem envios prévios!');
+
+    // Etapa 2: Primeiro Envio de Arquivo (.ipynb)
+    Logger.log('📤 Etapa 2: Realizando o 1º envio de arquivo pelo aluno...');
+    var conteudoFake1 = JSON.stringify({
+      cells: [{ cell_type: "code", execution_count: 1, source: ["print('Versao 1 da Prova')"] }],
+      metadata: {},
+      nbformat: 4,
+      nbformat_minor: 2
+    });
+    var base64Fake1 = Utilities.base64Encode(conteudoFake1, Utilities.Charset.UTF_8);
+
+    var resEnvio1 = enviarArquivoAvaliacao({
+      idAvaliacao: aval.id_avaliacao,
+      emailAluno: emailAlunoTeste,
+      nomeAluno: nomeAlunoTeste,
+      nomeOriginalArquivo: 'exercicio_resolvido_v1.ipynb',
+      base64Data: base64Fake1,
+      mimeType: 'application/x-ipynb+json',
+      tamanhoBytes: conteudoFake1.length
+    });
+
+    if (!resEnvio1.sucesso || !resEnvio1.envio) {
+      throw new Error('Falha no 1º envio: ' + (resEnvio1.mensagem || 'Erro desconhecido'));
+    }
+    var envio1 = resEnvio1.envio;
+    var fileId1 = envio1.drive_file_id;
+    relatorio.etapa2_primeiroEnvio = true;
+
+    Logger.log('   ✅ 1º Arquivo gravado com sucesso no Drive e registrado na planilha!');
+    Logger.log('      - Nome gerado: ' + envio1.nome_arquivo_drive);
+    Logger.log('      - File ID: ' + fileId1);
+    Logger.log('      - URL Drive: ' + envio1.drive_file_url);
+
+    // Etapa 3: Verificar status após o 1º envio
+    Logger.log('🔍 Etapa 3: Verificando obterAvaliacaoAtiva após 1º envio...');
+    var resAtivaDepois1 = obterAvaliacaoAtiva(emailAlunoTeste);
+    if (!resAtivaDepois1.sucesso || !resAtivaDepois1.jaEnviou || !resAtivaDepois1.envioAluno) {
+      throw new Error('Falha: jaEnviou deveria ser true após o primeiro envio.');
+    }
+    relatorio.etapa3_statusAposEnvio = true;
+    Logger.log('   ✅ Sistema reconhece envio anterior do estudante!');
+
+    // Etapa 4: Segundo Envio (Substituição Formativa do Arquivo)
+    Logger.log('🔄 Etapa 4: Realizando o 2º envio (substituição formativa)...');
+    var conteudoFake2 = JSON.stringify({
+      cells: [{ cell_type: "code", execution_count: 2, source: ["print('Versao 2 corrigida da Prova')"] }],
+      metadata: {},
+      nbformat: 4,
+      nbformat_minor: 2
+    });
+    var base64Fake2 = Utilities.base64Encode(conteudoFake2, Utilities.Charset.UTF_8);
+
+    var resEnvio2 = enviarArquivoAvaliacao({
+      idAvaliacao: aval.id_avaliacao,
+      emailAluno: emailAlunoTeste,
+      nomeAluno: nomeAlunoTeste,
+      nomeOriginalArquivo: 'exercicio_resolvido_final.ipynb',
+      base64Data: base64Fake2,
+      mimeType: 'application/x-ipynb+json',
+      tamanhoBytes: conteudoFake2.length
+    });
+
+    if (!resEnvio2.sucesso || !resEnvio2.substituido) {
+      throw new Error('Falha na substituição: substituido deveria ser true. Mensagem: ' + resEnvio2.mensagem);
+    }
+
+    var envio2 = resEnvio2.envio;
+    var fileId2 = envio2.drive_file_id;
+
+    // Confere se o arquivo antigo foi para a lixeira
+    var arquivo1NoDrive = DriveApp.getFileById(fileId1);
+    if (!arquivo1NoDrive.isTrashed()) {
+      throw new Error('O arquivo anterior (fileId: ' + fileId1 + ') deveria estar na lixeira do Drive após a substituição.');
+    }
+
+    // Confere se o arquivo novo está ativo
+    var arquivo2NoDrive = DriveApp.getFileById(fileId2);
+    if (arquivo2NoDrive.isTrashed()) {
+      throw new Error('O novo arquivo (fileId: ' + fileId2 + ') não deveria estar na lixeira.');
+    }
+
+    relatorio.etapa4_substituicaoFormativa = true;
+    Logger.log('   ✅ Substituição Formativa validada com êxito!');
+    Logger.log('      - Arquivo antigo enviado para a lixeira do Drive: OK');
+    Logger.log('      - Novo arquivo ativo salvo: ' + envio2.nome_arquivo_drive);
+    Logger.log('      - Linha na aba Envios_Avaliacoes atualizada sem duplicidade!');
+
+    // Etapa 5: Listagem de Envios para o Professor
+    Logger.log('👥 Etapa 5: Professor listando envios da avaliação...');
+    var resListagemEnvios = listarEnviosAvaliacao(aval.id_avaliacao, emailProf);
+    if (!resListagemEnvios.sucesso || !resListagemEnvios.envios || resListagemEnvios.envios.length !== 1) {
+      throw new Error('Falha ao listar envios: esperava exatamente 1 envio ativo para a avaliação.');
+    }
+    if (resListagemEnvios.envios[0].drive_file_id !== fileId2) {
+      throw new Error('O envio listado deveria ser o arquivo da substituição (fileId: ' + fileId2 + ').');
+    }
+    relatorio.etapa5_listagemEnvios = true;
+    Logger.log('   ✅ Professor recebeu relatório de envios com o arquivo mais recente!');
+
+    // Etapa 6: Limpeza do Teste
+    Logger.log('🧹 Etapa 6: Limpando registros e arquivos do teste...');
+    var ssLimpeza = ensureDatabase();
+    var sheetEnvLimpeza = ssLimpeza.getSheetByName(CONFIG.SHEET_ENVIOS);
+    if (sheetEnvLimpeza) {
+      var rowsE = sheetEnvLimpeza.getDataRange().getValues();
+      for (var r = rowsE.length - 1; r >= 1; r--) {
+        if (rowsE[r][1] === aval.id_avaliacao) {
+          sheetEnvLimpeza.deleteRow(r + 1);
+        }
+      }
+    }
+    try {
+      arquivo2NoDrive.setTrashed(true);
+    } catch(eTr) {}
+
+    excluirAvaliacao(aval.id_avaliacao, emailProf);
+    relatorio.etapa6_limpeza = true;
+    Logger.log('   ✅ Limpeza completa concluída com sucesso!');
+
+    relatorio.sucesso = true;
+    Logger.log('-----------------------------------------------------');
+    Logger.log('🎉 SUCESSO TOTAL: Todos os 6 passos de Envio e Substituição foram validados com êxito!');
+    Logger.log('=====================================================');
+
+    return relatorio;
+
+  } catch (err) {
+    Logger.log('❌ ERRO NO TESTE DE ENVIO/SUBSTITUIÇÃO: ' + err.message);
+    relatorio.sucesso = false;
+    relatorio.erros.push(err.message);
+
+    if (relatorio.idAvaliacaoCriada) {
+      try {
+        var ssErr = ensureDatabase();
+        var sheetEnvErr = ssErr ? ssErr.getSheetByName(CONFIG.SHEET_ENVIOS) : null;
+        if (sheetEnvErr) {
+          var rErr = sheetEnvErr.getDataRange().getValues();
+          for (var re = rErr.length - 1; re >= 1; re--) {
+            if (rErr[re][1] === relatorio.idAvaliacaoCriada) {
+              sheetEnvErr.deleteRow(re + 1);
+            }
+          }
+        }
+        excluirAvaliacao(relatorio.idAvaliacaoCriada, emailProf);
+      } catch (eLimpeza) {}
+    }
+
+    return relatorio;
   }
 }

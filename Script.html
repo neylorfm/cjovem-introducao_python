@@ -165,6 +165,7 @@ function onUserSessionSuccess(userData) {
   renderVisitorModalContent();
   renderizarDuvidasDashboard();
   renderizarOndePareiDashboard();
+  carregarAvaliacaoAtivaDashboard();
   
   // Se for professor, exibe atalho no menu (desktop e mobile)
   const teacherTabs = document.querySelectorAll('#nav-teacher, #nav-teacher-mobile');
@@ -591,11 +592,13 @@ function navigateTo(viewId) {
     renderizarChecksExercicios(AppState.currentLessonId || 'aula_1_2');
   } else if (viewId === 'view-dashboard') {
     renderizarOndePareiDashboard();
+    carregarAvaliacaoAtivaDashboard();
   }
 
-  // Se a rota for o painel do professor, carrega o relatório consolidado
+  // Se a rota for o painel do professor, carrega o relatório consolidado e as avaliações
   if (viewId === 'view-professor') {
     carregarRelatorioProfessor();
+    carregarAvaliacoesProfessor();
   }
 }
 
@@ -2500,6 +2503,733 @@ function renderRelatorioProfessor(data) {
   container.innerHTML = html;
 }
 
+/**
+ * ============================================================================
+ * GESTÃO DE AVALIAÇÕES E PROVAS PRÁTICAS (PAINEL DO PROFESSOR)
+ * ============================================================================
+ */
+
+let _avaliacoesCarregadas = [];
+
+function carregarAvaliacoesProfessor() {
+  const container = document.getElementById('teacher-evaluations-tbody');
+  if (!container) return;
+
+  container.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 1.5rem; color: var(--color-outline);">Carregando avaliações cadastradas...</td></tr>';
+
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(renderAvaliacoesProfessor)
+      .withFailureHandler(function(err) {
+        container.innerHTML = `<tr><td colspan="6" style="color: var(--color-error); padding: 1rem; text-align: center;">Erro ao carregar avaliações: ${err.message}</td></tr>`;
+      })
+      .listarAvaliacoes(emailParam);
+  } else {
+    // Mock local de desenvolvimento
+    renderAvaliacoesProfessor({
+      sucesso: true,
+      avaliacoes: [
+        {
+          id_avaliacao: 'eval_mock_1',
+          nome: 'Prova 1 - Fundamentos e Estruturas de Decisão',
+          status: 'ativa',
+          data_criacao: new Date().toISOString(),
+          criado_por: 'professor@exemplo.com',
+          pasta_drive_id: 'pasta_mock_1',
+          pasta_drive_url: 'https://drive.google.com',
+          total_envios: 2
+        }
+      ]
+    });
+  }
+}
+
+function renderAvaliacoesProfessor(data) {
+  const container = document.getElementById('teacher-evaluations-tbody');
+  if (!container) return;
+
+  if (!data || !data.sucesso || !data.avaliacoes || data.avaliacoes.length === 0) {
+    container.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--color-outline);">
+          Nenhuma avaliação criada ainda. Clique em <strong>"+ Nova Avaliação"</strong> acima para criar a primeira!
+        </td>
+      </tr>
+    `;
+    _avaliacoesCarregadas = [];
+    return;
+  }
+
+  _avaliacoesCarregadas = data.avaliacoes;
+  let html = '';
+
+  data.avaliacoes.forEach(evalItem => {
+    const isAtiva = (evalItem.status === 'ativa');
+    const badgeStatus = isAtiva
+      ? `<span style="background: #dcfce7; color: #15803d; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.3rem;">● Ativa (Aberta)</span>`
+      : `<span style="background: var(--color-surface-container); color: var(--color-outline); font-weight: 600; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); font-size: 0.78rem; display: inline-flex; align-items: center; gap: 0.3rem;">○ Inativa (Fechada)</span>`;
+
+    const dataFormatada = evalItem.data_criacao 
+      ? new Date(evalItem.data_criacao).toLocaleDateString('pt-BR') 
+      : '—';
+
+    const linkPasta = evalItem.pasta_drive_url 
+      ? `<a href="${evalItem.pasta_drive_url}" target="_blank" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.55rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;" title="Abrir pasta dedicada no Google Drive">📁 Drive</a>`
+      : `<span style="color: var(--color-outline); font-size: 0.75rem;">—</span>`;
+
+    const btnToggle = isAtiva
+      ? `<button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.55rem; color: #b45309; border-color: #fde68a;" onclick="alternarStatusAvaliacaoBtn('${evalItem.id_avaliacao}', false)" title="Fechar avaliação (bloquear novos envios)">⏸️ Fechar</button>`
+      : `<button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.55rem; color: #15803d; border-color: #bbf7d0;" onclick="alternarStatusAvaliacaoBtn('${evalItem.id_avaliacao}', true)" title="Abrir avaliação (tornar ativa para os alunos)">▶️ Ativar</button>`;
+
+    const nomeEscapado = (evalItem.nome || '').replace(/'/g, "\\'");
+
+    html += `
+      <tr>
+        <td style="font-weight: 700; color: var(--color-primary);">
+          ${evalItem.nome}
+        </td>
+        <td>${badgeStatus}</td>
+        <td>${linkPasta}</td>
+        <td>
+          <span style="font-weight: 700; color: var(--color-secondary); font-size: 0.95rem;">${evalItem.total_envios}</span>
+          <span style="font-size: 0.75rem; color: var(--color-outline);">entrega(s)</span>
+        </td>
+        <td style="font-size: 0.8rem; color: var(--color-outline);">${dataFormatada}</td>
+        <td style="text-align: right;">
+          <div style="display: flex; gap: 0.35rem; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="verEnviosAvaliacaoBtn('${evalItem.id_avaliacao}', '${nomeEscapado}', '${evalItem.pasta_drive_url || ''}')" title="Ver lista de estudantes que enviaram arquivos">
+              👥 Envios (${evalItem.total_envios})
+            </button>
+            ${btnToggle}
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.5rem;" onclick="abrirModalEditarAvaliacao('${evalItem.id_avaliacao}')" title="Editar nome e status">
+              ✏️
+            </button>
+            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.5rem; color: #b91c1c; border-color: #fca5a5;" onclick="excluirAvaliacaoBtn('${evalItem.id_avaliacao}', '${nomeEscapado}')" title="Excluir avaliação">
+              🗑️
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function abrirModalNovaAvaliacao() {
+  document.getElementById('modal-eval-id').value = '';
+  document.getElementById('modal-eval-nome').value = '';
+  document.getElementById('modal-eval-status-ativa').checked = true;
+  document.getElementById('modal-eval-title').textContent = 'Nova Avaliação';
+  
+  const modal = document.getElementById('modal-avaliacao-professor');
+  if (modal) {
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+    setTimeout(() => {
+      const input = document.getElementById('modal-eval-nome');
+      if (input) input.focus();
+    }, 150);
+  }
+}
+
+function abrirModalEditarAvaliacao(idEval) {
+  const item = _avaliacoesCarregadas.find(a => a.id_avaliacao === idEval);
+  if (!item) return;
+
+  document.getElementById('modal-eval-id').value = item.id_avaliacao;
+  document.getElementById('modal-eval-nome').value = item.nome;
+  document.getElementById('modal-eval-status-ativa').checked = (item.status === 'ativa');
+  document.getElementById('modal-eval-title').textContent = 'Editar Avaliação';
+
+  const modal = document.getElementById('modal-avaliacao-professor');
+  if (modal) {
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+  }
+}
+
+function fecharModalAvaliacaoProfessor() {
+  const modal = document.getElementById('modal-avaliacao-professor');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+}
+
+function confirmarSalvarAvaliacaoProfessor() {
+  const idEval = document.getElementById('modal-eval-id').value.trim();
+  const nome = document.getElementById('modal-eval-nome').value.trim();
+  const isAtiva = document.getElementById('modal-eval-status-ativa').checked;
+  const btnSalvar = document.getElementById('btn-salvar-eval');
+
+  if (!nome || nome.length < 3) {
+    showToast('Informe um nome com pelo menos 3 caracteres.', 'warning');
+    document.getElementById('modal-eval-nome').focus();
+    return;
+  }
+
+  const dados = {
+    id_avaliacao: idEval,
+    nome: nome,
+    status: isAtiva ? 'ativa' : 'inativa'
+  };
+
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+  if (btnSalvar) {
+    btnSalvar.disabled = true;
+    btnSalvar.textContent = '⏳ Salvando no Drive...';
+  }
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (btnSalvar) {
+          btnSalvar.disabled = false;
+          btnSalvar.textContent = '💾 Salvar Avaliação';
+        }
+        if (res && res.sucesso) {
+          showToast(res.mensagem || 'Avaliação salva com sucesso!', 'success');
+          fecharModalAvaliacaoProfessor();
+          carregarAvaliacoesProfessor();
+          carregarAvaliacaoAtivaDashboard();
+        } else {
+          showToast('Erro: ' + (res ? res.mensagem : 'Falha ao salvar'), 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        if (btnSalvar) {
+          btnSalvar.disabled = false;
+          btnSalvar.textContent = '💾 Salvar Avaliação';
+        }
+        showToast('Erro de comunicação: ' + err.message, 'error');
+      })
+      .salvarAvaliacao(dados, emailParam);
+  } else {
+    // Mock local
+    setTimeout(() => {
+      if (btnSalvar) {
+        btnSalvar.disabled = false;
+        btnSalvar.textContent = '💾 Salvar Avaliação';
+      }
+      showToast('Avaliação salva com sucesso (mock)!', 'success');
+      fecharModalAvaliacaoProfessor();
+      carregarAvaliacoesProfessor();
+      carregarAvaliacaoAtivaDashboard();
+    }, 500);
+  }
+}
+
+function alternarStatusAvaliacaoBtn(idEval, ativar) {
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+  const acaoTexto = ativar ? 'abrindo avaliação...' : 'fechando avaliação...';
+  showToast('Aguarde, ' + acaoTexto, 'info');
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.sucesso) {
+          showToast(res.mensagem || 'Status atualizado com sucesso!', 'success');
+          carregarAvaliacoesProfessor();
+          carregarAvaliacaoAtivaDashboard();
+        } else {
+          showToast('Erro: ' + (res ? res.mensagem : 'Falha ao alterar status'), 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        showToast('Erro ao alternar status: ' + err.message, 'error');
+      })
+      .alternarStatusAvaliacao(idEval, ativar, emailParam);
+  } else {
+    showToast('Status alternado (mock)!', 'success');
+    carregarAvaliacoesProfessor();
+    carregarAvaliacaoAtivaDashboard();
+  }
+}
+
+function excluirAvaliacaoBtn(idEval, nomeAvaliacao) {
+  if (!confirm(`Tem certeza que deseja excluir a avaliação "${nomeAvaliacao}"?\n\nA pasta correspondente no Google Drive será enviada para a lixeira.`)) {
+    return;
+  }
+
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+  showToast('Excluindo avaliação...', 'info');
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.sucesso) {
+          showToast('Avaliação excluída com sucesso!', 'success');
+          carregarAvaliacoesProfessor();
+          carregarAvaliacaoAtivaDashboard();
+        } else {
+          showToast('Erro: ' + (res ? res.mensagem : 'Falha ao excluir'), 'error');
+        }
+      })
+      .withFailureHandler(function(err) {
+        showToast('Erro ao excluir avaliação: ' + err.message, 'error');
+      })
+      .excluirAvaliacao(idEval, emailParam);
+  } else {
+    showToast('Avaliação excluída (mock)!', 'success');
+    carregarAvaliacoesProfessor();
+    carregarAvaliacaoAtivaDashboard();
+  }
+}
+
+function verEnviosAvaliacaoBtn(idEval, nomeAvaliacao, pastaDriveUrl) {
+  const modal = document.getElementById('modal-ver-envios');
+  const tituloEl = document.getElementById('modal-envios-titulo');
+  const subtituloEl = document.getElementById('modal-envios-subtitulo');
+  const linkDriveEl = document.getElementById('modal-envios-link-drive');
+  const tbodyEl = document.getElementById('modal-envios-tbody');
+
+  if (tituloEl) tituloEl.textContent = 'Envios: ' + nomeAvaliacao;
+  if (subtituloEl) subtituloEl.textContent = 'Carregando arquivos entregues pelos estudantes...';
+
+  if (linkDriveEl) {
+    if (pastaDriveUrl) {
+      linkDriveEl.href = pastaDriveUrl;
+      linkDriveEl.style.display = 'inline-flex';
+    } else {
+      linkDriveEl.style.display = 'none';
+    }
+  }
+
+  if (tbodyEl) {
+    tbodyEl.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1.5rem; color: var(--color-outline);">Carregando submissões...</td></tr>';
+  }
+
+  if (modal) {
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+  }
+
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(renderEnviosModal)
+      .withFailureHandler(function(err) {
+        if (tbodyEl) {
+          tbodyEl.innerHTML = `<tr><td colspan="5" style="color: var(--color-error); padding: 1.5rem; text-align: center;">Erro: ${err.message}</td></tr>`;
+        }
+      })
+      .listarEnviosAvaliacao(idEval, emailParam);
+  } else {
+    // Mock local
+    renderEnviosModal({
+      sucesso: true,
+      total: 1,
+      envios: [
+        {
+          id_envio: 'sub_mock_1',
+          nome_aluno: 'Marina Costa',
+          email_aluno: 'marina.costa@aluno.com',
+          nome_arquivo_drive: 'Prova_1_Marina_Costa_notebook_14_30_05_10.ipynb',
+          drive_file_id: 'file_mock_1',
+          drive_file_url: 'https://drive.google.com',
+          data_envio: new Date().toISOString(),
+          tamanho_bytes: 45200
+        }
+      ]
+    });
+  }
+}
+
+function renderEnviosModal(data) {
+  const subtituloEl = document.getElementById('modal-envios-subtitulo');
+  const tbodyEl = document.getElementById('modal-envios-tbody');
+  if (!tbodyEl) return;
+
+  if (!data || !data.sucesso || !data.envios || data.envios.length === 0) {
+    tbodyEl.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--color-outline);">Nenhum estudante enviou arquivo para esta avaliação ainda.</td></tr>';
+    if (subtituloEl) subtituloEl.textContent = '0 entregas registradas';
+    return;
+  }
+
+  if (subtituloEl) {
+    subtituloEl.textContent = `${data.envios.length} entrega(s) recebida(s) no Google Drive`;
+  }
+
+  let html = '';
+  data.envios.forEach(env => {
+    const dataHora = env.data_envio 
+      ? new Date(env.data_envio).toLocaleString('pt-BR') 
+      : '—';
+
+    let tamStr = '';
+    if (env.tamanho_bytes > 0) {
+      tamStr = env.tamanho_bytes > 1024 * 1024 
+        ? (env.tamanho_bytes / (1024 * 1024)).toFixed(1) + ' MB'
+        : Math.round(env.tamanho_bytes / 1024) + ' KB';
+      tamStr = `<span style="font-size: 0.72rem; color: var(--color-outline); display: block;">${tamStr}</span>`;
+    }
+
+    const linkArquivo = env.drive_file_url 
+      ? `<a href="${env.drive_file_url}" target="_blank" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.55rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;" title="Abrir e inspecionar no Google Drive">📄 Ver no Drive</a>`
+      : `<span style="color: var(--color-outline); font-size: 0.75rem;">—</span>`;
+
+    html += `
+      <tr>
+        <td style="font-weight: 600; color: var(--color-primary);">${env.nome_aluno || 'Estudante'}</td>
+        <td style="font-family: var(--font-code); font-size: 0.8rem; color: var(--color-outline);">${env.email_aluno}</td>
+        <td>
+          <span style="font-family: var(--font-code); font-size: 0.78rem; font-weight: 600; color: var(--color-secondary); word-break: break-all;">
+            ${env.nome_arquivo_drive}
+          </span>
+          ${tamStr}
+        </td>
+        <td style="font-size: 0.8rem; color: var(--color-outline);">${dataHora}</td>
+        <td style="text-align: right;">${linkArquivo}</td>
+      </tr>
+    `;
+  });
+
+  tbodyEl.innerHTML = html;
+}
+
+function fecharModalEnvios() {
+  const modal = document.getElementById('modal-ver-envios');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+}
+
+function fecharModalSubstituicaoAluno() {
+  const modal = document.getElementById('modal-confirmar-substituicao-aluno');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+}
+
+/**
+ * ============================================================================
+ * AVALIAÇÃO ATIVA E ENVIO DE SOLUÇÃO (VISÃO DO ALUNO / DASHBOARD)
+ * ============================================================================
+ */
+let _avaliacaoAtivaAtual = null;
+let _arquivoAvaliacaoSelecionado = null;
+
+function carregarAvaliacaoAtivaDashboard() {
+  const card = document.getElementById('dash-avaliacao-card');
+  if (!card) return;
+
+  // Configura drag-and-drop na dropzone uma única vez
+  const dropzone = document.getElementById('dash-eval-dropzone');
+  if (dropzone && !dropzone._dragInitialized) {
+    dropzone._dragInitialized = true;
+    ['dragenter', 'dragover'].forEach(function(evt) {
+      dropzone.addEventListener(evt, function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.style.borderColor = 'var(--color-primary)';
+        dropzone.style.backgroundColor = 'var(--color-surface-low)';
+      });
+    });
+    ['dragleave', 'drop'].forEach(function(evt) {
+      dropzone.addEventListener(evt, function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.style.borderColor = 'var(--color-outline-variant)';
+        dropzone.style.backgroundColor = 'var(--color-surface-lowest)';
+      });
+    });
+    dropzone.addEventListener('drop', function(e) {
+      var dt = e.dataTransfer;
+      var files = dt && dt.files;
+      if (files && files.length > 0) {
+        aoSelecionarArquivoAvaliacao({ target: { files: files } });
+      }
+    });
+  }
+
+  const emailAluno = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(renderAvaliacaoAtivaDashboard)
+      .withFailureHandler(function(err) {
+        console.warn('Erro ao obter avaliação ativa:', err);
+      })
+      .obterAvaliacaoAtiva(emailAluno);
+  } else {
+    // Modo Mock Local / Preview
+    const mockAtiva = {
+      sucesso: true,
+      ativa: {
+        id_avaliacao: 'eval_mock_1',
+        nome: 'Prova 1 - Estruturas de Decisão',
+        status: 'ativa',
+        pasta_drive_url: '#'
+      },
+      jaEnviou: false,
+      envioAluno: null
+    };
+    renderAvaliacaoAtivaDashboard(mockAtiva);
+  }
+}
+
+function renderAvaliacaoAtivaDashboard(res) {
+  const card = document.getElementById('dash-avaliacao-card');
+  if (!card) return;
+
+  if (!res || !res.sucesso || !res.ativa) {
+    card.style.display = 'none';
+    _avaliacaoAtivaAtual = null;
+    return;
+  }
+
+  _avaliacaoAtivaAtual = res;
+  card.style.display = 'block';
+
+  // Título da Avaliação
+  const tituloEl = document.getElementById('dash-eval-titulo');
+  if (tituloEl) {
+    tituloEl.textContent = res.ativa.nome || 'Avaliação Prática';
+  }
+
+  const badgeStatus = document.getElementById('dash-eval-status-badge');
+  const boxEnviado = document.getElementById('dash-eval-enviado-box');
+  const nomeArquivoEnviado = document.getElementById('dash-eval-arquivo-enviado-nome');
+  const dataArquivoEnviado = document.getElementById('dash-eval-arquivo-enviado-data');
+  const linkArquivoEnviado = document.getElementById('dash-eval-arquivo-enviado-link');
+  const hintEl = document.getElementById('dash-eval-upload-hint');
+  const btnEnviar = document.getElementById('btn-enviar-avaliacao');
+
+  // Reset da seleção de arquivo
+  _arquivoAvaliacaoSelecionado = null;
+  const fileInput = document.getElementById('dash-eval-file-input');
+  if (fileInput) fileInput.value = '';
+  const placeholder = document.getElementById('dash-eval-placeholder');
+  const fileSelected = document.getElementById('dash-eval-file-selected');
+  if (placeholder) placeholder.style.display = 'block';
+  if (fileSelected) fileSelected.style.display = 'none';
+  if (btnEnviar) {
+    btnEnviar.disabled = true;
+  }
+
+  if (res.jaEnviou && res.envioAluno) {
+    // Aluno já enviou anteriormente
+    if (badgeStatus) {
+      badgeStatus.textContent = '✅ Solução Enviada';
+      badgeStatus.style.color = '#15803d';
+    }
+    if (boxEnviado) boxEnviado.style.display = 'block';
+    if (nomeArquivoEnviado) {
+      nomeArquivoEnviado.textContent = res.envioAluno.nome_arquivo_drive || 'Arquivo enviado';
+    }
+    if (dataArquivoEnviado) {
+      const dataFormatada = res.envioAluno.data_envio 
+        ? new Date(res.envioAluno.data_envio).toLocaleString('pt-BR') 
+        : '—';
+      dataArquivoEnviado.textContent = 'Enviado em: ' + dataFormatada;
+    }
+    if (linkArquivoEnviado) {
+      if (res.envioAluno.drive_file_url) {
+        linkArquivoEnviado.href = res.envioAluno.drive_file_url;
+        linkArquivoEnviado.style.display = 'inline-flex';
+      } else {
+        linkArquivoEnviado.style.display = 'none';
+      }
+    }
+    if (btnEnviar) {
+      btnEnviar.textContent = '🔄 Reenviar Resolução (Substituir)';
+    }
+    if (hintEl) {
+      hintEl.textContent = 'Atenção: reenviar substituirá sua solução anterior no Google Drive.';
+    }
+  } else {
+    // Primeiro envio
+    if (badgeStatus) {
+      badgeStatus.textContent = '⏳ Pendente de Envio';
+      badgeStatus.style.color = '#b45309';
+    }
+    if (boxEnviado) boxEnviado.style.display = 'none';
+    if (btnEnviar) {
+      btnEnviar.textContent = '🚀 Enviar Resolução da Prova';
+    }
+    if (hintEl) {
+      hintEl.textContent = 'Certifique-se de que o notebook está salvo antes de enviar.';
+    }
+  }
+}
+
+function aoSelecionarArquivoAvaliacao(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const nome = file.name || '';
+  const ext = nome.split('.').pop().toLowerCase();
+
+  if (ext !== 'ipynb' && ext !== 'py') {
+    showToast('Formato não aceito. Selecione apenas arquivos .ipynb ou .py', 'error');
+    event.target.value = '';
+    return;
+  }
+
+  if (file.size > 25 * 1024 * 1024) {
+    showToast('O arquivo selecionado é muito grande. O limite máximo é de 25MB.', 'warning');
+    event.target.value = '';
+    return;
+  }
+
+  _arquivoAvaliacaoSelecionado = file;
+
+  const placeholder = document.getElementById('dash-eval-placeholder');
+  const fileSelected = document.getElementById('dash-eval-file-selected');
+  const nameEl = document.getElementById('dash-eval-selected-filename');
+  const sizeEl = document.getElementById('dash-eval-selected-filesize');
+  const btnEnviar = document.getElementById('btn-enviar-avaliacao');
+
+  if (placeholder) placeholder.style.display = 'none';
+  if (fileSelected) fileSelected.style.display = 'block';
+  if (nameEl) nameEl.textContent = file.name;
+  if (sizeEl) {
+    const kb = (file.size / 1024).toFixed(1);
+    sizeEl.textContent = `${kb} KB (${ext === 'py' ? 'Script Python' : 'Jupyter Notebook'})`;
+  }
+  if (btnEnviar) {
+    btnEnviar.disabled = false;
+  }
+}
+
+function solicitarEnvioAvaliacaoAluno() {
+  if (!_arquivoAvaliacaoSelecionado) {
+    showToast('Por favor, selecione um arquivo .ipynb ou .py primeiro.', 'warning');
+    return;
+  }
+
+  if (!_avaliacaoAtivaAtual || !_avaliacaoAtivaAtual.ativa) {
+    showToast('Nenhuma avaliação ativa encontrada no momento.', 'warning');
+    return;
+  }
+
+  if (!AppState.user || !AppState.user.email) {
+    showToast('Faça login com seu e-mail para enviar a prova.', 'warning');
+    openVisitorModal();
+    return;
+  }
+
+  // Se o aluno já enviou, abre modal de confirmação de substituição formativa
+  if (_avaliacaoAtivaAtual.jaEnviou) {
+    const modal = document.getElementById('modal-confirmar-substituicao-aluno');
+    const nomeAntigoEl = document.getElementById('substituir-modal-arquivo-antigo');
+    if (nomeAntigoEl && _avaliacaoAtivaAtual.envioAluno) {
+      nomeAntigoEl.textContent = _avaliacaoAtivaAtual.envioAluno.nome_arquivo_drive || 'Arquivo anterior';
+    }
+    if (modal) {
+      modal.classList.add('active');
+      modal.style.display = 'flex';
+    }
+    return;
+  }
+
+  // Primeiro envio direto
+  executarEnvioComSubstituicao(false);
+}
+
+function executarEnvioComSubstituicao(isSubstituicao) {
+  if (!_arquivoAvaliacaoSelecionado || !_avaliacaoAtivaAtual || !_avaliacaoAtivaAtual.ativa) {
+    fecharModalSubstituicaoAluno();
+    return;
+  }
+
+  const btnEnviar = document.getElementById('btn-enviar-avaliacao');
+  const btnSubst = document.getElementById('btn-confirmar-substituicao');
+  if (btnEnviar) {
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = '⏳ Enviando ao Drive...';
+  }
+  if (btnSubst) {
+    btnSubst.disabled = true;
+    btnSubst.textContent = '⏳ Gravando no Drive...';
+  }
+
+  const file = _arquivoAvaliacaoSelecionado;
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const base64Data = e.target.result;
+    const payload = {
+      idAvaliacao: _avaliacaoAtivaAtual.ativa.id_avaliacao,
+      emailAluno: (AppState.user && AppState.user.email) ? AppState.user.email : '',
+      nomeAluno: (AppState.user && AppState.user.nome) ? AppState.user.nome : '',
+      nomeOriginalArquivo: file.name,
+      base64Data: base64Data,
+      mimeType: file.type || '',
+      tamanhoBytes: file.size
+    };
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          fecharModalSubstituicaoAluno();
+          if (btnSubst) {
+            btnSubst.disabled = false;
+            btnSubst.textContent = 'Sim, Substituir Arquivo';
+          }
+          if (btnEnviar) {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = '🚀 Enviar Resolução da Prova';
+          }
+          if (res && res.sucesso) {
+            showToast(res.mensagem || 'Prova enviada com sucesso ao Google Drive!', 'success');
+            carregarAvaliacaoAtivaDashboard();
+          } else {
+            showToast((res && res.mensagem) ? res.mensagem : 'Erro ao enviar arquivo.', 'error');
+          }
+        })
+        .withFailureHandler(function(err) {
+          fecharModalSubstituicaoAluno();
+          if (btnSubst) {
+            btnSubst.disabled = false;
+            btnSubst.textContent = 'Sim, Substituir Arquivo';
+          }
+          if (btnEnviar) {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = '🚀 Enviar Resolução da Prova';
+          }
+          showToast('Erro de comunicação com o servidor: ' + (err.message || err), 'error');
+        })
+        .enviarArquivoAvaliacao(payload);
+    } else {
+      // Mock local
+      setTimeout(function() {
+        fecharModalSubstituicaoAluno();
+        if (btnSubst) {
+          btnSubst.disabled = false;
+          btnSubst.textContent = 'Sim, Substituir Arquivo';
+        }
+        if (btnEnviar) {
+          btnEnviar.disabled = false;
+          btnEnviar.textContent = '🚀 Enviar Resolução da Prova';
+        }
+        showToast('Mock: Prova enviada com sucesso!', 'success');
+        _avaliacaoAtivaAtual.jaEnviou = true;
+        _avaliacaoAtivaAtual.envioAluno = {
+          nome_arquivo_drive: 'Prova_Mock_' + file.name,
+          data_envio: new Date().toISOString(),
+          drive_file_url: '#'
+        };
+        renderAvaliacaoAtivaDashboard(_avaliacaoAtivaAtual);
+      }, 800);
+    }
+  };
+
+  reader.onerror = function() {
+    fecharModalSubstituicaoAluno();
+    if (btnSubst) btnSubst.disabled = false;
+    if (btnEnviar) btnEnviar.disabled = false;
+    showToast('Falha ao ler o arquivo local.', 'error');
+  };
+
+  reader.readAsDataURL(file);
+}
 
 /**
  * ============================================================================
