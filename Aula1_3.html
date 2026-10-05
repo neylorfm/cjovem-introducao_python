@@ -4,11 +4,292 @@
      ============================================================================ -->
 
 <div class="view-section" id="view-aula">
+  <!-- Dados do Simulador CPython da Aula (Encapsulamento Local) -->
+  <script type="application/json" class="simulation-steps-data">
+[
+  {
+    "step": 0,
+    "line": null,
+    "insightTitle": "Passo 0: Preparação da Call Stack (Aula 1.3)",
+    "insightDesc": "Inicie o simulador para acompanhar a resolução da expressão '100 - 4 ** 2 * 3 + 24 // (2 + 4)' decomposta passo a passo de acordo com as regras de precedência.",
+    "stack": [],
+    "heap": [],
+    "stdout": "> (Aguardando início...)"
+  },
+  {
+    "step": 1,
+    "line": 1,
+    "insightTitle": "Passo 1: Resolução de Parênteses (bloco_par = 2 + 4)",
+    "insightDesc": "Regra 1: Parênteses possuem a maior precedência de todos! O CPython calcula (2 + 4) = 6 antes de qualquer outra operação. O valor 6 é alocado no Heap em 0x7FA11.",
+    "stack": [
+      {
+        "name": "bloco_par",
+        "type": "int",
+        "addr": "0x7FA11"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FA11",
+        "val": "6",
+        "type": "int"
+      }
+    ],
+    "stdout": "> (Calculando bloco dos parênteses...)"
+  },
+  {
+    "step": 2,
+    "line": 2,
+    "insightTitle": "Passo 2: Exponenciação (bloco_pot = 4 ** 2)",
+    "insightDesc": "Regra 2: A exponenciação (**) tem prioridade superior à multiplicação e divisão. CPython eleva 4 ao quadrado resultando em 16 (0x7FA12).",
+    "stack": [
+      {
+        "name": "bloco_par",
+        "type": "int",
+        "addr": "0x7FA11"
+      },
+      {
+        "name": "bloco_pot",
+        "type": "int",
+        "addr": "0x7FA12"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FA11",
+        "val": "6",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA12",
+        "val": "16",
+        "type": "int"
+      }
+    ],
+    "stdout": "> (Calculando exponenciação: 4 ** 2 = 16)"
+  },
+  {
+    "step": 3,
+    "line": 3,
+    "insightTitle": "Passo 3: Multiplicação (bloco_mult = bloco_pot * 3)",
+    "insightDesc": "Regra 3: Multiplicação entre 16 e 3 resulta em 48 (0x7FA13). O termo multiplicativo intermediário está resolvido.",
+    "stack": [
+      {
+        "name": "bloco_par",
+        "type": "int",
+        "addr": "0x7FA11"
+      },
+      {
+        "name": "bloco_pot",
+        "type": "int",
+        "addr": "0x7FA12"
+      },
+      {
+        "name": "bloco_mult",
+        "type": "int",
+        "addr": "0x7FA13"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FA11",
+        "val": "6",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA12",
+        "val": "16",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA13",
+        "val": "48",
+        "type": "int"
+      }
+    ],
+    "stdout": "> (Calculando multiplicação: 16 * 3 = 48)"
+  },
+  {
+    "step": 4,
+    "line": 4,
+    "insightTitle": "Passo 4: Divisão Inteira (bloco_div = 24 // bloco_par)",
+    "insightDesc": "Regra 4: Divisão inteira (//) entre 24 e 6 (resultado do parêntese). Quociente inteiro exato é 4 (0x7FA14).",
+    "stack": [
+      {
+        "name": "bloco_par",
+        "type": "int",
+        "addr": "0x7FA11"
+      },
+      {
+        "name": "bloco_pot",
+        "type": "int",
+        "addr": "0x7FA12"
+      },
+      {
+        "name": "bloco_mult",
+        "type": "int",
+        "addr": "0x7FA13"
+      },
+      {
+        "name": "bloco_div",
+        "type": "int",
+        "addr": "0x7FA14"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FA11",
+        "val": "6",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA12",
+        "val": "16",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA13",
+        "val": "48",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA14",
+        "val": "4",
+        "type": "int"
+      }
+    ],
+    "stdout": "> (Calculando divisão inteira: 24 // 6 = 4)"
+  },
+  {
+    "step": 5,
+    "line": 5,
+    "insightTitle": "Passo 5: Adições e Subtrações da Esquerda para a Direita",
+    "insightDesc": "Regra 5: Com multiplicativos e potências resolvidos, avaliamos 100 - 48 + 4 da esquerda para a direita: (100 - 48 = 52) + 4 = 56 (0x7FA15).",
+    "stack": [
+      {
+        "name": "bloco_par",
+        "type": "int",
+        "addr": "0x7FA11"
+      },
+      {
+        "name": "bloco_pot",
+        "type": "int",
+        "addr": "0x7FA12"
+      },
+      {
+        "name": "bloco_mult",
+        "type": "int",
+        "addr": "0x7FA13"
+      },
+      {
+        "name": "bloco_div",
+        "type": "int",
+        "addr": "0x7FA14"
+      },
+      {
+        "name": "resultado",
+        "type": "int",
+        "addr": "0x7FA15"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FA11",
+        "val": "6",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA12",
+        "val": "16",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA13",
+        "val": "48",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA14",
+        "val": "4",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA15",
+        "val": "56",
+        "type": "int"
+      }
+    ],
+    "stdout": "> (Expressão resolvida: resultado = 56)"
+  },
+  {
+    "step": 6,
+    "line": 6,
+    "insightTitle": "Passo 6: Saída Formatada no Console",
+    "insightDesc": "Instrução print exibe a mensagem final 'Resultado final: 56' no terminal STDOUT.",
+    "stack": [
+      {
+        "name": "bloco_par",
+        "type": "int",
+        "addr": "0x7FA11"
+      },
+      {
+        "name": "bloco_pot",
+        "type": "int",
+        "addr": "0x7FA12"
+      },
+      {
+        "name": "bloco_mult",
+        "type": "int",
+        "addr": "0x7FA13"
+      },
+      {
+        "name": "bloco_div",
+        "type": "int",
+        "addr": "0x7FA14"
+      },
+      {
+        "name": "resultado",
+        "type": "int",
+        "addr": "0x7FA15"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FA11",
+        "val": "6",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA12",
+        "val": "16",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA13",
+        "val": "48",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA14",
+        "val": "4",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA15",
+        "val": "56",
+        "type": "int"
+      }
+    ],
+    "stdout": "> Resultado final: 56"
+  }
+]
+  </script>
+
 
   <!-- ========================================================================
        CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
        ======================================================================== -->
-  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+  <div class="lesson-header-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
     <div>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
         <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 1: Fundamentos</span>
@@ -21,7 +302,7 @@
           +180 XP
         </span>
       </div>
-      <h1 style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+      <h1 class="lesson-main-title" style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
         Planejamento de Algoritmos, Operadores Aritméticos e Precedência
       </h1>
       <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
@@ -30,14 +311,14 @@
     </div>
 
     <!-- 3 Ações de Gestão pelo Próprio Aluno -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+    <div class="lesson-header-actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
       <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_1_3', 'Aula 1.3: Operadores e Precedência')">
         📌 Onde Parei
       </button>
       <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_1_3', 'Operadores e Precedência')">
         ❓ Tenho Dúvidas
       </button>
-      <button class="btn btn-success" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+      <button class="btn btn-success btn-concluir-action" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
         ✓ Compreendi e Concluí (+180 XP)
       </button>
     </div>
@@ -72,7 +353,7 @@
         <span class="btn-mode-icon">🛠️</span>
         <div class="btn-mode-text">
           <span class="btn-mode-title">2. Exercícios Propostos & Prática</span>
-          <span class="btn-mode-subtitle">29 Atividades • Desafio Reforma do Lab • Validação I/O</span>
+          <span class="btn-mode-subtitle">32 Atividades • Desafio Reforma do Lab • Validação I/O</span>
         </div>
       </button>
       <button class="bifurcator-btn" id="btn-mode-tudo" onclick="setModoVisualizacaoAula('tudo')">
@@ -166,24 +447,24 @@
           <tbody>
             <tr>
               <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">+</code></td>
-              <td><strong>Adição</strong></td>
-              <td><code>10 + 5</code></td>
-              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">15</span></td>
-              <td>Soma dois valores numéricos inteiros ou de ponto flutuante.</td>
+              <td><strong>Adição / Concatenação</strong></td>
+              <td><code>10 + 5</code><br><span style="font-size: 0.75rem; color: var(--color-outline);">ou <code>"Ana" + " Silva"</code></span></td>
+              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">15 ou "Ana Silva"</span></td>
+              <td>Soma valores numéricos. Se aplicado entre textos (<code>str</code>), realiza <strong>concatenação</strong> (fusão sequencial de caracteres).</td>
             </tr>
             <tr>
               <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">-</code></td>
               <td><strong>Subtração</strong></td>
               <td><code>20 - 8</code></td>
               <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">12</span></td>
-              <td>Subtrai o operando à direita do operando à esquerda.</td>
+              <td>Subtrai o operando à direita do operando à esquerda (<strong>não</strong> opera com texto).</td>
             </tr>
             <tr>
               <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">*</code></td>
-              <td><strong>Multiplicação</strong></td>
-              <td><code>4 * 3</code></td>
-              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">12</span></td>
-              <td>Multiplica dois operandos numéricos.</td>
+              <td><strong>Multiplicação / Replicação</strong></td>
+              <td><code>4 * 3</code><br><span style="font-size: 0.75rem; color: var(--color-outline);">ou <code>"=" * 5</code></span></td>
+              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">12 ou "====="</span></td>
+              <td>Multiplica dois operandos numéricos. Se aplicado a texto e um número inteiro, <strong>repete</strong> o texto $N$ vezes.</td>
             </tr>
             <tr>
               <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-secondary);">/</code></td>
@@ -215,6 +496,96 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Tópico Especial: Operações Aritméticas e Manipulação com Strings -->
+    <div style="margin-bottom: 1.5rem; background: var(--color-surface-lowest); border: 1.5px solid var(--color-secondary); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.3rem;">🔤</span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Operadores Aplicados a Strings (Texto): O que Funciona e o que NÃO Funciona?
+          </h3>
+        </div>
+        <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-secondary); background: var(--color-surface-container); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Sobrecarga de Operadores
+        </span>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin-bottom: 1rem;">
+        Em Python, operadores como <code>+</code> e <code>*</code> são <strong>polimórficos</strong> (possuem sobrecarga): o comportamento do interpretador varia automaticamente conforme o <em>tipo de dado</em> envolvido. Quando aplicados a strings (<code>str</code>), eles não realizam cálculos numéricos, mas sim operações textuais essenciais de <strong>concatenação</strong>, <strong>repetição</strong> e <strong>pertinência</strong>!
+      </p>
+
+      <div class="trace-table-container" style="margin-bottom: 1rem;">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th style="width: 85px;">Operador</th>
+              <th>Operação com Strings</th>
+              <th>Exemplo em Código</th>
+              <th>Resultado Obtido</th>
+              <th>Regra e Comportamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">+</code></td>
+              <td><strong>Concatenação (Junção)</strong></td>
+              <td><code>"Super" + "Lab"</code></td>
+              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">"SuperLab"</span></td>
+              <td>Une duas strings sem inserir espaços automáticos. Para separar, insira o espaço explicitamente: <code>"Olá" + " " + "Mundo"</code>.</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-secondary);">+=</code></td>
+              <td><strong>Concatenação com Atribuição</strong></td>
+              <td><code>msg = "Ana"; msg += " Silva"</code></td>
+              <td><span class="badge" style="background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed);">"Ana Silva"</span></td>
+              <td>Acumula novos caracteres no final de uma variável existente (equivalente a <code>msg = msg + " Silva"</code>).</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-primary);">*</code></td>
+              <td><strong>Repetição / Replicação</strong></td>
+              <td><code>"=" * 10</code></td>
+              <td><span class="badge" style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark);">"=========="</span></td>
+              <td>Multiplica a string por um número inteiro $N \ge 0$. Se $N \le 0$, resulta na string vazia <code>""</code> (chave liga/desliga).</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 1rem; font-weight: 800; color: var(--color-secondary);">*=</code></td>
+              <td><strong>Repetição com Atribuição</strong></td>
+              <td><code>traco = "-"; traco *= 5</code></td>
+              <td><span class="badge" style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark);">"-----"</span></td>
+              <td>Replica o texto da própria variável pelo fator inteiro e regrava o resultado nela mesma.</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 0.95rem; font-weight: 800; color: #047857;">in</code></td>
+              <td><strong>Pertinência (Subcadeia)</strong></td>
+              <td><code>"py" in "python"</code></td>
+              <td><span class="badge" style="background: #d1fae5; color: #047857;">True</span></td>
+              <td>Verifica se uma sequência de caracteres está contida dentro do texto. Possui a forma inversa: <code>not in</code>.</td>
+            </tr>
+            <tr>
+              <td><code style="font-size: 0.95rem; font-weight: 800; color: var(--color-primary);">== / !=</code></td>
+              <td><strong>Comparação de Igualdade</strong></td>
+              <td><code>"Python" == "python"</code></td>
+              <td><span class="badge" style="background: #fee2e2; color: #991b1b;">False</span></td>
+              <td>Compara caractere por caractere com base na tabela Unicode (sensível a maiúsculas e minúsculas).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Caixa de Atenção: O que NÃO funciona (TypeError) -->
+      <div style="background: #fff1f2; border: 1.5px solid #fecdd3; border-left: 4px solid #e11d48; border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+        <div style="font-weight: 700; color: #9f1239; font-size: 0.85rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+          <span>🚫</span>
+          <span>Atenção: O que NÃO funciona com Strings e Dispara Erro no Python (TypeError)</span>
+        </div>
+        <ul style="font-size: 0.8rem; color: #881337; line-height: 1.6; margin: 0; padding-left: 1.2rem;">
+          <li><strong>Não é permitido somar texto com número diretamente:</strong> <code>"Nota: " + 10</code> dispara <code>TypeError: can only concatenate str (not "int") to str</code>. É mandatório converter o número antes: <code>"Nota: " + str(10)</code> ou usar interpolação: <code>f"Nota: {10}"</code>.</li>
+          <li><strong>Subtração não existe para strings:</strong> expressões como <code>"Olá mundo" - "mundo"</code> disparam erro de tipo no Python. O operador <code>-</code> não apaga caracteres de um texto.</li>
+          <li><strong>Divisão e Exponenciação são proibidas com strings:</strong> operações como <code>"texto" / 2</code>, <code>"texto" // 2</code> e <code>"texto" ** 2</code> não são suportadas pelo interpretador.</li>
+        </ul>
       </div>
     </div>
 
@@ -350,7 +721,7 @@
        ======================================================================== -->
   <div class="card" style="margin-bottom: 2rem;">
     <!-- Barra de Controle do Stepper -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); margin-bottom: 1.25rem;">
+    <div class="stepper-header-row" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); margin-bottom: 1.25rem;">
       <div>
         <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
           Player Passo a Passo Sincronizado
@@ -361,7 +732,7 @@
       </div>
 
       <!-- Controles de Stepper -->
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <div class="stepper-controls-container" style="display: flex; align-items: center; gap: 0.5rem;">
         <button class="btn btn-outline" id="btn-step-prev" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="prevStep()">
           ◀ Anterior
         </button>
@@ -559,37 +930,55 @@
        4. CADERNO DE ATIVIDADES E PRÁTICAS DE CÓDIGO (SEÇÕES 1 A 4)
        ======================================================================== -->
   <div class="card" style="margin-bottom: 2rem;">
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
-      <div>
-        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
-          Treinamento Gradual
-        </span>
-        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
-          4. Caderno de Oficinas Práticas (29 Atividades com Resoluções)
-        </h2>
-      </div>
+    <!-- BARRA STICKY & CONTRAÍVEL DE NAVEGAÇÃO DOS EXERCÍCIOS (SEMPRE VISÍVEL EM 1 LINHA) -->
+    <div class="treinamento-sticky-bar" id="treinamento-gradual-sticky">
+      <div class="treinamento-sticky-inner">
+        <div class="treinamento-sticky-header">
+          <div class="treinamento-sticky-badge-wrap">
+            <span class="treinamento-sticky-pill">🎯 Treinamento Gradual</span>
+          </div>
 
-      <!-- Abas das 4 Seções -->
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <button class="btn btn-primary" id="btn-tab-secao-1" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('secao-1')">
-          Seção 1: Algoritmos
-        </button>
-        <button class="btn btn-outline" id="btn-tab-secao-2" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('secao-2')">
-          Seção 2: Divisão & Resto
-        </button>
-        <button class="btn btn-outline" id="btn-tab-secao-3" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('secao-3')">
-          Seção 3: Atribuição +=
-        </button>
-        <button class="btn btn-outline" id="btn-tab-secao-4" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('secao-4')">
-          Seção 4: Precedência
-        </button>
+          <!-- Abas das 5 Seções em Linha Única Horizontal com Scroll Suave -->
+          <div class="treinamento-subtabs-scroll oficina-subtabs-bar">
+            <button class="treinamento-tab-btn active btn-primary" id="btn-tab-secao-1" onclick="switchOficinaBloco('secao-1')">
+              Seção 1: Algoritmos
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-2" onclick="switchOficinaBloco('secao-2')">
+              Seção 2: Divisão & Resto
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-3" onclick="switchOficinaBloco('secao-3')">
+              Seção 3: Atribuição +=
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-4" onclick="switchOficinaBloco('secao-4')">
+              Seção 4: Precedência
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-5" onclick="switchOficinaBloco('secao-5')">
+              Seção 5: Strings
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')">
+              🏆 Desafios & Desafio Mestre
+            </button>
+          </div>
+
+          <!-- Botão de Expandir / Recolher Detalhes (1 Linha por Padrão) -->
+          <button class="treinamento-toggle-btn" onclick="toggleTreinamentoDetalhes()" id="btn-toggle-treinamento-detalhes" title="Expandir ou recolher detalhes desta seção">
+            <span class="treinamento-toggle-icon" id="icon-treinamento-detalhes">▾</span>
+            <span class="treinamento-toggle-text" id="text-treinamento-detalhes">Detalhes</span>
+          </button>
+        </div>
+
+        <!-- Painel de Detalhes Expansível (Começa recolhido para ocupar apenas 1 linha!) -->
+        <div class="treinamento-detalhes-body" id="treinamento-detalhes-body" style="display: none;">
+          <h2 class="treinamento-full-title">4. Caderno de Oficinas Práticas (32 Atividades com Resoluções)</h2>
+          <p class="treinamento-full-desc">Decomposição e modularização de algoritmos, operadores aritméticos, ordem de precedência e acumuladores.</p>
+        </div>
       </div>
     </div>
 
     <!-- ====================================================================
          PAINEL: SEÇÃO 1 - PLANEJAMENTO E ALGORITMOS COMPLEXOS
          ==================================================================== -->
-    <div id="panel-secao-1" style="display: block;">
+    <div class="oficina-panel active" id="panel-secao-1" style="display: block;">
       <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
           <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
@@ -676,7 +1065,7 @@
     <!-- ====================================================================
          PAINEL: SEÇÃO 2 - OPERADORES ARITMÉTICOS (DIVISÃO INTEIRA E MÓDULO)
          ==================================================================== -->
-    <div id="panel-secao-2" style="display: none;">
+    <div class="oficina-panel" id="panel-secao-2" style="display: none;">
       <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
           <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
@@ -736,7 +1125,7 @@
     <!-- ====================================================================
          PAINEL: SEÇÃO 3 - OPERADORES DE ATRIBUIÇÃO COMPOSTA
          ==================================================================== -->
-    <div id="panel-secao-3" style="display: none;">
+    <div class="oficina-panel" id="panel-secao-3" style="display: none;">
       <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
           <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
@@ -813,7 +1202,7 @@
     <!-- ====================================================================
          PAINEL: SEÇÃO 4 - PRECEDÊNCIA DE OPERADORES
          ==================================================================== -->
-    <div id="panel-secao-4" style="display: none;">
+    <div class="oficina-panel" id="panel-secao-4" style="display: none;">
       <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
           <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
@@ -886,12 +1275,77 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ========================================================================
+    <!-- ====================================================================
+         PAINEL: SEÇÃO 5 - OPERAÇÕES E SOBRECARGA COM STRINGS
+         ==================================================================== -->
+    <div class="oficina-panel" id="panel-secao-5" style="display: none;">
+      <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary);">
+            Seção 5: Operações e Manipulação com Strings (+, *, +=, *= e in)
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+            Atividades 30 a 32
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1rem;">
+          Explore a sobrecarga de operadores para fundir textos (concatenação com <code>+</code> e <code>+=</code>), replicar padrões e molduras (multiplicação com <code>*</code> e <code>*=</code>) e verificar a ocorrência de subtextos (pertinência com <code>in</code>).
+        </p>
+
+        <!-- Atividade 30 (Resolvida) -->
+        <div style="background: var(--color-surface-lowest); border-left: 4px solid var(--color-secondary); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong style="color: var(--color-secondary); font-size: 0.9rem;">
+              ⭐ Atividade 30 (Modelo Resolvido): Gerador de Crachá Escolar e Moldura Textual (+, *, +=)
+            </strong>
+            <span style="font-size: 0.7rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Resolvido</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Construa um crachá de identificação padronizado: utilize <code>*</code> para gerar bordas uniformes, <code>+</code> para concatenar títulos e <code>+=</code> para acumular campos de identificação em uma única variável de texto.
+          </p>
+          <div style="background: var(--color-code-bg); padding: 0.85rem; border-radius: var(--radius-sm); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6;">
+            <span class="syn-comment"># 1. Entrada de dados textuais</span><br>
+            nome = <span class="syn-kw">input</span>(<span class="syn-str">"Digite o nome do estudante: "</span>)<br>
+            curso = <span class="syn-kw">input</span>(<span class="syn-str">"Digite o nome do curso: "</span>)<br><br>
+            <span class="syn-comment"># 2. Operador de Repetição (*) para criar molduras uniformes</span><br>
+            borda = <span class="syn-str">"="</span> * <span class="syn-num">38</span><br><br>
+            <span class="syn-comment"># 3. Operador de Concatenação (+) para fusão de títulos</span><br>
+            cabecalho = <span class="syn-str">"ESCOLA TECNICA - "</span> + curso<br><br>
+            <span class="syn-comment"># 4. Operador de Atribuição Composta (+=) para construção incremental</span><br>
+            etiqueta = <span class="syn-str">"Aluno: "</span> + nome<br>
+            etiqueta += <span class="syn-str">" | Status: Matriculado"</span><br>
+            etiqueta += <span class="syn-str">" | Ano: 2026"</span><br><br>
+            <span class="syn-comment"># 5. Saída estruturada</span><br>
+            <span class="syn-kw">print</span>(borda)<br>
+            <span class="syn-kw">print</span>(cabecalho)<br>
+            <span class="syn-kw">print</span>(<span class="syn-str">"-"</span> * <span class="syn-num">38</span>)<br>
+            <span class="syn-kw">print</span>(etiqueta)<br>
+            <span class="syn-kw">print</span>(borda)
+          </div>
+
+          <!-- Slot de Imagem Didática do Professor (Opcional) -->
+          <div class="exercicio-resolvido-slot" id="slot-img-aula_1_3_sec5_atv_30" data-aula="aula_1_3" data-exercicio="aula_1_3_sec5_atv_30" data-titulo="Seção 5: Atividade 30 (Crachá com Strings)"></div>
+        </div>
+
+        <!-- Lista de Atividades Propostas (31 e 32) -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 31 (Proposta):</strong> Barra de progresso gráfica no console: solicite ao usuário um nível de conclusão de 1 a 10 (número inteiro). Gere uma barra visual multiplicando o bloco sólido <code>"█"</code> pela quantidade informada e preenchendo o restante até 10 com o caractere <code>"-"</code>. Utilize a concatenação com <code>+</code> para unir os blocos e exiba a barra final no formato: <code>Progresso: [██████----] 60%</code>.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec5_atv_31" data-aula="aula_1_3" data-exercicio="aula_1_3_sec5_atv_31" data-titulo="Seção 5: Atividade 31 (Barra de Progresso)"></div>
+          </div>
+          <div style="background: var(--color-surface-lowest); padding: 0.85rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-surface-container); font-size: 0.82rem; line-height: 1.5;">
+            <strong>Atividade 32 (Proposta):</strong> Gerador e validador de e-mail institucional: receba o primeiro nome e o sobrenome do aluno. Crie o e-mail oficial unindo os nomes com ponto e o domínio da instituição: <code>email = nome + "." + sobrenome + "@escola.edu.br"</code>. Em seguida, utilize o operador de pertinência <code>in</code> para verificar se o domínio oficial está contido no e-mail gerado (<code>valido = "@escola.edu.br" in email</code>). Crie um separador visual com <code>"-" * 40</code> e exiba o e-mail gerado junto com o resultado booleano da validação.
+            <div class="questao-imagem-slot" id="slot-img-aula_1_3_sec5_atv_32" data-aula="aula_1_3" data-exercicio="aula_1_3_sec5_atv_32" data-titulo="Seção 5: Atividade 32 (Validação de E-mail)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
        5. OFICINAS DE DESAFIO PRÁTICO & DESAFIO MESTRE COM I/O (+60 XP)
        ======================================================================== -->
-  <div class="card" style="margin-bottom: 2rem;">
+  <div class="oficina-panel" id="panel-desafios" style="display: none;">
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
       <div>
         <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
@@ -951,7 +1405,7 @@
             Desafio Mestre: Simulador de Reforma e Pintura do Laboratório
           </h3>
           <p style="font-size: 0.85rem; color: var(--color-on-primary-container); margin-top: 0.25rem;">
-            Rendimento: <strong>6 m²/litro</strong> | Latas de 18L, 9L e 2L | Taxa Insumos (R$ 45) | Validação com if/else
+            Rendimento: <strong>6 m²/litro</strong> | Latas de 18L, 9L e 2L | Custos Fixos (R$ 45) | Lógica Booleana sem if
           </p>
         </div>
 
@@ -975,54 +1429,66 @@
               </h4>
             </div>
             <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-secondary); background: var(--color-surface-container); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
-              Script Estruturado (Sem def / Com if)
+              Desafio Lógico Puro (Sem if / Sem def)
             </span>
           </div>
 
           <p style="font-size: 0.95rem; line-height: 1.7; color: var(--color-on-surface); margin-bottom: 0.85rem;">
-            A diretoria da escola aprovou a reforma e pintura das <strong>4 paredes</strong> do laboratório de informática (uma sala retangular composta por dois pares de paredes opostas). Sabendo que o <strong>rendimento da tinta é de 6 m² por litro</strong> e que a loja parceira comercializa tintas em três tamanhos — <strong>Lata Grande (18 Litros) por R$ 87,00 cada</strong>, <strong>Lata Média (9 Litros) por R$ 45,00 cada</strong> e <strong>Galão Pequeno (2 Litros) por R$ 10,00 cada</strong> —, você foi encarregado de construir um programa em Python para apurar os quantitativos e verificar se os custos cabem dentro do teto financeiro disponível pela instituição antes de realizar os pedidos de compra.
+            A diretoria da escola autorizou a reforma e pintura das <strong>4 paredes</strong> do laboratório de informática — uma sala de formato retangular composta por dois pares de paredes opostas. Como futuro desenvolvedor do colégio, você recebeu a missão de construir um simulador em Python para calcular com exatidão a quantidade de materiais necessários, apurar o custo total e verificar se a obra cabe dentro da verba máxima aprovada pela instituição antes da emissão dos pedidos de compra.
           </p>
 
-          <p style="font-size: 0.95rem; line-height: 1.7; color: var(--color-on-surface); margin-bottom: 0.85rem;">
-            Para realizar esse planejamento, obtenha via teclado (utilizando <code>input()</code> convertido para <code>float</code>) o comprimento do primeiro par de paredes opostas (<code>comp1</code>), o comprimento do outro par de paredes opostas (<code>comp2</code>), a <strong>altura</strong> da sala em metros (<code>alt</code>) e o <strong>teto de orçamento</strong> aprovado pela escola em Reais (<code>teto_orcamento</code>). Em seguida, determine a área total das 4 paredes e o consumo total de tinta.
+          <p style="font-size: 0.95rem; line-height: 1.7; color: var(--color-on-surface); margin-bottom: 0.5rem;">
+            <strong>Dados e Parâmetros Necessários:</strong>
           </p>
+          <ul style="font-size: 0.92rem; line-height: 1.7; color: var(--color-on-surface); margin-bottom: 0.85rem; padding-left: 1.4rem;">
+            <li><strong>Dimensões e Verba da Sala:</strong> O programa deve solicitar as medidas das paredes opostas (<code>comp1</code> e <code>comp2</code> em metros), a altura da sala (<code>alt</code> em metros) e o teto máximo de orçamento liberado pela escola (<code>teto_orcamento</code> em R$).</li>
+            <li><strong>Rendimento da Tinta:</strong> Cada litro de tinta cobre exatamente <strong>6 m²</strong> de parede.</li>
+            <li><strong>Catálogo de Embalagens da Loja Parceira:</strong>
+              <ul>
+                <li>Lata Grande de <strong>18 Litros</strong>: R$ 87,00 cada</li>
+                <li>Lata Média de <strong>9 Litros</strong>: R$ 45,00 cada</li>
+                <li>Galão Pequeno de <strong>2 Litros</strong>: R$ 10,00 cada</li>
+              </ul>
+            </li>
+            <li><strong>Custo Fixo de Insumos:</strong> Taxa obrigatória de <strong>R$ 45,00</strong> referente a materiais auxiliares de pintura (pincéis, rolos, lixas e fitas de proteção), que deve ser somada ao valor final da compra.</li>
+          </ul>
 
-          <p style="font-size: 0.95rem; line-height: 1.7; color: var(--color-on-surface); margin-bottom: 0.85rem;">
-            A apuração da compra deve otimizar as embalagens em cascata: calcule primeiro as <strong>latas de 18 Litros</strong> (<code>// 18</code>) e a sobra (<code>% 18</code>); sobre essa sobra, apure as <strong>latas de 9 Litros</strong> (<code>// 9</code>) e a nova sobra (<code>% 9</code>); e sobre o restante, apure os <strong>galões de 2 Litros</strong> (<code>// 2</code>) e a sobra final (<code>% 2</code>). Se ainda restar qualquer fração de tinta avulsa (<code>litros_sobra != 0 and litros_sobra &lt; 2</code>), acrescente <strong>mais 1 galão de 2 Litros</strong> (<code>latas_cheias_2L += 1</code>) usando uma condicional <code>if</code> para garantir a cobertura completa.
+          <p style="font-size: 0.95rem; line-height: 1.7; color: var(--color-on-surface); margin-bottom: 0.5rem;">
+            <strong>O que a Diretoria Espera do Programa:</strong>
           </p>
+          <ol style="font-size: 0.92rem; line-height: 1.7; color: var(--color-on-surface); margin-bottom: 0.85rem; padding-left: 1.4rem;">
+            <li>O cálculo da área total a ser pintada (m²) e o volume total de litros de tinta necessários.</li>
+            <li>A quantidade recomendada de cada tamanho de embalagem, priorizando sempre as embalagens maiores (18L, depois 9L e por fim 2L) para baratear o custo, garantindo que não falte tinta (qualquer fração residual que reste deve ser coberta por latas de 2L adicionais).</li>
+            <li>O total de litros de tinta efetivamente comprados e a sobra real que restará na lata após a conclusão da pintura.</li>
+            <li>O custo financeiro total consolidado e a validação orçamentária: exibir <strong>"Orçamento suficiente: Reforma Aprovada"</strong> se o custo total for menor ou igual ao teto estipulado, ou <strong>"Orçamento insuficiente: Reforma Negada"</strong> caso o valor ultrapasse o limite disponível.</li>
+          </ol>
 
-          <p style="font-size: 0.95rem; line-height: 1.7; color: var(--color-on-surface); margin-bottom: 0.85rem;">
-            Na etapa financeira, compute o custo total somando as latas adquiridas multiplicadas por seus valores unitários, acrescente a <strong>taxa fixa de materiais auxiliares (pincéis, rolos, lixas e fitas de proteção) de R$ 45,00</strong> com o operador de atribuição composta <code>+=</code>, e valide se o custo cabe no teto orçamentário (<code>orcamento_ok = custo_total &lt;= teto_orcamento</code>). Por fim, utilize uma estrutura condicional <code>if / else</code> para emitir a mensagem <strong>"Orçamento suficiente: Reforma Aprovada"</strong> ou <strong>"Orçamento insuficiente: Reforma Negada"</strong>, exibindo o relatório consolidado no console.
-          </p>
-
-          <p style="font-size: 0.88rem; line-height: 1.6; color: var(--color-on-surface-variant); margin-bottom: 0.75rem; background: var(--color-surface-container-low); padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); border-left: 3px solid var(--color-secondary);">
-            <strong>Atenção às Restrições Pedagógicas:</strong> O programa deve ser implementado sem criação de funções (<code>def</code>), aplicando unicamente: <code>input()</code>, conversão <code>float()</code> / <code>int()</code>, operadores aritméticos, precedência com parênteses <code>()</code>, atribuição composta <code>+=</code>, operador relacional <code>&lt;=</code> e estruturas de decisão condicional <code>if / else</code>.
-          </p>
+          <div style="background: var(--color-surface-container-low); border-left: 4px solid var(--color-secondary); border-radius: var(--radius-sm); padding: 0.85rem 1rem; margin-bottom: 0.75rem;">
+            <p style="font-size: 0.88rem; line-height: 1.6; color: var(--color-on-surface); margin-bottom: 0.4rem;">
+              <strong>🎯 Restrições Pedagógicas:</strong> O programa deve ser construído utilizando <strong>unicamente</strong> o conteúdo estudado até esta aula: variáveis, leitura e conversão numérica, operadores aritméticos (<code>+</code>, <code>*</code>, <code>/</code>, <code>//</code>, <code>%</code>), precedência com parênteses <code>()</code> e operadores relacionais (<code>&lt;=</code>). Não é permitido o uso de estruturas <code>if/else</code> nem de funções (<code>def</code>).
+            </p>
+            <p style="font-size: 0.88rem; line-height: 1.6; color: var(--color-primary); margin: 0; font-weight: 600;">
+              💡 <em>Nota pedagógica importante:</em> Na próxima seção (Aula 1.4), estudaremos as estruturas condicionais (<code>if</code> / <code>else</code>), que permitirão resolver este mesmo problema de tomada de decisão e arredondamento de maneira muito mais fácil e direta! Por enquanto, este Desafio Mestre exercita seu raciocínio lógico-matemático puro e a manipulação inteligente de valores booleanos (<code>True</code> = 1 e <code>False</code> = 0) no Python.
+            </p>
+          </div>
 
           <!-- Bloco Contraído (Accordion / Details) com Instruções Passo a Passo -->
           <details style="background: var(--color-surface-container-low); border: 1px dashed var(--color-secondary); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-top: 1rem; cursor: pointer;">
             <summary style="font-family: var(--font-headline); font-size: 0.9rem; font-weight: 700; color: var(--color-secondary); user-select: none; display: flex; align-items: center; gap: 0.5rem;">
               <span>💡</span>
-              <span>Precisa de Ajuda? Instruções Passo a Passo para Resolução (Clique para Expandir)</span>
+              <span>Precisa de Ajuda? Roteiro Lógico de Resolução (Clique para Expandir)</span>
             </summary>
             <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--color-surface-high); cursor: default;">
               <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem; font-style: italic;">
-                Recomendamos fortemente que você tente resolver o desafio autonomamente no Google Colab ou Jupyter antes de consultar estas instruções! Se tiver dúvidas sobre a ordem dos cálculos, siga o roteiro abaixo:
+                Recomendamos fortemente tentar resolver o desafio de forma autônoma no Google Colab ou Jupyter antes de consultar este roteiro!
               </p>
               <ol style="font-size: 0.83rem; line-height: 1.7; color: var(--color-on-surface-variant); padding-left: 1.25rem; margin: 0;">
-                <li><strong>Entrada de Dados e Constantes:</strong> Defina os preços das embalagens (R$ 87, 45, 10), o custo fixo (R$ 45) e o rendimento (6 m²/L). Use <code>float(input(...))</code> para coletar <code>comp1</code>, <code>comp2</code>, <code>alt</code> e <code>teto_orcamento</code>.</li>
-                <li><strong>Cálculo da Área das Paredes:</strong> <code>area_total = 2 * (comp1 * alt) + 2 * (comp2 * alt)</code>. Os parênteses garantem a precedência correta das multiplicações.</li>
-                <li><strong>Consumo de Tinta:</strong> <code>litros = area_total / rendimento</code>.</li>
-                <li><strong>Decomposição em Cascata (18L, 9L e 2L):</strong>
-                  <ul>
-                    <li>Latas 18L: <code>latas_cheias_18L = litros // 18</code> e <code>litros_sobra = litros % 18</code>.</li>
-                    <li>Latas 9L: <code>latas_cheias_9L = litros_sobra // 9</code> e <code>litros_sobra = litros_sobra % 9</code>.</li>
-                    <li>Galões 2L: <code>latas_cheias_2L = litros_sobra // 2</code> e <code>litros_sobra = litros_sobra % 2</code>.</li>
-                  </ul>
-                </li>
-                <li><strong>Ajuste de Sobra com Condicional if:</strong> Se <code>litros_sobra != 0 and litros_sobra &lt; 2:</code>, adicione 1 galão de 2L (<code>latas_cheias_2L += 1</code>) para cobrir a pintura restante.</li>
-                <li><strong>Custo Total e Taxa Fixa (+=):</strong> Some os valores das latas e adicione a taxa fixa de insumos: <code>custo_total += custos_fixo</code>.</li>
-                <li><strong>Validação e Decisão com if / else:</strong> Teste <code>orcamento_ok = custo_total &lt;= teto_orcamento</code> e exiba no console se a reforma foi Aprovada ou Negada.</li>
+                <li><strong>Entrada de Dados e Constantes:</strong> Defina os preços unitários das embalagens (R$ 87, 45, 10), o custo fixo (R$ 45) e o rendimento (6 m²/L). Colete <code>comp1</code>, <code>comp2</code>, <code>alt</code> e <code>teto_orcamento</code> convertendo para <code>float</code>.</li>
+                <li><strong>Área Total e Litros:</strong> Calcule a área das 4 paredes usando parênteses: <code>2 * (comp1 * alt) + 2 * (comp2 * alt)</code> e divida pelo rendimento de 6 m²/L para obter a litragem necessária.</li>
+                <li><strong>Decomposição em Latas Grandes (18L e 9L):</strong> Use a divisão inteira (<code>//</code>) para obter as latas cheias e o operador módulo (<code>%</code>) para capturar o volume restante que passa para a próxima embalagem.</li>
+                <li><strong>Arredondamento da Lata Final de 2L (Fórmula de Teto sem IF):</strong> Com o resto das latas de 9L, apure as latas cheias de 2L com <code>// 2</code> e a sobra com <code>% 2</code>. Utilizando a fórmula aritmética de teto <code>(resto_2L + 2) // 3</code>: se o resto for 1, o resultado é 1 (adicionando 1 lata para cobrir o litro final); se for 0, o resultado é 0.</li>
+                <li><strong>Sobra Real e Custo Total:</strong> Calcule o total de litros comprados somando as latas multiplicadas por suas capacidades e subtraia os litros necessários para achar a sobra. Multiplique as latas pelos preços e some a taxa fixa de R$ 45,00.</li>
+                <li><strong>Lógica de Decisão sem IF:</strong> Obtenha o booleano <code>orcamento_ok = custo_total &lt;= teto_orcamento</code>. Como <code>int(True)</code> é 1 e <code>int(False)</code> é 0, defina <code>aprovado = int(orcamento_ok)</code> e <code>reprovado = 1 - aprovado</code>. Multiplique as mensagens de texto por esses coeficientes para exibir o veredito sem usar <code>if</code>.</li>
               </ol>
             </div>
           </details>
@@ -1039,13 +1505,13 @@
           <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
             <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">2. Cascata 18L → 9L → 2L</div>
             <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: var(--color-secondary); margin-top: 0.2rem;">
-              18L // | 9L // | 2L // (+ if sobra &lt; 2)
+              18L // | 9L // | 2L + (resto + 2) // 3
             </div>
           </div>
           <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem 1rem;">
-            <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">3. Custo e Decisão if/else</div>
+            <div style="font-size: 0.75rem; color: var(--color-outline); font-weight: 700; text-transform: uppercase;">3. Decisão Booleana sem IF</div>
             <div style="font-family: var(--font-code); font-size: 0.85rem; font-weight: 700; color: var(--color-tertiary-dark); margin-top: 0.2rem;">
-              custo += 45 | if orcamento_ok: Aprovada
+              msg * int(custo &lt;= teto)
             </div>
           </div>
         </div>
@@ -1081,11 +1547,12 @@
                   <div class="io-box" style="color: var(--color-success); font-weight: 600;">
                     Área total: 84.0 m²<br>
                     Litros necessários: 14.00 L<br>
-                    Latas cheias (18L): 0<br>
-                    Latas cheias (9L): 1<br>
-                    Latas cheias (2L): 3<br>
-                    Litros avulsos restantes: 1.00 L<br>
-                    Custo com taxa: R$ 120.00<br>
+                    Latas de 18L: 0<br>
+                    Latas de 9L: 1<br>
+                    Latas de 2L: 3<br>
+                    Total de tinta comprada: 15.00 L<br>
+                    Sobra real na lata: 1.00 L<br>
+                    Custo total: R$ 120.00<br>
                     Orçamento suficiente: Reforma Aprovada
                   </div>
                 </div>
@@ -1095,29 +1562,30 @@
             <!-- Cenário 2 -->
             <div class="io-card">
               <div class="io-header">
-                <span style="color: var(--color-primary); font-weight: 700;">Cenário 2: Galpão Maior</span>
+                <span style="color: var(--color-primary); font-weight: 700;">Cenário 2: Laboratório Maior</span>
                 <span style="font-family: var(--font-code);">caso_2</span>
               </div>
               <div class="io-grid">
                 <div>
                   <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Entrada Fornecida:</div>
                   <div class="io-box">
-                    Comprimento P1: 12.0<br>
-                    Comprimento P2: 10.0<br>
-                    Altura: 4.0<br>
-                    Teto Orçamento: 150.00
+                    Comprimento P1: 8.0<br>
+                    Comprimento P2: 8.0<br>
+                    Altura: 6.0<br>
+                    Teto Orçamento: 200.00
                   </div>
                 </div>
                 <div>
                   <div style="font-size: 0.75rem; color: var(--color-outline); margin-bottom: 0.25rem;">Saída Esperada no Console:</div>
                   <div class="io-box" style="color: var(--color-primary); font-weight: 600;">
-                    Área total: 176.0 m²<br>
-                    Litros necessários: 29.33 L<br>
-                    Latas cheias (18L): 1<br>
-                    Latas cheias (9L): 1<br>
-                    Latas cheias (2L): 2<br>
-                    Litros avulsos restantes: 0.33 L<br>
-                    Custo com taxa: R$ 197.00<br>
+                    Área total: 192.0 m²<br>
+                    Litros necessários: 32.00 L<br>
+                    Latas de 18L: 1<br>
+                    Latas de 9L: 1<br>
+                    Latas de 2L: 3<br>
+                    Total de tinta comprada: 33.00 L<br>
+                    Sobra real na lata: 1.00 L<br>
+                    Custo total: R$ 207.00<br>
                     Orçamento insuficiente: Reforma Negada
                   </div>
                 </div>
@@ -1137,62 +1605,103 @@
             <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
               Compare com a resolução executada no Google Colab ou Jupyter:
             </p>
-            <div id="codigo-gabarito-reforma" style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6; overflow-x: auto; white-space: pre-wrap;">preco_lata_18L = <span class="syn-num">87</span>
+            <div id="codigo-gabarito-reforma" style="background-color: var(--color-code-bg); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.6; overflow-x: auto; white-space: pre-wrap;"><span class="syn-comment"># ============================================================
+# PYTHONLAB — DESAFIO MESTRE: SIMULADOR DE REFORMA E PINTURA (AULA 1.3)
+# Execute esta célula diretamente no Google Colab ou Jupyter Notebook
+# Conteúdo permitido: Variáveis, input(), float(), int(),
+# Operadores Aritméticos, Precedência com () e Operador Relacional &lt;=
+# (Sem uso de comandos 'if' ou funções 'def')
+# ============================================================
+
+# Catálogo e constantes da loja</span>
+preco_lata_18L = <span class="syn-num">87</span>
 preco_lata_9L = <span class="syn-num">45</span>
 preco_lata_2L = <span class="syn-num">10</span>
 custos_fixo = <span class="syn-num">45</span>
 rendimento = <span class="syn-num">6</span>
 
-<span class="syn-comment"># 1. ENTRADA DE DADOS VIA INPUT() COM TYPE CASTING (FLOAT)</span>
+<span class="syn-comment"># 1. ENTRADA DE DADOS</span>
 <span class="syn-kw">print</span>(<span class="syn-str">"=== SIMULADOR DE REFORMA E PINTURA DO LABORATÓRIO ==="</span>)
-comp1 = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o comprimento das paredes oposta P1 em metros (ex: 8.0): "</span>))
-comp2 = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o comprimento das outras duas paredes oposta em metros (ex: 8.0): "</span>)) 
+comp1 = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o comprimento das paredes opostas P1 em metros (ex: 8.0): "</span>))
+comp2 = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o comprimento das outras duas paredes em metros (ex: 8.0): "</span>))
 alt = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite a altura da sala em metros (ex: 6.0): "</span>))
 teto_orcamento = <span class="syn-kw">float</span>(<span class="syn-kw">input</span>(<span class="syn-str">"Digite o teto de orçamento da escola em R$ (ex: 200.00): "</span>))
 
-<span class="syn-comment"># 2. CÁLCULO DA ÁREA TOTAL DAS 4 PAREDES (PRECEDÊNCIA COM PARÊNTESES)</span>
+<span class="syn-comment"># 2. CÁLCULO DA ÁREA E CONSUMO DE TINTA</span>
 area_total = <span class="syn-num">2</span> * (comp1 * alt) + <span class="syn-num">2</span> * (comp2 * alt)
-
-<span class="syn-comment"># 3. CONSUMO TOTAL DE TINTA (RENDIMENTO: 6 M² POR LITRO)</span>
 litros = area_total / rendimento
 
-<span class="syn-comment"># 4. DECOMPOSIÇÃO EM LATAS DE 18L</span>
-latas_cheias_18L = litros // <span class="syn-num">18</span>
-litros_sobra = litros % <span class="syn-num">18</span>
+<span class="syn-comment"># 3. DECOMPOSIÇÃO EM LATAS GRANDES (18L E 9L)</span>
+latas_18L = litros // <span class="syn-num">18</span>
+resto_18L = litros % <span class="syn-num">18</span>
 
-<span class="syn-comment"># 5. DECOMPOSIÇÃO EM LATAS DE 9L</span>
-latas_cheias_9L = litros_sobra // <span class="syn-num">9</span>
-litros_sobra = litros_sobra % <span class="syn-num">9</span>
+latas_9L = resto_18L // <span class="syn-num">9</span>
+resto_9L = resto_18L % <span class="syn-num">9</span>
 
-<span class="syn-comment"># 6. DECOMPOSIÇÃO EM LATAS DE 2L</span>
-latas_cheias_2L = litros_sobra // <span class="syn-num">2</span>
-litros_sobra = litros_sobra % <span class="syn-num">2</span>
+<span class="syn-comment"># 4. DECOMPOSIÇÃO E ARREDONDAMENTO DA LATA FINAL (2L)</span>
+latas_2L_cheias = resto_9L // <span class="syn-num">2</span>
+resto_2L = resto_9L % <span class="syn-num">2</span>
 
-<span class="syn-kw">if</span> litros_sobra != <span class="syn-num">0</span> <span class="syn-kw">and</span> litros_sobra &lt; <span class="syn-num">2</span>:
-  latas_cheias_2L += <span class="syn-num">1</span>
+<span class="syn-comment"># FÓRMULA ARITMÉTICA DE TETO:
+# - Se resto_2L for 0: (0 + 2) // 3 dá 0 (nenhuma lata extra necessária)
+# - Se resto_2L for 1: (1 + 2) // 3 dá 1 (adiciona 1 lata para cobrir o litro final)</span>
+total_latas_2L = latas_2L_cheias + (resto_2L + <span class="syn-num">2</span>) // <span class="syn-num">3</span>
 
-<span class="syn-comment"># 5. CUSTO TOTAL (R$ 87/LATA) E TAXA AUXILIAR COM ATRIBUIÇÃO COMPOSTA (+=)</span>
-custo_total = latas_cheias_18L * preco_lata_18L 
-custo_total += latas_cheias_9L * preco_lata_9L
-custo_total += latas_cheias_2L * preco_lata_2L
-custo_total += custos_fixo  <span class="syn-comment"># Adiciona taxa fixa de materiais auxiliares</span>
+<span class="syn-comment"># 5. CÁLCULO DA SOBRA REAL DE TINTA</span>
+litros_comprados = (latas_18L * <span class="syn-num">18</span>) + (latas_9L * <span class="syn-num">9</span>) + (total_latas_2L * <span class="syn-num">2</span>)
+sobra_tinta = litros_comprados - litros
 
-<span class="syn-comment"># 6. VALIDAÇÃO RELACIONAL DE ORÇAMENTO (BOOLEANO PRODUZIDO SEM IF)</span>
+<span class="syn-comment"># 6. CUSTO TOTAL</span>
+custo_total = (latas_18L * preco_lata_18L) + \
+              (latas_9L * preco_lata_9L) + \
+              (total_latas_2L * preco_lata_2L) + \
+              custos_fixo
+
+<span class="syn-comment"># ============================================================
+# 7. LÓGICA DE DECISÃO SEM USAR "IF"
+# ============================================================
+
+# O operador &lt;= gera um valor booleano: True (se dentro da verba) ou False (se estourou)</span>
 orcamento_ok = custo_total &lt;= teto_orcamento
 
-<span class="syn-comment"># 7. SAÍDA FORMATADA NO CONSOLE (STDOUT)</span>
+<span class="syn-comment"># ------------------------------------------------------------
+# CONCEITO 1: TRUE VALE 1 E FALSE VALE 0
+# No Python, tipos lógicos têm valor numérico exato:
+# int(True)  -&gt; resulta em 1
+# int(False) -&gt; resulta em 0
+# ------------------------------------------------------------</span>
+aprovado = <span class="syn-kw">int</span>(orcamento_ok)   <span class="syn-comment"># Vale 1 se coube no bolso, ou 0 se estourou</span>
+reprovado = <span class="syn-num">1</span> - aprovado       <span class="syn-comment"># Faz o inverso: vira 0 se aprovado, ou 1 se reprovado</span>
+
+<span class="syn-comment"># ------------------------------------------------------------
+# CONCEITO 2: MULTIPLICAÇÃO DE TEXTO POR 0 OU 1 (CHAVE LIGA/DESLIGA)
+# Em Python, multiplicar texto por um número repete o texto:
+# - "Texto" * 1 -&gt; resulta em "Texto" (o texto é mantido)
+# - "Texto" * 0 -&gt; resulta em ""      (o texto se torna vazio e desaparece)
+#
+# Juntando as duas mensagens com a soma (+):
+# Cenário Aprovado (aprovado=1, reprovado=0):
+#   ("Aprovada" * 1) + ("Negada" * 0) -&gt; "Aprovada" + "" -&gt; "Aprovada"
+#
+# Cenário Reprovado (aprovado=0, reprovado=1):
+#   ("Aprovada" * 0) + ("Negada" * 1) -&gt; "" + "Negada" -&gt; "Negada"
+# ------------------------------------------------------------</span>
+msg_aprovado = <span class="syn-str">"Orçamento suficiente: Reforma Aprovada"</span>
+msg_reprovado = <span class="syn-str">"Orçamento insuficiente: Reforma Negada"</span>
+
+resultado_final = (msg_aprovado * aprovado) + (msg_reprovado * reprovado)
+
+<span class="syn-comment"># 8. RELATÓRIO FINAL FORMATADO</span>
 <span class="syn-kw">print</span>(<span class="syn-str">"\n--- RELATÓRIO DE CUSTOS E VIABILIDADE ---"</span>)
 <span class="syn-kw">print</span>(<span class="syn-str">f"Área total: {area_total:.1f} m²"</span>)
 <span class="syn-kw">print</span>(<span class="syn-str">f"Litros necessários: {litros:.2f} L"</span>)
-<span class="syn-kw">print</span>(<span class="syn-str">f"Latas cheias (18L): {latas_cheias_18L}"</span>)
-<span class="syn-kw">print</span>(<span class="syn-str">f"Latas cheias (9L): {latas_cheias_9L}"</span>)
-<span class="syn-kw">print</span>(<span class="syn-str">f"Latas cheias (2L): {latas_cheias_2L}"</span>)
-<span class="syn-kw">print</span>(<span class="syn-str">f"Litros avulsos restantes: {litros_sobra:.2f} L"</span>)
-<span class="syn-kw">print</span>(<span class="syn-str">f"Custo com taxa: R$ {custo_total:.2f}"</span>)
-<span class="syn-kw">if</span> orcamento_ok:
-  <span class="syn-kw">print</span>(<span class="syn-str">"Orçamento suficiente: Reforma Aprovada"</span>)
-<span class="syn-kw">else</span>:
-  <span class="syn-kw">print</span>(<span class="syn-str">"Orçamento insuficiente: Reforma Negada"</span>)</div>
+<span class="syn-kw">print</span>(<span class="syn-str">f"Latas de 18L: {latas_18L:.0f}"</span>)
+<span class="syn-kw">print</span>(<span class="syn-str">f"Latas de 9L: {latas_9L:.0f}"</span>)
+<span class="syn-kw">print</span>(<span class="syn-str">f"Latas de 2L: {total_latas_2L:.0f}"</span>)
+<span class="syn-kw">print</span>(<span class="syn-str">f"Total de tinta comprada: {litros_comprados:.2f} L"</span>)
+<span class="syn-kw">print</span>(<span class="syn-str">f"Sobra real na lata: {sobra_tinta:.2f} L"</span>)
+<span class="syn-kw">print</span>(<span class="syn-str">f"Custo total: R$ {custo_total:.2f}"</span>)
+<span class="syn-kw">print</span>(resultado_final)</div>
           </div>
         </div>
 
@@ -1204,19 +1713,19 @@ orcamento_ok = custo_total &lt;= teto_orcamento
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
               <input type="checkbox" id="chk-reforma-1" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('reforma', 4)">
-              <span><strong>Teste 1:</strong> Utilização correta de parênteses no cálculo da área total: <code>2 * (comp1 * alt) + 2 * (comp2 * alt)</code>.</span>
+              <span><strong>Teste 1:</strong> Utilização correta de parênteses no cálculo da área total: <code>2 * (comp1 * alt) + 2 * (comp2 * alt)</code> e apuração da litragem.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
               <input type="checkbox" id="chk-reforma-2" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('reforma', 4)">
-              <span><strong>Teste 2:</strong> Aplicação de <code>//</code> e <code>%</code> para decomposição em cascata nas embalagens de 18L, 9L e 2L.</span>
+              <span><strong>Teste 2:</strong> Aplicação correta de <code>//</code> e <code>%</code> para decomposição em cascata nas embalagens de 18L e 9L.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
               <input type="checkbox" id="chk-reforma-3" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('reforma', 4)">
-              <span><strong>Teste 3:</strong> Ajuste com condicional <code>if</code> para fração de sobra e emprego de <code>+=</code> na taxa fixa de materiais (R$ 45,00).</span>
+              <span><strong>Teste 3:</strong> Arredondamento da quantidade final de latas de 2L através de fórmula aritmética de teto, sem o uso de <code>if</code>.</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--color-on-surface);">
               <input type="checkbox" id="chk-reforma-4" style="width: 1.1rem; height: 1.1rem; accent-color: var(--color-secondary);" onchange="atualizarChecklist('reforma', 4)">
-              <span><strong>Teste 4:</strong> Validação orçamentária com tomada de decisão usando a estrutura condicional <code>if / else</code>.</span>
+              <span><strong>Teste 4:</strong> Validação do teto financeiro e seleção da mensagem final por lógica relacional e booleana, sem <code>if/else</code>.</span>
             </label>
           </div>
 
@@ -1229,6 +1738,7 @@ orcamento_ok = custo_total &lt;= teto_orcamento
 
       </div>
     </div>
+  </div> <!-- FIM PAINEL DESAFIOS -->
   </div>
 
   <!-- ========================================================================

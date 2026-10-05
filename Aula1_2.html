@@ -4,11 +4,221 @@
      ============================================================================ -->
 
 <div class="view-section" id="view-aula">
+  <!-- Dados do Simulador CPython da Aula (Encapsulamento Local) -->
+  <script type="application/json" class="simulation-steps-data">
+[
+  {
+    "step": 0,
+    "line": 1,
+    "insightTitle": "Passo 0: Preparação da Call Stack",
+    "insightDesc": "O interpretador CPython inicializa o frame local na Call Stack e prepara para ler a primeira instrução.",
+    "stack": [],
+    "heap": [],
+    "stdout": ""
+  },
+  {
+    "step": 1,
+    "line": 1,
+    "insightTitle": "Passo 1: Entrada de Texto via input()",
+    "insightDesc": "O usuário digita '2010'. Atenção: o comando input() SEMPRE retorna um objeto do tipo texto (str). O valor '2010' é alocado no Heap em 0x7FFF01 e o identificador 'dado_bruto' aponta para ele.",
+    "stack": [
+      {
+        "name": "dado_bruto",
+        "type": "str",
+        "addr": "0x7FFF01"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FFF01",
+        "val": "\"2010\"",
+        "type": "str (texto)"
+      }
+    ],
+    "stdout": "Digite o ano de nascimento: 2010"
+  },
+  {
+    "step": 2,
+    "line": 2,
+    "insightTitle": "Passo 2: Conversão de Tipo (Type Casting com int())",
+    "insightDesc": "A função int(dado_bruto) converte a string '2010' para um número inteiro 2010 no Heap (0x7FFF02), apontado por 'ano_nasc'. Agora operações matemáticas são válidas sem erro de TypeError!",
+    "stack": [
+      {
+        "name": "dado_bruto",
+        "type": "str",
+        "addr": "0x7FFF01"
+      },
+      {
+        "name": "ano_nasc",
+        "type": "int",
+        "addr": "0x7FFF02"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FFF01",
+        "val": "\"2010\"",
+        "type": "str (texto)"
+      },
+      {
+        "addr": "0x7FFF02",
+        "val": "2010",
+        "type": "int (número)"
+      }
+    ],
+    "stdout": "Digite o ano de nascimento: 2010"
+  },
+  {
+    "step": 3,
+    "line": 3,
+    "insightTitle": "Passo 3: Alocação do Ano Vigente (Constante)",
+    "insightDesc": "O identificador 'ano_atual' recebe o número inteiro 2026, alocado em 0x7FFF03 no Heap.",
+    "stack": [
+      {
+        "name": "dado_bruto",
+        "type": "str",
+        "addr": "0x7FFF01"
+      },
+      {
+        "name": "ano_nasc",
+        "type": "int",
+        "addr": "0x7FFF02"
+      },
+      {
+        "name": "ano_atual",
+        "type": "int",
+        "addr": "0x7FFF03"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FFF01",
+        "val": "\"2010\"",
+        "type": "str (texto)"
+      },
+      {
+        "addr": "0x7FFF02",
+        "val": "2010",
+        "type": "int (número)"
+      },
+      {
+        "addr": "0x7FFF03",
+        "val": "2026",
+        "type": "int (número)"
+      }
+    ],
+    "stdout": "Digite o ano de nascimento: 2010"
+  },
+  {
+    "step": 4,
+    "line": 4,
+    "insightTitle": "Passo 4: Processamento Matemático (2026 - 2010)",
+    "insightDesc": "CPython executa a subtração entre dois inteiros (2026 - 2010). O resultado 16 é alocado no Heap em 0x7FFF04, e 'idade_calculada' aponta para ele.",
+    "stack": [
+      {
+        "name": "dado_bruto",
+        "type": "str",
+        "addr": "0x7FFF01"
+      },
+      {
+        "name": "ano_nasc",
+        "type": "int",
+        "addr": "0x7FFF02"
+      },
+      {
+        "name": "ano_atual",
+        "type": "int",
+        "addr": "0x7FFF03"
+      },
+      {
+        "name": "idade_calculada",
+        "type": "int",
+        "addr": "0x7FFF04"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FFF01",
+        "val": "\"2010\"",
+        "type": "str (texto)"
+      },
+      {
+        "addr": "0x7FFF02",
+        "val": "2010",
+        "type": "int (número)"
+      },
+      {
+        "addr": "0x7FFF03",
+        "val": "2026",
+        "type": "int (número)"
+      },
+      {
+        "addr": "0x7FFF04",
+        "val": "16",
+        "type": "int (número)"
+      }
+    ],
+    "stdout": "Digite o ano de nascimento: 2010"
+  },
+  {
+    "step": 5,
+    "line": 5,
+    "insightTitle": "Passo 5: Saída Formatada no Console (print())",
+    "insightDesc": "A função print() busca o valor no Heap através do identificador 'idade_calculada' e exibe a mensagem final no terminal STDOUT.",
+    "stack": [
+      {
+        "name": "dado_bruto",
+        "type": "str",
+        "addr": "0x7FFF01"
+      },
+      {
+        "name": "ano_nasc",
+        "type": "int",
+        "addr": "0x7FFF02"
+      },
+      {
+        "name": "ano_atual",
+        "type": "int",
+        "addr": "0x7FFF03"
+      },
+      {
+        "name": "idade_calculada",
+        "type": "int",
+        "addr": "0x7FFF04"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FFF01",
+        "val": "\"2010\"",
+        "type": "str (texto)"
+      },
+      {
+        "addr": "0x7FFF02",
+        "val": "2010",
+        "type": "int (número)"
+      },
+      {
+        "addr": "0x7FFF03",
+        "val": "2026",
+        "type": "int (número)"
+      },
+      {
+        "addr": "0x7FFF04",
+        "val": "16",
+        "type": "int (número)"
+      }
+    ],
+    "stdout": "Digite o ano de nascimento: 2010\nIdade aproximada: 16"
+  }
+]
+  </script>
+
 
   <!-- ========================================================================
        CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
        ======================================================================== -->
-  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+  <div class="lesson-header-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
     <div>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
         <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 1: Fundamentos</span>
@@ -21,7 +231,7 @@
           +150 XP
         </span>
       </div>
-      <h1 style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+      <h1 class="lesson-main-title" style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
         Variáveis, Tipos de Dados e Entrada/Saída
       </h1>
       <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
@@ -30,14 +240,14 @@
     </div>
 
     <!-- 3 Ações de Gestão pelo Próprio Aluno -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+    <div class="lesson-header-actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
       <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_1_2', 'Aula 1.2: Variáveis, Tipos e I/O')">
         📌 Onde Parei
       </button>
       <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_1_2', 'Variáveis, Tipos e I/O')">
         ❓ Tenho Dúvidas
       </button>
-      <button class="btn btn-success" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+      <button class="btn btn-success btn-concluir-action" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
         ✓ Compreendi e Concluí (+150 XP)
       </button>
     </div>
@@ -361,7 +571,7 @@
        ======================================================================== -->
   <div class="card" style="margin-bottom: 2rem;">
     <!-- Barra de Controle do Stepper -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); margin-bottom: 1.25rem;">
+    <div class="stepper-header-row" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); margin-bottom: 1.25rem;">
       <div>
         <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
           Player Passo a Passo Sincronizado
@@ -372,7 +582,7 @@
       </div>
 
       <!-- Controles de Stepper -->
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <div class="stepper-controls-container" style="display: flex; align-items: center; gap: 0.5rem;">
         <button class="btn btn-outline" id="btn-step-prev" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="prevStep()">
           ◀ Anterior
         </button>
@@ -564,27 +774,42 @@
        4. CADERNO DE OFICINAS E EXERCÍCIOS PRÁTICOS (BLOCOS A, B E C)
        ======================================================================== -->
   <div class="card" style="margin-bottom: 2rem;">
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
-      <div>
-        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
-          Treinamento Gradual
-        </span>
-        <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
-          4. Caderno de Oficinas Práticas (30 Atividades com Resoluções)
-        </h2>
-      </div>
+    <!-- BARRA STICKY & CONTRAÍVEL DE NAVEGAÇÃO DOS EXERCÍCIOS (SEMPRE VISÍVEL EM 1 LINHA) -->
+    <div class="treinamento-sticky-bar" id="treinamento-gradual-sticky">
+      <div class="treinamento-sticky-inner">
+        <div class="treinamento-sticky-header">
+          <div class="treinamento-sticky-badge-wrap">
+            <span class="treinamento-sticky-pill">🎯 Treinamento Gradual</span>
+          </div>
 
-      <!-- Abas dos Blocos A, B e C -->
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <button class="btn btn-primary" id="btn-tab-bloco-a" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('bloco-a')">
-          Bloco A: print()
-        </button>
-        <button class="btn btn-outline" id="btn-tab-bloco-b" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('bloco-b')">
-          Bloco B: input()
-        </button>
-        <button class="btn btn-outline" id="btn-tab-bloco-c" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="switchOficinaBloco('bloco-c')">
-          Bloco C: Casting & type()
-        </button>
+          <!-- Abas dos Blocos em Linha Única Horizontal com Scroll Suave -->
+          <div class="treinamento-subtabs-scroll oficina-subtabs-bar">
+            <button class="treinamento-tab-btn active btn-primary" id="btn-tab-bloco-a" onclick="switchOficinaBloco('bloco-a')">
+              Bloco A: print()
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-bloco-b" onclick="switchOficinaBloco('bloco-b')">
+              Bloco B: input()
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-bloco-c" onclick="switchOficinaBloco('bloco-c')">
+              Bloco C: Casting & type()
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')">
+              🏆 Desafios & Desafio Mestre
+            </button>
+          </div>
+
+          <!-- Botão de Expandir / Recolher Detalhes (1 Linha por Padrão) -->
+          <button class="treinamento-toggle-btn" onclick="toggleTreinamentoDetalhes()" id="btn-toggle-treinamento-detalhes" title="Expandir ou recolher detalhes desta seção">
+            <span class="treinamento-toggle-icon" id="icon-treinamento-detalhes">▾</span>
+            <span class="treinamento-toggle-text" id="text-treinamento-detalhes">Detalhes</span>
+          </button>
+        </div>
+
+        <!-- Painel de Detalhes Expansível (Começa recolhido para ocupar apenas 1 linha!) -->
+        <div class="treinamento-detalhes-body" id="treinamento-detalhes-body" style="display: none;">
+          <h2 class="treinamento-full-title">4. Caderno de Oficinas Práticas (30 Atividades com Resoluções)</h2>
+          <p class="treinamento-full-desc">Exercícios focados em saída com print(), entrada com input(), conversão de tipos (casting) e desafios integradores.</p>
+        </div>
       </div>
     </div>
 
@@ -824,12 +1049,11 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ========================================================================
+    <!-- ========================================================================
        5. OFICINAS DE DESAFIO PRÁTICO & DESAFIO MESTRE INTEGRADO
        ======================================================================== -->
-  <div class="card" style="margin-bottom: 2rem;">
+  <div class="oficina-panel" id="panel-desafios" style="display: none;">
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
       <div>
         <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
@@ -1074,6 +1298,7 @@
 
       </div>
     </div>
+  </div> <!-- FIM PAINEL DESAFIOS -->
   </div>
 
   <!-- ========================================================================

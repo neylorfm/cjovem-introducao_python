@@ -1,0 +1,1933 @@
+<!-- ============================================================================
+     PYTHONLAB — AULA 2.1: INTRODUÇÃO A COLEÇÕES, TUPLAS E FUNÇÕES EMBUTIDAS (Aula2_1.html)
+     Alinhada integralmente às diretrizes pedagógicas de aulas/aula2_1.md
+     Módulo 2: Estruturas de Dados e Coleções | Nível: Intermediário Inicial | +580 XP
+     ============================================================================ -->
+
+<div class="view-section" id="view-aula">
+  <!-- Dados do Simulador CPython da Aula (Encapsulamento Local) -->
+  <script type="application/json" class="simulation-steps-data">
+[
+  {
+    "step": 0,
+    "line": null,
+    "insightTitle": "Passo 0: Preparação da Call Stack (Aula 2.1)",
+    "insightDesc": "Inicie o simulador para acompanhar a criação da tupla na memória Heap, o desempacotamento de referências e a aplicação de funções nativas de agregação.",
+    "stack": [],
+    "heap": [],
+    "stdout": "> (Aguardando início...)"
+  },
+  {
+    "step": 1,
+    "line": 1,
+    "insightTitle": "Passo 1: Alocação da Tupla (medicoes = (8.0, 5.0, 9.0, 6.0))",
+    "insightDesc": "CPython aloca 4 objetos float na Heap e instancia o objeto tuple em 0x7FB10 contendo os ponteiros ordenados para cada elemento. A variável 'medicoes' aponta para 0x7FB10.",
+    "stack": [
+      {
+        "name": "medicoes",
+        "type": "tuple",
+        "addr": "0x7FB10"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB10",
+        "val": "[0x7FA01, 0x7FA02, 0x7FA03, 0x7FA04]",
+        "type": "tuple"
+      },
+      {
+        "addr": "0x7FA01",
+        "val": "8.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FA02",
+        "val": "5.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FA03",
+        "val": "9.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FA04",
+        "val": "6.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> Tupla 'medicoes' alocada com 4 itens float imutáveis."
+  },
+  {
+    "step": 2,
+    "line": 2,
+    "insightTitle": "Passo 2: Contagem de Itens (qtd = len(medicoes))",
+    "insightDesc": "A função nativa len() inspeciona o metadado ob_size da tupla em tempo O(1), retornando 4. O inteiro 4 é alocado em 0x7FA10 e associado à variável 'qtd'.",
+    "stack": [
+      {
+        "name": "medicoes",
+        "type": "tuple",
+        "addr": "0x7FB10"
+      },
+      {
+        "name": "qtd",
+        "type": "int",
+        "addr": "0x7FA10"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB10",
+        "val": "[0x7FA01, 0x7FA02, 0x7FA03, 0x7FA04]",
+        "type": "tuple"
+      },
+      {
+        "addr": "0x7FA10",
+        "val": "4",
+        "type": "int"
+      }
+    ],
+    "stdout": "> len(medicoes) computado: 4 elementos."
+  },
+  {
+    "step": 3,
+    "line": 3,
+    "insightTitle": "Passo 3: Somatório Numérico (total = sum(medicoes))",
+    "insightDesc": "A função nativa sum() itera pelos ponteiros da coleção calculando 8.0 + 5.0 + 9.0 + 6.0 = 28.0. Um novo float 28.0 é alocado em 0x7FA20 e atribuído a 'total'.",
+    "stack": [
+      {
+        "name": "medicoes",
+        "type": "tuple",
+        "addr": "0x7FB10"
+      },
+      {
+        "name": "qtd",
+        "type": "int",
+        "addr": "0x7FA10"
+      },
+      {
+        "name": "total",
+        "type": "float",
+        "addr": "0x7FA20"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB10",
+        "val": "[0x7FA01, 0x7FA02, 0x7FA03, 0x7FA04]",
+        "type": "tuple"
+      },
+      {
+        "addr": "0x7FA10",
+        "val": "4",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA20",
+        "val": "28.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> sum(medicoes) computado: 28.0"
+  },
+  {
+    "step": 4,
+    "line": 4,
+    "insightTitle": "Passo 4: Cálculo da Média (media = total / qtd)",
+    "insightDesc": "Operação de divisão de ponto flutuante (28.0 / 4 = 7.0). O resultado 7.0 é alocado no Heap em 0x7FA30 e vinculado à variável local 'media'.",
+    "stack": [
+      {
+        "name": "medicoes",
+        "type": "tuple",
+        "addr": "0x7FB10"
+      },
+      {
+        "name": "qtd",
+        "type": "int",
+        "addr": "0x7FA10"
+      },
+      {
+        "name": "total",
+        "type": "float",
+        "addr": "0x7FA20"
+      },
+      {
+        "name": "media",
+        "type": "float",
+        "addr": "0x7FA30"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB10",
+        "val": "[0x7FA01, 0x7FA02, 0x7FA03, 0x7FA04]",
+        "type": "tuple"
+      },
+      {
+        "addr": "0x7FA10",
+        "val": "4",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA20",
+        "val": "28.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FA30",
+        "val": "7.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> Média calculada (28.0 / 4): 7.0"
+  },
+  {
+    "step": 5,
+    "line": 5,
+    "insightTitle": "Passo 5: Extremo Superior com max() (maior = max(medicoes))",
+    "insightDesc": "A função nativa max() avalia as referências da coleção e identifica 9.0 como o maior valor. A variável 'maior' passa a apontar diretamente para 0x7FA03.",
+    "stack": [
+      {
+        "name": "medicoes",
+        "type": "tuple",
+        "addr": "0x7FB10"
+      },
+      {
+        "name": "qtd",
+        "type": "int",
+        "addr": "0x7FA10"
+      },
+      {
+        "name": "total",
+        "type": "float",
+        "addr": "0x7FA20"
+      },
+      {
+        "name": "media",
+        "type": "float",
+        "addr": "0x7FA30"
+      },
+      {
+        "name": "maior",
+        "type": "float",
+        "addr": "0x7FA03"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB10",
+        "val": "[0x7FA01, 0x7FA02, 0x7FA03, 0x7FA04]",
+        "type": "tuple"
+      },
+      {
+        "addr": "0x7FA03",
+        "val": "9.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FA10",
+        "val": "4",
+        "type": "int"
+      },
+      {
+        "addr": "0x7FA20",
+        "val": "28.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FA30",
+        "val": "7.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> max(medicoes) identificado: 9.0\nProcessamento estatístico concluído com sucesso!"
+  }
+]
+  </script>
+
+  <!-- ========================================================================
+       CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
+       ======================================================================== -->
+  <div class="lesson-header-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+    <div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
+        <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 2: Coleções & Tuplas</span>
+        <span style="color: var(--color-outline);">›</span>
+        <span style="font-weight: 600; color: var(--color-on-surface-variant);">Aula 2.1</span>
+        <span style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          Intermediário Inicial • 65 min
+        </span>
+        <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          +250 XP Base (+580 XP Total)
+        </span>
+      </div>
+      <h1 class="lesson-main-title" style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+        Introdução a Coleções, Tuplas e Funções Embutidas
+      </h1>
+      <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
+        Prática no <strong>Jupyter Notebook</strong> (Anaconda3 no PC) ou <strong>Google Colab</strong> (Tablet/Navegador).
+      </p>
+    </div>
+
+    <!-- 3 Ações de Gestão pelo Próprio Aluno -->
+    <div class="lesson-header-actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_2_1', 'Aula 2.1: Introdução a Coleções, Tuplas e Funções Embutidas')">
+        📌 Onde Parei
+      </button>
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_2_1', 'Introdução a Coleções e Tuplas')">
+        ❓ Tenho Dúvidas
+      </button>
+      <button class="btn btn-success btn-concluir-action" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+        ✓ Compreendi e Concluí (+250 XP)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       DIVISOR DIDÁTICO NO TOPO: ESCOLHA DA TRILHA DE ESTUDO
+       ======================================================================== -->
+  <div class="lesson-mode-bifurcator" id="lesson-mode-bifurcator">
+    <div class="bifurcator-header">
+      <div>
+        <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary);">
+          🧭 Como você deseja estudar esta aula hoje?
+        </div>
+        <div style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.2rem;">
+          Decida se prefere reforçar os conceitos teóricos de tuplas ou ir direto para a prática no Google Colab/Jupyter.
+        </div>
+      </div>
+      <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+        Fast-Track ou Deep-Dive
+      </span>
+    </div>
+    <div class="bifurcator-nav">
+      <button class="bifurcator-btn active" id="btn-mode-explicacoes" onclick="setModoVisualizacaoAula('explicacoes')">
+        <span class="btn-mode-icon">📖</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">1. Explicações & Fundamentos</span>
+          <span class="btn-mode-subtitle">Tuplas imutáveis • Indexação & Unpacking • Funções Nativas • Stack vs Heap • Trace Table</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-pratica" onclick="setModoVisualizacaoAula('pratica')">
+        <span class="btn-mode-icon">🛠️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">2. Exercícios Propostos & Prática</span>
+          <span class="btn-mode-subtitle">5 Tópicos Práticos • 5 Desafios • Desafio Mestre PythonLab</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-tudo" onclick="setModoVisualizacaoAula('tudo')">
+        <span class="btn-mode-icon">👁️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">Visualização Completa</span>
+          <span class="btn-mode-subtitle">Exibir tudo em sequência linear contínua</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTAINER TRILHA 1: EXPLICAÇÕES & FUNDAMENTOS -->
+  <div id="bloco-aula-explicacoes">
+
+    <!-- ========================================================================
+         1. VISÃO GERAL E FUNDAMENTOS TEÓRICOS
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Fundamentos Conceituais
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            1. O Conceito de Coleção de Dados e a Estrutura de Tuplas
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          CPython Data Structures
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Até o momento, cada variável armazenava apenas um valor primitivo isolado (como um único número inteiro, decimal ou texto). Uma <strong>coleção (ou estrutura de dados)</strong> permite agrupar múltiplos valores sob um mesmo identificador. Isso viabiliza modelar entidades reais com múltiplos atributos — como as coordenadas de um ponto geográfico, as dimensões de um objeto ou o conjunto de notas de um estudante — gerando códigos mais limpos, eficientes e legíveis.
+      </p>
+
+      <!-- Comparativo Visual: Variáveis Isoladas vs Coleção Única -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="font-size: 0.8rem; font-family: var(--font-headline); font-weight: 700; color: #dc2626; text-transform: uppercase; margin-bottom: 0.5rem;">
+            Variáveis Isoladas (Primitivas)
+          </div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.85rem; color: #f8fafc; margin: 0;"><code>base = 5.0
+altura = 7.0</code></pre>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.5rem; line-height: 1.45;">
+            Variáveis desconectadas na memória. O programador precisa rastrear cada nome individualmente.
+          </p>
+        </div>
+
+        <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-secondary-fixed); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="font-size: 0.8rem; font-family: var(--font-headline); font-weight: 700; color: #16a34a; text-transform: uppercase; margin-bottom: 0.5rem;">
+            Coleção Única (Tupla)
+          </div>
+          <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.85rem; color: #f8fafc; margin: 0;"><code>retangulo = (5.0, 7.0)</code></pre>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.5rem; line-height: 1.45;">
+            Valores agrupados logicamente em um único objeto indexado e imutável.
+          </p>
+        </div>
+      </div>
+
+      <!-- Três Pilares da Tupla -->
+      <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+        A Estrutura de Dados Tupla (tuple)
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">🔢</div>
+          <strong style="color: var(--color-primary); font-size: 0.9rem;">1. Ordenação</strong>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.25rem; line-height: 1.45;">
+            Os elementos ocupam posições fixas e bem definidas da esquerda para a direita (índices 0, 1, 2...).
+          </p>
+        </div>
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">🔒</div>
+          <strong style="color: var(--color-primary); font-size: 0.9rem;">2. Imutabilidade</strong>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.25rem; line-height: 1.45;">
+            Uma vez alocada na memória, a tupla não permite adicionar, remover ou reatribuir elementos individuais.
+          </p>
+        </div>
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="font-size: 1.25rem; margin-bottom: 0.25rem;">🧩</div>
+          <strong style="color: var(--color-primary); font-size: 0.9rem;">3. Heterogeneidade</strong>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.25rem; line-height: 1.45;">
+            Pode conter elementos de tipos primitivos distintos simultaneamente (int, float, str, bool).
+          </p>
+        </div>
+      </div>
+
+      <!-- Formas de Declaração de Tuplas -->
+      <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+        Formas de Declaração de Tuplas
+      </h3>
+      <div style="overflow-x: auto; margin-bottom: 1.5rem;">
+        <table class="trace-table" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>Modalidade</th>
+              <th>Sintaxe Python</th>
+              <th>Tipo Inferido</th>
+              <th>Regra Sintática Crucial</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tupla Vazia</strong></td>
+              <td><code>tupla_vazia = ()</code></td>
+              <td><code>tuple</code></td>
+              <td>Coleção vazia sem elementos alocados.</td>
+            </tr>
+            <tr>
+              <td><strong>Múltiplos Elementos</strong></td>
+              <td><code>dimensoes = (10, 20, 30)</code></td>
+              <td><code>tuple</code></td>
+              <td>Itens separados por vírgula dentro de parênteses.</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #b91c1c;">Tupla Unitária (1 item)</strong></td>
+              <td><code>serie = ("2º Ano",)</code> ou <code>n = (5,)</code></td>
+              <td><code>tuple</code></td>
+              <td><span style="color: #dc2626; font-weight: 700;">Vírgula final obrigatória!</span> Sem vírgula, <code>(5)</code> é interpretado como <code>int</code>!</td>
+            </tr>
+            <tr>
+              <td><strong>Tupla sem Parênteses</strong></td>
+              <td><code>coordenadas = 12.5, -38.2</code></td>
+              <td><code>tuple</code></td>
+              <td>O Python reconhece a vírgula e empacota automaticamente como tupla.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Callout: Regra da Vírgula Obrigatória -->
+      <div style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: var(--radius-md); padding: 0.85rem 1rem; font-size: 0.85rem; color: #92400e; margin-bottom: 1.5rem;">
+        <strong>⚠️ Alerta Pedagógico da Vírgula Obrigatória:</strong><br>
+        <code>(5)</code> possui parênteses matemáticos de precedência ➔ Tipo: <code>int</code>.<br>
+        <code>(5,)</code> possui a vírgula separadora de coleção ➔ Tipo: <code>tuple</code>.<br>
+        Sempre que for criar uma tupla com apenas um único elemento, a vírgula final é estritamente obrigatória!
+      </div>
+
+      <!-- Acesso por Indexação e Desempacotamento -->
+      <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+        Acesso por Indexação e Desempacotamento (Unpacking)
+      </h3>
+      <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+        Os elementos são acessados via colchetes <code>tupla[indice]</code>. O Python suporta indexação bidirecional:
+      </p>
+
+      <!-- Diagrama ASCII de Indexação -->
+      <div class="ascii-flowchart-card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
+        <div style="font-size: 0.8rem; font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary); text-transform: uppercase; margin-bottom: 0.75rem;">
+          Mapeamento Bidirecional de Índices em Tupla
+        </div>
+        <div class="ascii-flowchart-box">
+          <div style="font-family: var(--font-code); font-size: 0.85rem; line-height: 1.5; color: var(--color-primary); display: inline-block; text-align: left; background: #0f172a; color: #38bdf8; padding: 1rem 1.5rem; border-radius: var(--radius-md);">
+          Tupla:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notas = (&nbsp;&nbsp;6.5,&nbsp;&nbsp;&nbsp;&nbsp;7.8,&nbsp;&nbsp;&nbsp;10.0,&nbsp;&nbsp;&nbsp;&nbsp;9.1&nbsp;&nbsp;)<br>
+          Positivo:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[0]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3]&nbsp;&nbsp;&nbsp;(da esquerda para a direita: 0 até N-1)<br>
+          Negativo:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[-4]&nbsp;&nbsp;&nbsp;&nbsp;[-3]&nbsp;&nbsp;&nbsp;&nbsp;[-2]&nbsp;&nbsp;&nbsp;&nbsp;[-1]&nbsp;&nbsp;&nbsp;(da direita para a esquerda: -1 é o último)
+          </div>
+        </div>
+      </div>
+
+      <!-- Desempacotamento de Tuplas (Unpacking) -->
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-size: 1.25rem;">📦</span>
+          <strong style="font-size: 1rem; color: var(--color-primary);">Desempacotamento (Unpacking) Simultâneo</strong>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+          Permite extrair simultaneamente os itens da tupla para variáveis individuais sem precisar de uma linha de indexação para cada valor:
+        </p>
+        <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.85rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>retangulo = (5.0, 7.0)
+base, altura = retangulo  # base recebe 5.0 e altura recebe 7.0</code></pre>
+        <div style="font-size: 0.8rem; color: var(--color-secondary); font-weight: 600;">
+          ⚠️ Regra Obrigatória: A quantidade de variáveis à esquerda da igualdade deve ser exatamente igual ao número de itens na tupla (caso contrário, o Python lança <code>ValueError</code>).
+        </div>
+      </div>
+
+      <!-- Funções Embutidas (Built-in Functions) -->
+      <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+        Funções Embutidas (Built-in Functions) Essenciais para Coleções
+      </h3>
+      <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+        Funções nativas da linguagem que operam diretamente sobre coleções numéricas:
+      </p>
+      <div style="overflow-x: auto;">
+        <table class="trace-table" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>Função</th>
+              <th>Finalidade</th>
+              <th>Exemplo de Aplicação</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>len(colecao)</code></td>
+              <td>Retorna a quantidade total de itens (comprimento)</td>
+              <td><code>len((4, 8, 15))</code></td>
+              <td><span style="font-family: var(--font-code); color: #0284c7; font-weight: 700;">3</span></td>
+            </tr>
+            <tr>
+              <td><code>sum(colecao)</code></td>
+              <td>Soma todos os elementos numéricos da coleção</td>
+              <td><code>sum((10, 20, 30))</code></td>
+              <td><span style="font-family: var(--font-code); color: #0284c7; font-weight: 700;">60</span></td>
+            </tr>
+            <tr>
+              <td><code>max(colecao)</code></td>
+              <td>Identifica o maior elemento contido na tupla</td>
+              <td><code>max((5, 12, 3))</code></td>
+              <td><span style="font-family: var(--font-code); color: #0284c7; font-weight: 700;">12</span></td>
+            </tr>
+            <tr>
+              <td><code>min(colecao)</code></td>
+              <td>Identifica o menor elemento contido na tupla</td>
+              <td><code>min((5, 12, 3))</code></td>
+              <td><span style="font-family: var(--font-code); color: #0284c7; font-weight: 700;">3</span></td>
+            </tr>
+            <tr>
+              <td><code>abs(numero)</code></td>
+              <td>Devolve o valor absoluto / módulo (desconsidera sinal negativo)</td>
+              <td><code>abs(-15.4)</code></td>
+              <td><span style="font-family: var(--font-code); color: #0284c7; font-weight: 700;">15.4</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         2. DIAGRAMA DE MEMÓRIA CPYTHON (STACK VS HEAP COM TUPLAS)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Engenharia de Baixo Nível
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            2. Diagrama de Memória CPython (Stack vs Heap)
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          Alocação de Tuplas na RAM
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Observe como o interpretador Python gerencia tuplas e suas referências físicas na memória RAM ao executar um desempacotamento de variáveis:
+      </p>
+
+      <div style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.85rem; color: #f8fafc; margin-bottom: 1.25rem;">
+        <span style="color: #64748b;"># Código em Execução</span><br>
+        <span style="color: #f59e0b;">ponto</span> = (<span style="color: #38bdf8;">10</span>, <span style="color: #38bdf8;">25</span>)<br>
+        <span style="color: #f59e0b;">x</span>, <span style="color: #f59e0b;">y</span> = <span style="color: #f59e0b;">ponto</span>
+      </div>
+
+      <!-- Diagrama de Memória Stack vs Heap (Alinhado & Responsivo) -->
+      <div class="ascii-flowchart-card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; box-shadow: 0 0 8px #38bdf8;"></span>
+            <span style="font-family: var(--font-headline); color: var(--color-primary); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;">
+              MAPEAMENTO FÍSICO DE MEMÓRIA (STACK ➔ HEAP)
+            </span>
+          </div>
+          <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline); background: var(--color-surface-low); padding: 0.2rem 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--color-surface-container);">
+            CPython 3.x
+          </span>
+        </div>
+
+        <div class="ascii-flowchart-box" style="padding: 0; background: #0b1329; border-radius: var(--radius-md); border: 1px solid #1e293b; overflow-x: auto;">
+          <svg viewBox="0 0 820 250" style="width: 100%; min-width: 680px; max-width: 820px; height: auto; display: block; margin: 0 auto; font-family: 'JetBrains Mono', Consolas, monospace;" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arr-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8"/>
+              </marker>
+              <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="#34d399"/>
+              </marker>
+              <marker id="arr-amber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="#fbbf24"/>
+              </marker>
+            </defs>
+
+            <!-- CALL STACK BOX -->
+            <g transform="translate(10, 15)">
+              <rect width="280" height="215" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+              <rect width="280" height="36" rx="8" fill="#1e293b"/>
+              <rect y="26" width="280" height="10" fill="#1e293b"/>
+              <text x="14" y="24" fill="#38bdf8" font-size="12" font-weight="700">📚 CALL STACK (Frame Local)</text>
+              <line x1="0" y1="36" x2="280" y2="36" stroke="#334155" stroke-width="1"/>
+              
+              <!-- Table Header -->
+              <rect y="36" width="280" height="26" fill="#131e36"/>
+              <text x="14" y="53" fill="#94a3b8" font-size="11" font-weight="600">Identificador</text>
+              <line x1="145" y1="36" x2="145" y2="215" stroke="#334155" stroke-width="1"/>
+              <text x="160" y="53" fill="#94a3b8" font-size="11" font-weight="600">Ponteiro (RAM)</text>
+              <line x1="0" y1="62" x2="280" y2="62" stroke="#334155" stroke-width="1"/>
+
+              <!-- Row 1: ponto -->
+              <text x="14" y="96" fill="#f8fafc" font-size="13" font-weight="700">ponto</text>
+              <text x="160" y="96" fill="#38bdf8" font-size="12" font-weight="600">0x7FB10</text>
+              <line x1="0" y1="113" x2="280" y2="113" stroke="#1e293b" stroke-width="1"/>
+
+              <!-- Row 2: x -->
+              <text x="14" y="147" fill="#f8fafc" font-size="13" font-weight="700">x</text>
+              <text x="160" y="147" fill="#34d399" font-size="12" font-weight="600">0x7FA01</text>
+              <line x1="0" y1="164" x2="280" y2="164" stroke="#1e293b" stroke-width="1"/>
+
+              <!-- Row 3: y -->
+              <text x="14" y="196" fill="#f8fafc" font-size="13" font-weight="700">y</text>
+              <text x="160" y="196" fill="#fbbf24" font-size="12" font-weight="600">0x7FA02</text>
+            </g>
+
+            <!-- HEAP BOX -->
+            <g transform="translate(480, 15)">
+              <rect width="330" height="215" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+              <rect width="330" height="36" rx="8" fill="#1e293b"/>
+              <rect y="26" width="330" height="10" fill="#1e293b"/>
+              <text x="14" y="24" fill="#c084fc" font-size="12" font-weight="700">📦 HEAP SPACE (Objetos na RAM)</text>
+              <line x1="0" y1="36" x2="330" y2="36" stroke="#334155" stroke-width="1"/>
+
+              <!-- Table Header -->
+              <rect y="36" width="330" height="26" fill="#131e36"/>
+              <text x="12" y="53" fill="#94a3b8" font-size="11" font-weight="600">Endereço</text>
+              <line x1="90" y1="36" x2="90" y2="215" stroke="#334155" stroke-width="1"/>
+              <text x="100" y="53" fill="#94a3b8" font-size="11" font-weight="600">Tipo</text>
+              <line x1="155" y1="36" x2="155" y2="215" stroke="#334155" stroke-width="1"/>
+              <text x="165" y="53" fill="#94a3b8" font-size="11" font-weight="600">Valor Estruturado</text>
+              <line x1="0" y1="62" x2="330" y2="62" stroke="#334155" stroke-width="1"/>
+
+              <!-- Row 1: tuple -->
+              <text x="12" y="96" fill="#38bdf8" font-size="12" font-weight="600">0x7FB10</text>
+              <text x="100" y="96" fill="#c084fc" font-size="11">tuple</text>
+              <text x="165" y="96" fill="#f8fafc" font-size="11">[0x7FA01, 0x7FA02]</text>
+              <line x1="0" y1="113" x2="330" y2="113" stroke="#1e293b" stroke-width="1"/>
+
+              <!-- Row 2: int 10 -->
+              <text x="12" y="147" fill="#34d399" font-size="12" font-weight="600">0x7FA01</text>
+              <text x="100" y="147" fill="#c084fc" font-size="11">int</text>
+              <text x="165" y="147" fill="#34d399" font-size="12" font-weight="700">10 <tspan fill="#64748b" font-size="10">(item 0)</tspan></text>
+              <line x1="0" y1="164" x2="330" y2="164" stroke="#1e293b" stroke-width="1"/>
+
+              <!-- Row 3: int 25 -->
+              <text x="12" y="196" fill="#fbbf24" font-size="12" font-weight="600">0x7FA02</text>
+              <text x="100" y="196" fill="#c084fc" font-size="11">int</text>
+              <text x="165" y="196" fill="#fbbf24" font-size="12" font-weight="700">25 <tspan fill="#64748b" font-size="10">(item 1)</tspan></text>
+            </g>
+
+            <!-- CONNECTING ARROWS -->
+            <!-- Arrow 1: ponto -> 0x7FB10 -->
+            <line x1="290" y1="107" x2="472" y2="107" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arr-blue)"/>
+            <rect x="345" y="96" width="85" height="22" rx="11" fill="#0b1329" stroke="#38bdf8" stroke-width="1"/>
+            <text x="387.5" y="111" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">ref tupla</text>
+
+            <!-- Arrow 2: x -> 0x7FA01 -->
+            <line x1="290" y1="156" x2="472" y2="156" stroke="#34d399" stroke-width="2.5" marker-end="url(#arr-green)"/>
+            <rect x="330" y="145" width="115" height="22" rx="11" fill="#0b1329" stroke="#34d399" stroke-width="1"/>
+            <text x="387.5" y="160" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">desempacota x</text>
+
+            <!-- Arrow 3: y -> 0x7FA02 -->
+            <line x1="290" y1="205" x2="472" y2="205" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arr-amber)"/>
+            <rect x="330" y="194" width="115" height="22" rx="11" fill="#0b1329" stroke="#fbbf24" stroke-width="1"/>
+            <text x="387.5" y="209" fill="#fbbf24" font-size="10" font-weight="700" text-anchor="middle">desempacota y</text>
+          </svg>
+        </div>
+
+        <!-- Versão em Texto Monospace 100% Alinhada -->
+        <details style="margin-top: 0.75rem; border-top: 1px solid var(--color-surface-high); padding-top: 0.5rem;">
+          <summary style="font-size: 0.75rem; color: var(--color-outline); cursor: pointer; user-select: none; font-weight: 600;">
+            📄 Visualizar Representação em Tabela ASCII Alinhada
+          </summary>
+          <pre style="white-space: pre; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 0.72rem; line-height: 1.35; margin: 0.5rem 0 0 0; background: #080d1a; color: #cbd5e1; padding: 0.85rem 1rem; border-radius: var(--radius-sm); overflow-x: auto; border: 1px solid #1e293b;">┌───────────────── CALL STACK (Frame Local) ────────────────┐                  ┌────────────────────── HEAP (Objetos na RAM) ──────────────────────┐
+│ Identificador   │ Ponteiro                                │                  │ Endereço   │ Tipo   │ Valor                                       │
+├─────────────────┼─────────────────────────────────────────┤                  ├────────────┼────────┼─────────────────────────────────────────────┤
+│ ponto           │ 0x7FB10                                 │─────────────────>│ 0x7FB10    │ tuple  │ [0x7FA01, 0x7FA02] (referências da tupla)   │
+│ x               │ 0x7FA01                                 │─────────────────>│ 0x7FA01    │ int    │ 10 (elemento índice 0)                      │
+│ y               │ 0x7FA02                                 │─────────────────>│ 0x7FA02    │ int    │ 25 (elemento índice 1)                      │
+└─────────────────┴─────────────────────────────────────────┘                  └────────────┴────────┴─────────────────────────────────────────────┘</pre>
+        </details>
+      </div>
+
+      <div style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: var(--radius-md); padding: 0.85rem 1rem; font-size: 0.85rem; color: #92400e;">
+        <strong>⚠️ Alerta Didático de Imutabilidade:</strong><br>
+        A instrução <code>ponto[0] = 50</code> causará o erro fatal <code>TypeError: 'tuple' object does not support item assignment</code>.<br>
+        A tupla protege seus ponteiros internos contra substituição acidental. Para modificar valores estruturados, o desenvolvedor deve criar uma nova tupla.
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         3. PLAYER INTERATIVO PASSO A PASSO & TESTE DE MESA (TRACE TABLE)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <!-- Barra de Controle do Stepper -->
+      <div class="stepper-header-row" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); margin-bottom: 1.25rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Simulação Interativa Sincronizada
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            3. Player de Linha Ativa e Tabela de Rastreio (Trace Table)
+          </h2>
+        </div>
+
+        <!-- Controles de Stepper -->
+        <div class="stepper-controls-container" style="display: flex; align-items: center; gap: 0.5rem;">
+          <button class="btn btn-outline" id="btn-step-prev" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="prevStep()">
+            ◀ Anterior
+          </button>
+          <div id="step-buttons-container" style="display: flex; gap: 0.25rem;"></div>
+          <button class="btn btn-secondary" id="btn-step-next" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="nextStep()">
+            Próximo ▶
+          </button>
+        </div>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Acompanhe a simulação do algoritmo de processamento de medições. Observe como a tupla alocada na Heap é consultada sucessivamente pelas funções embutidas <code>len()</code>, <code>sum()</code> e <code>max()</code>:
+      </p>
+
+      <!-- Grid: Visor de Código + Diagrama Dinâmico de Memória -->
+      <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="grid-dual-stage">
+        <style>
+          @media (min-width: 1024px) {
+            .grid-dual-stage { grid-template-columns: 1fr 1fr !important; }
+          }
+        </style>
+
+        <!-- Visor de Código CPython -->
+        <div class="code-engine-card">
+          <div class="code-header">
+            <div class="code-window-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+              <span class="code-filename">simulador_tuplas_builtins.py</span>
+            </div>
+            <span style="font-size: 0.7rem; font-family: var(--font-code); color: #94a3b8; background: #1e293b; padding: 0.15rem 0.5rem; border-radius: 4px;">
+              CPython 3.12
+            </span>
+          </div>
+          <div class="code-body">
+            <div class="code-line" id="code-line-1">
+              <span class="line-num">1</span>
+              <span class="code-text"><span class="syn-fn">medicoes</span> = (<span class="syn-num">8.0</span>, <span class="syn-num">5.0</span>, <span class="syn-num">9.0</span>, <span class="syn-num">6.0</span>)</span>
+            </div>
+            <div class="code-line" id="code-line-2">
+              <span class="line-num">2</span>
+              <span class="code-text"><span class="syn-fn">qtd</span> = <span class="syn-kw">len</span>(<span class="syn-fn">medicoes</span>)</span>
+            </div>
+            <div class="code-line" id="code-line-3">
+              <span class="line-num">3</span>
+              <span class="code-text"><span class="syn-fn">total</span> = <span class="syn-kw">sum</span>(<span class="syn-fn">medicoes</span>)</span>
+            </div>
+            <div class="code-line" id="code-line-4">
+              <span class="line-num">4</span>
+              <span class="code-text"><span class="syn-fn">media</span> = <span class="syn-fn">total</span> / <span class="syn-fn">qtd</span></span>
+            </div>
+            <div class="code-line" id="code-line-5">
+              <span class="line-num">5</span>
+              <span class="code-text"><span class="syn-fn">maior</span> = <span class="syn-kw">max</span>(<span class="syn-fn">medicoes</span>)</span>
+            </div>
+          </div>
+
+          <!-- Terminal Stdout Simulado -->
+          <div class="terminal-console">
+            <div class="console-title">
+              <span>Terminal STDOUT</span>
+              <span style="width: 6px; height: 6px; background: #10b981; border-radius: 50%;"></span>
+            </div>
+            <div class="console-output" id="terminal-stdout-output" style="white-space: pre-wrap;">
+              &gt; (Aguardando execução...)
+            </div>
+          </div>
+        </div>
+
+        <!-- Palco Dinâmico de Memória com Insight -->
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <!-- Card de Insight Pedagógico Contextual -->
+          <div style="background-color: var(--color-surface-container); border-left: 4px solid var(--color-secondary); padding: 0.85rem 1rem; border-radius: var(--radius-md);">
+            <div style="font-family: var(--font-headline); font-size: 0.85rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem;" id="insight-title">
+              Passo 0: Preparação da Call Stack
+            </div>
+            <div style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.45;" id="insight-desc">
+              Inicie a simulação pelo botão Próximo Passo para inspecionar a memória a cada linha.
+            </div>
+          </div>
+
+          <!-- Palco Dinâmico de Memória -->
+          <div class="memory-stage">
+            <div>
+              <div class="memory-column-title">
+                <span>📚</span>
+                <span>Call Stack (Escopo Local)</span>
+              </div>
+              <div id="stack-frame-vars">
+                <!-- Preenchido via Script.html -->
+              </div>
+            </div>
+            <div>
+              <div class="memory-column-title">
+                <span>🧠</span>
+                <span>Heap Space (Objetos RAM)</span>
+              </div>
+              <div id="heap-objects-grid">
+                <!-- Preenchido via Script.html -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela Trace Table Canônica -->
+      <div style="margin-top: 1.75rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+            Tabela de Teste de Mesa (Trace Table Oficial)
+          </h3>
+          <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full);">
+            Sincronizada em Tempo Real
+          </span>
+        </div>
+        <div class="trace-table-container">
+          <table class="trace-table">
+            <thead>
+              <tr>
+                <th>Passo</th>
+                <th>Linha</th>
+                <th>Variável qtd</th>
+                <th>Variável total</th>
+                <th>Variável media</th>
+                <th>Variável maior</th>
+                <th>Estado STDOUT / Memória</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>01</td>
+                <td>Linha 1</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>Tupla alocada na memória Heap</td>
+              </tr>
+              <tr>
+                <td>02</td>
+                <td>Linha 2</td>
+                <td><code>4</code></td>
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td><code>len(medicoes)</code> computado</td>
+              </tr>
+              <tr>
+                <td>03</td>
+                <td>Linha 3</td>
+                <td><code>4</code></td>
+                <td><code>28.0</code></td>
+                <td>—</td>
+                <td>—</td>
+                <td><code>sum(medicoes)</code> computado</td>
+              </tr>
+              <tr>
+                <td>04</td>
+                <td>Linha 4</td>
+                <td><code>4</code></td>
+                <td><code>28.0</code></td>
+                <td><code>7.0</code></td>
+                <td>—</td>
+                <td><code>28.0 / 4</code> atribuído à média</td>
+              </tr>
+              <tr>
+                <td>05</td>
+                <td>Linha 5</td>
+                <td><code>4</code></td>
+                <td><code>28.0</code></td>
+                <td><code>7.0</code></td>
+                <td><code>9.0</code></td>
+                <td><span style="color: #10b981; font-weight: 700;">Maior valor localizado com max()</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- FIM DO BLOCO DE EXPLICAÇÕES & FUNDAMENTOS -->
+
+  <!-- CONTAINER TRILHA 2: EXERCÍCIOS PROPOSTOS & PRÁTICA -->
+  <div id="bloco-aula-pratica">
+
+    <!-- ========================================================================
+         4. CADERNO DE ATIVIDADES POR TÓPICOS & DESAFIOS INTEGRADORES
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <!-- BARRA STICKY & CONTRAÍVEL DE NAVEGAÇÃO DOS EXERCÍCIOS (SEMPRE VISÍVEL EM 1 LINHA) -->
+      <div class="treinamento-sticky-bar" id="treinamento-gradual-sticky">
+        <div class="treinamento-sticky-inner">
+          <div class="treinamento-sticky-header">
+            <div class="treinamento-sticky-badge-wrap">
+              <span class="treinamento-sticky-pill">🎯 Treinamento Gradual</span>
+            </div>
+
+            <!-- Abas dos Tópicos 1 a 5 em Linha Única Horizontal com Scroll Suave -->
+            <div class="treinamento-subtabs-scroll oficina-subtabs-bar">
+              <button class="treinamento-tab-btn active btn-primary" id="btn-tab-secao-1" onclick="switchOficinaBloco('secao-1')">
+                Tópico 1: Tuplas
+              </button>
+              <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-2" onclick="switchOficinaBloco('secao-2')">
+                Tópico 2: Indexação & Unpacking
+              </button>
+              <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-3" onclick="switchOficinaBloco('secao-3')">
+                Tópico 3: Funções & abs()
+              </button>
+              <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-4" onclick="switchOficinaBloco('secao-4')">
+                Tópico 4: Tuplas com Laços
+              </button>
+              <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-5" onclick="switchOficinaBloco('secao-5')">
+                Tópico 5: Funções Embutidas
+              </button>
+              <button class="treinamento-tab-btn btn-outline" id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')">
+                🏆 Desafios & Desafio Mestre
+              </button>
+            </div>
+
+            <!-- Botão de Expandir / Recolher Detalhes (1 Linha por Padrão) -->
+            <button class="treinamento-toggle-btn" onclick="toggleTreinamentoDetalhes()" id="btn-toggle-treinamento-detalhes" title="Expandir ou recolher detalhes desta seção">
+              <span class="treinamento-toggle-icon" id="icon-treinamento-detalhes">▾</span>
+              <span class="treinamento-toggle-text" id="text-treinamento-detalhes">Detalhes</span>
+            </button>
+          </div>
+
+          <!-- Painel de Detalhes Expansível (Começa recolhido para ocupar apenas 1 linha!) -->
+          <div class="treinamento-detalhes-body" id="treinamento-detalhes-body" style="display: none;">
+            <h2 class="treinamento-full-title">4. Caderno de Atividades por Tópicos: Tuplas e Funções Embutidas</h2>
+            <p class="treinamento-full-desc">Práticas guiadas de criação, indexação bidirecional, desempacotamento, iteração e funções nativas de cálculo estatístico.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL TÓPICO 1: INTRODUÇÃO A COLEÇÕES E ESTRUTURA DE TUPLAS
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-1" style="display: block;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Tópico 1: Introdução a Coleções de Dados e Estrutura de Tuplas
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 3 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Exercícios práticos de instanciação de tuplas com múltiplos elementos, tupla unitária com a regra da vírgula e verificação de classes via <code>type()</code>.
+          </p>
+
+          <!-- Atividade 1.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 1.0 (Resolvida) — Criação, Tupla Unitária e Vazia</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Demonstre a criação de uma tupla comum de três dados cadastrais de um estudante, uma tupla unitária contendo apenas a série escolar com a vírgula obrigatória, uma tupla vazia de pendências e exiba a classe de cada variável com a função <code>type()</code>.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              <span class="syn-comment"># 1. Tupla com múltiplos elementos</span><br>
+              aluno = (<span class="syn-str">"Marina Lima"</span>, <span class="syn-num">16</span>, <span class="syn-str">"Informática"</span>)<br><br>
+              <span class="syn-comment"># 2. Tupla unitária (vírgula obrigatória)</span><br>
+              serie = (<span class="syn-str">"2º Ano"</span>,)<br><br>
+              <span class="syn-comment"># 3. Tupla vazia</span><br>
+              pendencias = ()<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Cadastro do Aluno:"</span>, aluno)<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Tipo da variável aluno:"</span>, <span class="syn-builtin">type</span>(aluno))<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Série informada:"</span>, serie)<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Tipo da variável serie:"</span>, <span class="syn-builtin">type</span>(serie))<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Pendências:"</span>, pendencias)<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Tipo da tupla vazia:"</span>, <span class="syn-builtin">type</span>(pendencias))
+            </div>
+            <!-- Slot de Imagem Didática do Professor -->
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_2_1_t1_resolvido" data-aula="aula_2_1" data-exercicio="aula_2_1_t1_resolvido" data-titulo="Tópico 1: Atividade 1.0 (Criação de Tuplas)"></div>
+          </div>
+
+          <!-- Atividade 1.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 1.1 (Proposta) — Ficha Catalográfica de Livro</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie uma tupla chamada <code>livro</code> contendo três informações literais: o título <code>"Pense em Python"</code>, o autor <code>"Allen B. Downey"</code> e o ano de publicação <code>2016</code>. Em seguida, exiba no console todos os dados armazenados na tupla em uma única instrução <code>print()</code>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t1_atv_1" data-aula="aula_2_1" data-exercicio="aula_2_1_t1_atv_1" data-titulo="Tópico 1: Atividade 1.1 (Ficha Catalográfica)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t1-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t1-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>livro = ("Pense em Python", "Allen B. Downey", 2016)
+print("Ficha Catalográfica:", livro)</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 1.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 1.2 (Proposta) — Tupla Unitária e Checagem com type</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Declare uma variável chamada <code>registro_unico</code> contendo apenas o número inteiro <code>42</code> estruturado como tupla de um único elemento (utilizando a vírgula obrigatória). Em seguida, imprima o valor guardado e confirme com <code>type(registro_unico)</code> que o Python a reconheceu como <code>tuple</code> e não como <code>int</code>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t1_atv_2" data-aula="aula_2_1" data-exercicio="aula_2_1_t1_atv_2" data-titulo="Tópico 1: Atividade 1.2 (Tupla Unitária)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t1-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t1-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>registro_unico = (42,)
+print("Valor do registro:", registro_unico)
+print("Tipo confirmado:", type(registro_unico))</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 1.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 1.3 (Proposta) — Tupla de Dias Úteis</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie uma tupla com os cinco dias úteis da semana: <code>"Segunda-feira"</code>, <code>"Terça-feira"</code>, <code>"Quarta-feira"</code>, <code>"Quinta-feira"</code> e <code>"Sexta-feira"</code>. Exiba a tupla completa no terminal acompanhada de uma mensagem explicativa informando que se trata de uma coleção fixa de trabalho.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t1_atv_3" data-aula="aula_2_1" data-exercicio="aula_2_1_t1_atv_3" data-titulo="Tópico 1: Atividade 1.3 (Dias Úteis)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t1-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t1-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>dias_uteis = ("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira")
+print("Dias úteis de funcionamento:", dias_uteis)</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL TÓPICO 2: INDEXAÇÃO E DESEMPACOTAMENTO (UNPACKING)
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-2" style="display: none;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Tópico 2: Acesso a Elementos: Indexação e Desempacotamento (Unpacking)
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 3 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Exercícios práticos de recuperação de valores por índices diretos (0 a N-1), índices reversos (-1 a -N) e extração simultânea via desempacotamento de tuplas.
+          </p>
+
+          <!-- Atividade 2.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 2.0 (Resolvida) — Índices Diretos, Negativos e Desempacotamento</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Dada a tupla representativa de um retângulo tridimensional (paralelepípedo) contendo largura, altura e profundidade, acesse os dados via índices positivos e negativos e realize o desempacotamento em variáveis individuais.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              paralelepipedo = (<span class="syn-num">10</span>, <span class="syn-num">5</span>, <span class="syn-num">2</span>)<br><br>
+              <span class="syn-comment"># Acesso por índices</span><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Largura (índice 0):"</span>, paralelepipedo[<span class="syn-num">0</span>])<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Altura (índice 1):"</span>, paralelepipedo[<span class="syn-num">1</span>])<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Profundidade (último item via índice -1):"</span>, paralelepipedo[-<span class="syn-num">1</span>])<br><br>
+              <span class="syn-comment"># Desempacotamento (Unpacking)</span><br>
+              largura, altura, profundidade = paralelepipedo<br>
+              volume = largura * altura * profundidade<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">f"Volume computado através das variáveis desempacotadas: {volume} m³"</span>)
+            </div>
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_2_1_t2_resolvido" data-aula="aula_2_1" data-exercicio="aula_2_1_t2_resolvido" data-titulo="Tópico 2: Atividade 2.0 (Indexação e Desempacotamento)"></div>
+          </div>
+
+          <!-- Atividade 2.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 2.1 (Proposta) — Consulta por Extremidades de Rota</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie uma tupla chamada <code>cidades</code> contendo: <code>"Fortaleza"</code>, <code>"Caucaia"</code>, <code>"Maracanaú"</code>, <code>"Sobral"</code> e <code>"Juazeiro do Norte"</code>. Utilizando os colchetes de indexação, exiba em linhas separadas o ponto de partida (índice 0) e o ponto de chegada final da viagem (utilizando o índice negativo -1).
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t2_atv_1" data-aula="aula_2_1" data-exercicio="aula_2_1_t2_atv_1" data-titulo="Tópico 2: Atividade 2.1 (Extremidades de Rota)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t2-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t2-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>cidades = ("Fortaleza", "Caucaia", "Maracanaú", "Sobral", "Juazeiro do Norte")
+
+ponto_partida = cidades[0]
+ponto_chegada = cidades[-1]
+
+print(f"Ponto de Partida: {ponto_partida}")
+print(f"Ponto de Chegada: {ponto_chegada}")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 2.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 2.2 (Proposta) — Desempacotamento de Produto de Loja</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Declare a tupla <code>produto = ("Teclado Mecânico", 150.00, 12)</code> contendo, respectivamente, a descrição do item, o preço unitário e a quantidade em estoque. Desempacote os três valores diretamente nas variáveis <code>nome</code>, <code>preco</code> e <code>estoque</code>. Calcule o patrimônio total investido nesse item (<code>preco * estoque</code>) e imprima um resumo formatado.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t2_atv_2" data-aula="aula_2_1" data-exercicio="aula_2_1_t2_atv_2" data-titulo="Tópico 2: Atividade 2.2 (Desempacotamento Produto)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t2-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t2-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>produto = ("Teclado Mecânico", 150.00, 12)
+
+nome, preco, estoque = produto
+patrimonio_item = preco * estoque
+
+print(f"Produto: {nome}")
+print(f"Preço Unitário: R$ {preco:.2f}")
+print(f"Quantidade: {estoque} unidades")
+print(f"Valor Total em Estoque: R$ {patrimonio_item:.2f}")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 2.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 2.3 (Proposta) — Inversão Visual de Pódio com Índices Negativos</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Uma tupla armazena os três finalistas de uma gincana na ordem de classificação: <code>podio = ("1º Lugar: Ana", "2º Lugar: Bruno", "3º Lugar: Caio")</code>. Utilizando exclusivamente os índices negativos <code>-1</code>, <code>-2</code> e <code>-3</code>, imprima os atletas na ordem inversa de premiação (do terceiro colocado até o campeão).
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t2_atv_3" data-aula="aula_2_1" data-exercicio="aula_2_1_t2_atv_3" data-titulo="Tópico 2: Atividade 2.3 (Inversão com Índices Negativos)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t2-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t2-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>podio = ("1º Lugar: Ana", "2º Lugar: Bruno", "3º Lugar: Caio")
+
+print("Apresentação dos Vencedores (Ordem Inversa):")
+print(podio[-1])
+print(podio[-2])
+print(podio[-3])</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL TÓPICO 3: ANATOMIA E UTILIZAÇÃO DE FUNÇÕES EM PYTHON
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-3" style="display: none;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Tópico 3: Anatomia e Utilização de Funções em Python
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 1 Proposta
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Diferença prática entre funções que produzem efeito visual imediato (sem retorno útil, como <code>print</code>) e funções com valor de retorno calculável que geram dados armazenáveis (como <code>abs</code> e <code>input</code>).
+          </p>
+
+          <!-- Atividade 3.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 3.0 (Resolvida) — Parâmetros, Retorno e Efeito Colateral</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Demonstre a diferença prática entre uma função com retorno numérico armazenável (<code>abs</code>) e funções utilitárias que operam leituras e exibições (<code>input</code> e <code>print</code>).
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              <span class="syn-comment"># A função input aceita uma string de instrução e RETORNA a digitação do usuário</span><br>
+              entrada = <span class="syn-builtin">input</span>(<span class="syn-str">"Digite um saldo financeiro (positivo ou negativo): "</span>)<br>
+              saldo = <span class="syn-builtin">float</span>(entrada)<br><br>
+              <span class="syn-comment"># A função abs aceita um argumento numérico e RETORNA o seu valor absoluto</span><br>
+              saldo_positivo = <span class="syn-builtin">abs</span>(saldo)<br><br>
+              <span class="syn-comment"># A função print recebe múltiplos parâmetros e produz um efeito na tela (sem retorno)</span><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"Valor absoluto da conta:"</span>, saldo_positivo)
+            </div>
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_2_1_t3_resolvido" data-aula="aula_2_1" data-exercicio="aula_2_1_t3_resolvido" data-titulo="Tópico 3: Atividade 3.0 (Retorno vs Efeito Colateral)"></div>
+          </div>
+
+          <!-- Atividade 3.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 3.1 (Proposta) — Variação Térmica com abs</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Solicite duas leituras de temperatura em graus Celsius aferidas no laboratório: <code>temp_manha</code> e <code>temp_tarde</code> (ambas <code>float</code>). Sem utilizar estruturas condicionais (<code>if</code>), calcule a diferença absoluta de oscilação térmica aplicando a função embutida <code>abs()</code> para que o resultado nunca seja negativo, independentemente de qual temperatura tenha sido maior.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t3_atv_1" data-aula="aula_2_1" data-exercicio="aula_2_1_t3_atv_1" data-titulo="Tópico 3: Atividade 3.1 (Variação com abs)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t3-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t3-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>temp_manha = float(input("Digite a temperatura da manhã (°C): "))
+temp_tarde = float(input("Digite a temperatura da tarde (°C): "))
+
+variacao = abs(temp_manha - temp_tarde)
+
+print(f"A oscilação de temperatura registrada foi de {variacao:.2f}°C")</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL TÓPICO 4: INTEGRAÇÃO DE TUPLAS COM LAÇOS DE REPETIÇÃO
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-4" style="display: none;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Tópico 4: Integração de Tuplas com Laços de Repetição
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 3 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Combinação de tuplas com <code>for item in tupla:</code>, iteração por índice com <code>range(len())</code> e controle com contadores em <code>while</code>.
+          </p>
+
+          <!-- Atividade 4.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 4.0 (Resolvida) — Iteração com while vs for em Tuplas</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Dada uma tupla de notas escolares, mostre como percorrê-la primeiro utilizando o laço <code>while</code> (com contador e <code>len</code>) e, em seguida, pelo formato idiomático com o laço <code>for</code>, emitindo parecer individual de aprovação com <code>if-else</code>.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              notas = (<span class="syn-num">6.5</span>, <span class="syn-num">7.8</span>, <span class="syn-num">10.0</span>, <span class="syn-num">4.5</span>)<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"--- 1. Iteração com while e índice ---"</span>)<br>
+              i = <span class="syn-num">0</span><br>
+              <span class="syn-kw">while</span> i &lt; <span class="syn-builtin">len</span>(notas):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">f"Nota na posição {i}: {notas[i]}"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;i += <span class="syn-num">1</span><br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"
+--- 2. Iteração com for e validação if-else ---"</span>)<br>
+              <span class="syn-kw">for</span> nota <span class="syn-kw">in</span> notas:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">if</span> nota &gt;= <span class="syn-num">7.0</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">f"Nota {nota} -> Aprovado na média!"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">else</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">f"Nota {nota} -> Abaixo da média regulamentar."</span>)
+            </div>
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_2_1_t4_resolvido" data-aula="aula_2_1" data-exercicio="aula_2_1_t4_resolvido" data-titulo="Tópico 4: Atividade 4.0 (while vs for com Tuplas)"></div>
+          </div>
+
+          <!-- Atividade 4.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 4.1 (Proposta) — Listagem Numerada de Tecnologias</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie uma tupla com quatro trilhas tecnológicas: <code>linguagens = ("Python", "JavaScript", "SQL", "HTML/CSS")</code>. Utilizando o laço <code>for</code> em conjunto com <code>range(len(linguagens))</code>, imprima cada tecnologia com seu respectivo número sequencial de curso (exemplo: <em>"Módulo 1: Python"</em>, <em>"Módulo 2: JavaScript"</em>, etc.).
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t4_atv_1" data-aula="aula_2_1" data-exercicio="aula_2_1_t4_atv_1" data-titulo="Tópico 4: Atividade 4.1 (Listagem Numerada)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t4-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t4-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>linguagens = ("Python", "JavaScript", "SQL", "HTML/CSS")
+
+for i in range(len(linguagens)):
+    print(f"Módulo {i + 1}: {linguagens[i]}")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 4.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 4.2 (Proposta) — Filtro de Inteiros Pares com while</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Defina a tupla numérica <code>numeros = (14, 21, 32, 45, 50, 63, 72)</code>. Utilizando um laço <code>while</code> com variável de controle de índice <code>pos = 0</code>, percorra a tupla e imprima apenas os números que forem estritamente pares (utilizando o operador de resto <code>numeros[pos] % 2 == 0</code>).
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t4_atv_2" data-aula="aula_2_1" data-exercicio="aula_2_1_t4_atv_2" data-titulo="Tópico 4: Atividade 4.2 (Filtro Pares com while)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t4-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t4-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>numeros = (14, 21, 32, 45, 50, 63, 72)
+pos = 0
+
+print("Valores pares encontrados:")
+while pos < len(numeros):
+    if numeros[pos] % 2 == 0:
+        print(numeros[pos])
+    pos += 1</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 4.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 4.3 (Proposta) — Contador de Frequência Qualificada</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Uma tupla armazena os percentuais de presença de seis estudantes em uma oficina de robótica: <code>presencas = (85, 70, 95, 60, 100, 75)</code>. Crie uma variável <code>aptos = 0</code> antes do laço. Utilizando <code>for p in presencas:</code>, conte quantos estudantes atingiram presença mínima de 75% e imprima a contagem consolidada.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t4_atv_3" data-aula="aula_2_1" data-exercicio="aula_2_1_t4_atv_3" data-titulo="Tópico 4: Atividade 4.3 (Contador de Frequência)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t4-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t4-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>presencas = (85, 70, 95, 60, 100, 75)
+aptos = 0
+
+for p in presencas:
+    if p >= 75:
+        aptos += 1
+
+print(f"Total de estudantes com frequência qualificada (>= 75%): {aptos} de {len(presencas)}")</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL TÓPICO 5: FUNÇÕES EMBUTIDAS PARA COLEÇÕES
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-5" style="display: none;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Tópico 5: Funções Embutidas (Built-in Functions) para Coleções
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 5 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Manipulação analítica de conjuntos numéricos com as funções nativas de alta performance: <code>len()</code>, <code>sum()</code>, <code>max()</code> e <code>min()</code>.
+          </p>
+
+          <!-- Atividade 5.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 5.0 (Resolvida) — Estatística Completa de Notas</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Dada uma tupla de notas avaliativas, calcule a quantidade de provas, a soma total dos pontos, a média aritmética exata, a maior nota obtida e a menor nota utilizando exclusivamente funções nativas.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              notas = (<span class="syn-num">6.5</span>, <span class="syn-num">7.8</span>, <span class="syn-num">10.0</span>, <span class="syn-num">9.1</span>, <span class="syn-num">5.6</span>)<br><br>
+              total_avaliacoes = <span class="syn-builtin">len</span>(notas)<br>
+              pontuacao_total = <span class="syn-builtin">sum</span>(notas)<br>
+              media = pontuacao_total / total_avaliacoes<br>
+              maior_nota = <span class="syn-builtin">max</span>(notas)<br>
+              menor_nota = <span class="syn-builtin">min</span>(notas)<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">f"Total de provas realizadas: {total_avaliacoes}"</span>)<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">f"Soma consolidada: {pontuacao_total:.1f}"</span>)<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">f"Média aritmética: {media:.2f}"</span>)<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">f"Nota mais alta (max): {maior_nota}"</span>)<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">f"Nota mais baixa (min): {menor_nota}"</span>)
+            </div>
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_2_1_t5_resolvido" data-aula="aula_2_1" data-exercicio="aula_2_1_t5_resolvido" data-titulo="Tópico 5: Atividade 5.0 (Estatística de Notas)"></div>
+          </div>
+
+          <!-- Atividade 5.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 5.1 (Proposta) — Conferência de Lotação com len</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              A capacidade máxima permitida no laboratório de robótica é de 6 integrantes por bancada. Declare a tupla com os nomes dos inscritos: <code>equipe = ("Lucas", "Carlos", "Beatriz", "Daniel", "Mariana")</code>. Utilizando <code>len(equipe)</code> e um teste <code>if-else</code>, verifique se ainda há vagas ou se a capacidade foi excedida.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t5_atv_1" data-aula="aula_2_1" data-exercicio="aula_2_1_t5_atv_1" data-titulo="Tópico 5: Atividade 5.1 (Lotação com len)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t5-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t5-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>equipe = ("Lucas", "Carlos", "Beatriz", "Daniel", "Mariana")
+total_membros = len(equipe)
+
+print(f"Total de inscritos na bancada: {total_membros}")
+if total_membros <= 6:
+    print(f"Bancada liberada! Restam {6 - total_membros} vaga(s).")
+else:
+    print("Capacidade máxima excedida!")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 5.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 5.2 (Proposta) — Pontuação Acumulada de Torneio com sum</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Uma equipe de xadrez escolar pontuou em quatro rodadas consecutivas, representadas pela tupla de números inteiros: <code>pontos_rodadas = (15, 22, 18, 30)</code>. Utilizando a função <code>sum()</code>, exiba a soma de todos os pontos sem utilizar laços de repetição.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t5_atv_2" data-aula="aula_2_1" data-exercicio="aula_2_1_t5_atv_2" data-titulo="Tópico 5: Atividade 5.2 (Pontuação com sum)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t5-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t5-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>pontos_rodadas = (15, 22, 18, 30)
+pontuacao_geral = sum(pontos_rodadas)
+
+print(f"Pontuação consolidada da equipe no torneio: {pontuacao_geral} pontos.")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 5.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 5.3 (Proposta) — Auditoria de Extremos de Preço com max e min</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Dada a tupla de preços de componentes eletrônicos <code>precos = (12.50, 89.90, 4.75, 120.00, 45.30)</code>, utilize as funções embutidas <code>max()</code> e <code>min()</code> para identificar e imprimir diretamente o componente mais caro e o mais barato do estoque escolar.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t5_atv_3" data-aula="aula_2_1" data-exercicio="aula_2_1_t5_atv_3" data-titulo="Tópico 5: Atividade 5.3 (Preços com max/min)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t5-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t5-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>precos = (12.50, 89.90, 4.75, 120.00, 45.30)
+
+mais_caro = max(precos)
+mais_barato = min(precos)
+
+print(f"Componente de maior valor: R$ {mais_caro:.2f}")
+print(f"Componente de menor valor: R$ {mais_barato:.2f}")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 5.4 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 5.4 (Proposta) — Cálculo Direto de Média Aritmética</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Declare a tupla de consumo diário de água em litros no bebedouro do setor: <code>consumo = (120.5, 135.0, 110.0, 142.5, 128.0)</code>. Calcule em uma única linha a média diária de consumo dividindo <code>sum(consumo)</code> por <code>len(consumo)</code> e imprima o resultado formatado.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t5_atv_4" data-aula="aula_2_1" data-exercicio="aula_2_1_t5_atv_4" data-titulo="Tópico 5: Atividade 5.4 (Média Aritmética Direta)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t5-atv4')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t5-atv4" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>consumo = (120.5, 135.0, 110.0, 142.5, 128.0)
+media_diaria = sum(consumo) / len(consumo)
+
+print(f"Consumo médio diário de água: {media_diaria:.2f} litros")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 5.5 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 5.5 (Proposta) — Amplitude Térmica com max e min</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+35 XP</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Considere as medições de temperatura registradas ao longo de um turno: <code>temps = (21.4, 25.8, 28.2, 23.0, 19.5)</code>. A amplitude térmica é calculada pela diferença entre a temperatura máxima e a temperatura mínima registrada. Escreva um programa que calcule e exiba essa amplitude aplicando <code>max(temps) - min(temps)</code>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_t5_atv_5" data-aula="aula_2_1" data-exercicio="aula_2_1_t5_atv_5" data-titulo="Tópico 5: Atividade 5.5 (Amplitude Térmica)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-t5-atv5')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-t5-atv5" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>temps = (21.4, 25.8, 28.2, 23.0, 19.5)
+amplitude = max(temps) - min(temps)
+
+print(f"Temperatura Máxima: {max(temps)}°C")
+print(f"Temperatura Mínima: {min(temps)}°C")
+print(f"Amplitude Térmica Registrada: {amplitude:.2f}°C")</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL EXCLUSIVO DE DESAFIOS (DESAFIOS PRÁTICOS + DESAFIO MESTRE)
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-desafios" style="display: none;">
+        <div style="background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-lowest) 100%); border: 1.5px solid var(--color-secondary-fixed); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 800; color: var(--color-primary);">
+              🏆 Desafios Práticos Integradores por Tópico & Desafio Mestre
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 700;">
+              Projetos de Síntese
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1.25rem;">
+            Aplicações contextualizadas integrando tuplas imutáveis, desempacotamento tridimensional, tolerância com <code>abs()</code>, validação de crachás com <code>for-break-else</code> e processamento estatístico com funções embutidas.
+          </p>
+
+          <!-- Desafio 1 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 1: Registro Físico Imutável de Máquina</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • Tópico 1</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie um programa que solicite ao técnico escolar os dados de uma estação: nome do computador (<code>str</code>), código do patrimônio (<code>int</code>) e a memória RAM em GB (<code>int</code>). Agrupe os três dados em uma tupla imutável <code>estacao</code>. Em seguida, exiba o cartão patrimonial homologado e evidencie em comentário no código por que uma tupla protege a integridade do cadastro.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_desafio_1" data-aula="aula_2_1" data-exercicio="aula_2_1_desafio_1" data-titulo="Desafio 1: Registro Físico de Máquina"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-desafio1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-desafio1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>nome_pc = input("Digite o nome da máquina (ex: LAB-05): ")
+patrimonio = int(input("Digite o número de patrimônio: "))
+ram = int(input("Quantidade de RAM (GB): "))
+
+# Agrupamento imutável em Tupla
+estacao = (nome_pc, patrimonio, ram)
+
+print("
+" + "=" * 35)
+print("  REGISTRO PATRIMONIAL HOMOLOGADO")
+print("=" * 35)
+print(f"Estação: {estacao[0]}")
+print(f"Patrimônio: {estacao[1]}")
+print(f"Memória RAM: {estacao[2]} GB")
+print("=" * 35)
+# Nota técnica: estacao[1] = 9999 geraria TypeError, garantindo integridade física.</code></pre>
+            </div>
+          </div>
+
+          <!-- Desafio 2 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 2: Telemetria de Drone Escolar com Desempacotamento</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • Tópico 2</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Declare a tupla <code>posicao_inicial = (12.0, 8.5, 3.0)</code> e a tupla <code>posicao_final = (20.0, 14.5, 9.0)</code>. Desempacote cada uma nas variáveis correspondentes (<code>x1, y1, z1</code> e <code>x2, y2, z2</code>). Calcule a variação de deslocamento horizontal (ΔX), de profundidade (ΔY) e o ganho de altitude (ΔZ), exibindo o vetor de navegação com 1 casa decimal.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_desafio_2" data-aula="aula_2_1" data-exercicio="aula_2_1_desafio_2" data-titulo="Desafio 2: Telemetria de Drone (Unpacking)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-desafio2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-desafio2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>posicao_inicial = (12.0, 8.5, 3.0)
+posicao_final = (20.0, 14.5, 9.0)
+
+x1, y1, z1 = posicao_inicial
+x2, y2, z2 = posicao_final
+
+delta_x = x2 - x1
+delta_y = y2 - y1
+delta_z = z2 - z1
+
+print("--- RELATÓRIO DE TELEMETRIA ---")
+print(f"Deslocamento Horizontal (Delta X): {delta_x:.1f} m")
+print(f"Deslocamento de Profundidade (Delta Y): {delta_y:.1f} m")
+print(f"Ganho de Altitude (Delta Z): {delta_z:.1f} m")</code></pre>
+            </div>
+          </div>
+
+          <!-- Desafio 3 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 3: Tolerância e Precisão de Sensor com abs</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • Tópico 3</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Um termostato industrial no laboratório deve disparar um aviso se a temperatura medida desviar mais de 2.5 °C em relação à temperatura de referência padrão (22.0 °C). Solicite a leitura do sensor (<code>float</code>), calcule o desvio absoluto com <code>abs(leitura - 22.0)</code> e classifique se está em conformidade operacional ou em alerta térmico.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_desafio_3" data-aula="aula_2_1" data-exercicio="aula_2_1_desafio_3" data-titulo="Desafio 3: Tolerância de Sensor (abs)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-desafio3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-desafio3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>meta = 22.0
+leitura = float(input("Digite a temperatura medida pelo sensor (°C): "))
+
+desvio = abs(leitura - meta)
+
+print(f"Desvio absoluto apurado: {desvio:.2f}°C")
+if desvio <= 2.5:
+    print("Status: Sensor em Conformidade Operacional.")
+else:
+    print("ALERTA: Desvio térmico fora da faixa de tolerância permitida!")</code></pre>
+            </div>
+          </div>
+
+          <!-- Desafio 4 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 4: Verificador de Lote de Acesso com for e break</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • Tópico 4</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie a tupla <code>crachas_autorizados = (1001, 1045, 2030, 3055, 4012)</code>. Solicite o crachá do professor. Com um laço <code>for</code> sobre a tupla, interrompa a busca imediatamente com <code>break</code> ao localizar o código. Utilize a cláusula <code>else</code> do laço <code>for</code> para alertar que o acesso foi negado caso o crachá não conste na coleção.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_desafio_4" data-aula="aula_2_1" data-exercicio="aula_2_1_desafio_4" data-titulo="Desafio 4: Catraca de Acesso (for-break-else)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-desafio4')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-desafio4" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>crachas_autorizados = (1001, 1045, 2030, 3055, 4012)
+consulta = int(input("Aproxime o crachá (digite o código numérico): "))
+
+for c in crachas_autorizados:
+    if c == consulta:
+        print(f"Crachá {c} homologado! Acesso liberado à sala de servidores.")
+        break
+else:
+    print("Acesso Negado: Identificador não autorizado na base de dados.")</code></pre>
+            </div>
+          </div>
+
+          <!-- Desafio 5 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 5: Dashboard de Simulado com Built-ins</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • Tópico 5</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Declare a tupla de pontuações <code>acertos = (620.0, 710.5, 580.0, 840.0, 750.5, 690.0)</code>. Sem utilizar contadores manuais ou laços de repetição, utilize exclusivamente <code>len()</code>, <code>sum()</code>, <code>max()</code> e <code>min()</code> para emitir um boletim completo com quantidade de participantes, média geral, nota mais alta, nota mais baixa e a amplitude entre os extremos.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_desafio_5" data-aula="aula_2_1" data-exercicio="aula_2_1_desafio_5" data-titulo="Desafio 5: Dashboard de Simulado (Built-ins)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula21-desafio5')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula21-desafio5" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>acertos = (620.0, 710.5, 580.0, 840.0, 750.5, 690.0)
+
+qtd = len(acertos)
+media = sum(acertos) / qtd
+nota_max = max(acertos)
+nota_min = min(acertos)
+diferenca = nota_max - nota_min
+
+print("=" * 40)
+print("     BOLETIM ESTATÍSTICO DO SIMULADO")
+print("=" * 40)
+print(f"Estudantes avaliados: {qtd}")
+print(f"Média geral do grupo: {media:.2f} pontos")
+print(f"Maior pontuação registrada: {nota_max:.1f}")
+print(f"Menor pontuação registrada: {nota_min:.1f}")
+print(f"Amplitude entre extremos: {diferenca:.1f} pontos")
+print("=" * 40)</code></pre>
+            </div>
+          </div>
+
+          <!-- ================================================================
+               DESAFIO MESTRE INTEGRADOR: AUDITORIA DE HARDWARE PYTHONLAB
+               ================================================================ -->
+          <div class="card" style="background: linear-gradient(135deg, #fffbeb 0%, var(--color-surface-lowest) 100%); border: 2px solid #f59e0b; border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-md);">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <div>
+                <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; background: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); border: 1px solid #fde68a;">
+                  🌟 Avaliação Global de XP — Aula 2.1
+                </span>
+                <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 800; color: #92400e; margin-top: 0.4rem;">
+                  Sistema de Auditoria e Desempenho do Laboratório Escolar (PythonLab)
+                </h3>
+              </div>
+              <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.8rem; border-radius: var(--radius-full);">
+                +100 XP
+              </span>
+            </div>
+
+            <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1rem;">
+              Você foi designado para desenvolver o sistema de auditoria de performance dos computadores do laboratório de informática. Cada bancada passa por testes de velocidade de rede. O sistema deve coletar metadados em tuplas imutáveis, desempacotar identificadores, converter amostras para tupla definitiva, calcular métricas estatísticas através de funções embutidas (<code>len</code>, <code>sum</code>, <code>min</code>, <code>max</code>, <code>abs</code>) e emitir parecer técnico via inspeção condicional em laço.
+            </p>
+
+            <!-- Menu de Metadados em ASCII Box -->
+            <div style="background: #0f172a; padding: 1rem 1.25rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.85rem; color: #38bdf8; margin-bottom: 1.25rem; line-height: 1.45;">
+              ┌────────────────────────────────────────────────────────┐<br>
+              │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SISTEMA DE AUDITORIA DE HARDWARE - PYTHONLAB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+              ├────────────────────────────────────────────────────────┤<br>
+              │&nbsp;&nbsp;Módulo: Auditoria de Performance de Bancada&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+              │&nbsp;&nbsp;Metadados: (ID_Bancada, Responsável, Turno)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+              │&nbsp;&nbsp;Métricas: Tupla de Tempos de Resposta (ms)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+              └────────────────────────────────────────────────────────┘
+            </div>
+
+            <!-- Tabela de Cenários de Teste de I/O -->
+            <h4 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+              Cenários de Teste Canônicos (I/O)
+            </h4>
+            <div style="overflow-x: auto; margin-bottom: 1.25rem;">
+              <table class="trace-table" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Cenário de Teste</th>
+                    <th>Entradas Fornecidas</th>
+                    <th>Saída Esperada no Terminal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Cenário 1:</strong> Performance Excelente</td>
+                    <td>Bancada: Bancada-01<br>Monitor: Marina Lima<br>Turno: Manha<br>Qtd: 4<br>Leituras: 45.0, 52.0, 48.0, 55.0</td>
+                    <td>Amostras: 4 | Melhor: 45.00 ms | Pior: 55.00 ms<br>Média: 50.00 ms | Desvio: 5.00 ms<br>Alertas Críticos (>150ms): 0<br><span style="color: #10b981; font-weight: 700;">PARECER: EXCELENTE</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Cenário 2:</strong> Alerta Crítico & Gargalo</td>
+                    <td>Bancada: Bancada-04<br>Monitor: Carlos Souza<br>Turno: Tarde<br>Qtd: 3<br>Leituras: 80.0, 195.0, 140.0</td>
+                    <td>Amostras: 3 | Melhor: 80.00 ms | Pior: 195.00 ms<br>Média: 138.33 ms | Desvio: 56.67 ms<br>Alertas Críticos (>150ms): 1<br><span style="color: #dc2626; font-weight: 700;">PARECER: MANUTENÇÃO REQUERIDA: Risco de gargalo de rede</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Slot de Imagem do Desafio Mestre -->
+            <div class="questao-imagem-slot" id="slot-img-aula_2_1_desafio_mestre" data-aula="aula_2_1" data-exercicio="aula_2_1_desafio_mestre" data-titulo="Desafio Mestre: Auditoria e Desempenho de Laboratório (PythonLab)"></div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+              <button class="btn btn-primary" onclick="copiarCodigo('codigo-gabarito-pythonlab', 'Código da Auditoria de Hardware copiado!')">
+                📋 Copiar Código Python
+              </button>
+              <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="toggleGabarito('gab-aula21-mestre')">
+                👁️ Ver Código Completo da Resolução Modelo
+              </button>
+            </div>
+
+            <div id="gab-aula21-mestre" style="display: none; margin-top: 1rem;">
+              <pre id="codigo-gabarito-pythonlab" style="background: #0f172a; padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; line-height: 1.5;"><code># 1. Entrada de dados e tupla de metadados
+bancada_id = input("Informe o identificador da bancada: ")
+responsavel = input("Nome do monitor responsável: ")
+turno_trab = input("Turno de operação: ")
+
+bancada_info = (bancada_id, responsavel, turno_trab)
+
+# Desempacotamento de Tupla
+id_bancada, monitor, turno = bancada_info
+
+# 2. Coleta em laço e conversão para tupla imutável
+qtd_testes = int(input("Quantos testes de latência foram realizados? "))
+leituras_temp = []
+
+for i in range(qtd_testes):
+    valor = float(input(f"Digite a leitura {i + 1} (ms): "))
+    leituras_temp.append(valor)
+
+latencias = tuple(leituras_temp)
+
+# 3. Funções embutidas aplicadas à tupla
+total_amostras = len(latencias)
+melhor_tempo = min(latencias)
+pior_tempo = max(latencias)
+media_latencia = sum(latencias) / total_amostras
+desvio_max = abs(pior_tempo - media_latencia)
+
+# 4. Inspeção de integridade por laço
+alertas_criticos = 0
+for l in latencias:
+    if l > 150.0:
+        alertas_criticos += 1
+
+# 5. Classificação lógica de engenharia
+if alertas_criticos == 0 and media_latencia <= 80.0:
+    parecer = "EXCELENTE"
+elif media_latencia <= 120.0:
+    parecer = "OPERACIONAL REGULAR"
+else:
+    parecer = "MANUTENÇÃO REQUERIDA: Risco de gargalo de rede"
+
+# 6. Exibição do relatório final formatado
+print("
+" + "=" * 50)
+print("           RELATÓRIO DE AUDITORIA DE REDE")
+print("=" * 50)
+print(f"Bancada Inspecionada : {id_bancada} (Turno: {turno})")
+print(f"Monitor Responsável  : {monitor}")
+print(f"Amostras Homologadas : {total_amostras} medições")
+print("-" * 50)
+print(f"Melhor Latência (min): {melhor_tempo:.2f} ms")
+print(f"Pior Latência (max)  : {pior_tempo:.2f} ms")
+print(f"Latência Média       : {media_latencia:.2f} ms")
+print(f"Desvio Máximo-Média  : {desvio_max:.2f} ms")
+print(f"Alertas Críticos (>150ms): {alertas_criticos} ocorrência(s)")
+print("-" * 50)
+print(f"PARECER TÉCNICO      : {parecer}")
+print("=" * 50)</code></pre>
+            </div>
+
+            <!-- Checklist Interativo de Validação -->
+            <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-top: 1.25rem;">
+              <h4 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+                ✅ Checklist de Homologação do Estudante
+              </h4>
+              <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-bottom: 0.75rem;">
+                Marque os itens após testar seu script com sucesso no Google Colab ou Jupyter Notebook:
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                  <input type="checkbox" id="chk-pythonlab-1" onchange="atualizarChecklist('pythonlab', 4, 'btn-concluir-pythonlab')">
+                  <span><strong>Teste 1:</strong> Agrupei os dados cadastrais em tupla imutável e executei o desempacotamento nas variáveis <code>id_bancada</code>, <code>monitor</code> e <code>turno</code>.</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                  <input type="checkbox" id="chk-pythonlab-2" onchange="atualizarChecklist('pythonlab', 4, 'btn-concluir-pythonlab')">
+                  <span><strong>Teste 2:</strong> Coletei as amostras numéricas em lista temporária com <code>append()</code> e converti para tupla definitiva aplicando <code>tuple()</code>.</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                  <input type="checkbox" id="chk-pythonlab-3" onchange="atualizarChecklist('pythonlab', 4, 'btn-concluir-pythonlab')">
+                  <span><strong>Teste 3:</strong> Processei todas as métricas analíticas usando exclusivamente <code>len()</code>, <code>sum()</code>, <code>min()</code>, <code>max()</code> e <code>abs()</code>.</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                  <input type="checkbox" id="chk-pythonlab-4" onchange="atualizarChecklist('pythonlab', 4, 'btn-concluir-pythonlab')">
+                  <span><strong>Teste 4:</strong> Inspecionei as leituras com <code>for</code> identificando alertas críticos (> 150ms) e validei os dois cenários I/O no meu ambiente de prática.</span>
+                </label>
+              </div>
+              <button class="btn btn-success" id="btn-concluir-pythonlab" disabled style="opacity: 0.5; cursor: not-allowed;" onclick="validarEConcluirDesafioMestre('desafio_mestre_pythonlab', 'Auditoria de Rede PythonLab', 100)">
+                🏆 Homologar Desafio Mestre (+100 XP)
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================
+         7. GUIA PRÁTICO PARA OS AMBIENTES DE DESENVOLVIMENTO
+         ======================================================================== -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+      <!-- PC: Jupyter Notebook -->
+      <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.5rem;">💻</span>
+          <h3 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Alunos no Computador (Jupyter Notebook / Anaconda3)
+          </h3>
+        </div>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem; margin: 0;">
+          <li>Para verificar se uma variável é de fato uma tupla, crie uma célula com <code>type(nome_da_variavel)</code> e execute com <strong>Shift + Enter</strong>.</li>
+          <li>Se receber o erro <code>TypeError: 'tuple' object does not support item assignment</code>, revise seu código: tuplas são imutáveis e não permitem substituição direta de valores.</li>
+          <li>Se desempacotar uma tupla e receber <code>ValueError: too many values to unpack</code> ou <code>not enough values to unpack</code>, conte as variáveis à esquerda para garantir que coincidam exatamente com a quantidade de itens.</li>
+        </ol>
+      </div>
+
+      <!-- Tablet: Google Colab -->
+      <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.5rem;">📱</span>
+          <h3 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Alunos no Tablet (Google Colab)
+          </h3>
+        </div>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem; margin: 0;">
+          <li>Ao declarar tuplas com números decimais, preste atenção para não confundir o ponto decimal (<code>.</code>) com a vírgula separadora de itens (<code>,</code>). Exemplo: <code>(5.5, 8.2)</code> possui 2 números; <code>(5, 5, 8, 2)</code> possui 4 números inteiros!</li>
+          <li>Utilize o teclado virtual complementar do Colab para fechar parênteses <code>()</code> e colchetes <code>[]</code> rapidamente sem precisar alternar o teclado de texto.</li>
+          <li>Para executar as células em lote e limpar variáveis anteriores, use o menu <strong>Ambiente de Execução ➔ Reiniciar sessão e executar tudo</strong>.</li>
+        </ol>
+      </div>
+    </div>
+
+  </div> <!-- FIM DO BLOCO DE EXERCÍCIOS PROPOSTOS & PRÁTICA -->
+
+</div>

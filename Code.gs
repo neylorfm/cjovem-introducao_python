@@ -13,7 +13,8 @@
 // Configurações do Sistema
 var CONFIG = {
   APP_NAME: 'PythonLab',
-  VERSION: '1.0.0',
+  VERSION: '1.2.0',
+  SPREADSHEET_ID: '', // Preencha com o ID da planilha se o projeto Apps Script for Standalone (script.google.com)
   SHEET_USERS: 'Usuarios',
   SHEET_PROGRESS: 'Progresso',
   SHEET_CATALOG: 'Catalogo_Aulas',
@@ -55,6 +56,7 @@ function onOpen() {
     SpreadsheetApp.getUi()
       .createMenu('🐍 PythonLab')
       .addItem('⚙️ Inicializar / Reparar Banco de Dados', 'setupDatabase')
+      .addItem('🔍 Testar Conexão com a Planilha', 'testarConexaoPlanilha')
       .addItem('🧹 Redefinir Catálogo para Aulas Existentes (Apenas Aula 1.2)', 'limparCatalogoParaAulasExistentes')
       .addToUi();
   } catch (e) {
@@ -116,9 +118,33 @@ function limparCatalogoParaAulasExistentes() {
     '55 min',
     'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.'
   ]);
+  sheetCatalogo.appendRow([
+    'aula_1_5',
+    'Módulo 1: Fundamentos de CPython',
+    1,
+    'Estruturas de Repetição (While, For), Sequências e Controle de Fluxo',
+    'Aula1_5',
+    5,
+    'publicado',
+    220,
+    '65 min',
+    'Laços while e for, gerador range(), modificadores break, continue e else, rastreio de pilha e Heap e Totem do Refeitório.'
+  ]);
+  sheetCatalogo.appendRow([
+    'aula_2_1',
+    'Módulo 2: Estruturas de Dados e Coleções',
+    2,
+    'Introdução a Coleções, Tuplas e Funções Embutidas',
+    'Aula2_1',
+    1,
+    'publicado',
+    250,
+    '65 min',
+    'Coleções de dados, estrutura de tuplas imutáveis, indexação e desempacotamento, funções nativas (len, sum, max, min, abs) e auditoria de hardware.'
+  ]);
   sheetCatalogo.setFrozenRows(1);
   try {
-    SpreadsheetApp.getUi().alert('Catálogo redefinido com sucesso! Aulas 1.2, 1.3 e 1.4 estão ativas na planilha.');
+    SpreadsheetApp.getUi().alert('Catálogo redefinido com sucesso! Aulas 1.2, 1.3, 1.4, 1.5 e 2.1 estão ativas na planilha.');
   } catch (e) {}
 }
 
@@ -157,6 +183,12 @@ function sincronizarAulasPadraoNoCatalogo(sheetCat) {
         }
         if (idRow === 'aula_1_4' && Number(data[i][5]) !== 4) {
           sheetCat.getRange(i + 1, 6).setValue(4);
+        }
+        if (idRow === 'aula_1_5' && Number(data[i][5]) !== 5) {
+          sheetCat.getRange(i + 1, 6).setValue(5);
+        }
+        if (idRow === 'aula_2_1' && Number(data[i][5]) !== 1) {
+          sheetCat.getRange(i + 1, 6).setValue(1);
         }
       }
     }
@@ -197,6 +229,30 @@ function sincronizarAulasPadraoNoCatalogo(sheetCat) {
         200,
         '55 min',
         'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.'
+      ],
+      [
+        'aula_1_5',
+        'Módulo 1: Fundamentos de CPython',
+        1,
+        'Estruturas de Repetição (While, For), Sequências e Controle de Fluxo',
+        'Aula1_5',
+        5,
+        'publicado',
+        220,
+        '65 min',
+        'Laços while e for, gerador range(), modificadores break, continue e else, rastreio de pilha e Heap e Totem do Refeitório.'
+      ],
+      [
+        'aula_2_1',
+        'Módulo 2: Estruturas de Dados e Coleções',
+        2,
+        'Introdução a Coleções, Tuplas e Funções Embutidas',
+        'Aula2_1',
+        1,
+        'publicado',
+        250,
+        '65 min',
+        'Coleções de dados, estrutura de tuplas imutáveis, indexação e desempacotamento, funções nativas (len, sum, max, min, abs) e auditoria de hardware.'
       ]
     ];
 
@@ -214,13 +270,189 @@ function sincronizarAulasPadraoNoCatalogo(sheetCat) {
 }
 
 /**
- * Obtém ou inicializa a planilha ativa vinculada
+ * Obtém a planilha do projeto (Container-bound ou Standalone via SPREADSHEET_ID)
  */
 function getSpreadsheet() {
   try {
-    return SpreadsheetApp.getActiveSpreadsheet();
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (ss) return ss;
+    
+    // Se o script for Standalone (criado em script.google.com), abre pelo ID configurado
+    if (CONFIG.SPREADSHEET_ID && CONFIG.SPREADSHEET_ID.trim().length > 10) {
+      return SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID.trim());
+    }
+    
+    return null;
   } catch (e) {
-    throw new Error('Não foi possível obter a planilha vinculada ao projeto. Certifique-se de que o Apps Script está associado a um Google Sheets.');
+    Logger.log('Aviso ao obter planilha: ' + e.message);
+    if (CONFIG.SPREADSHEET_ID && CONFIG.SPREADSHEET_ID.trim().length > 10) {
+      try {
+        return SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID.trim());
+      } catch (e2) {
+        Logger.log('Erro ao abrir planilha por ID: ' + e2.message);
+      }
+    }
+    return null;
+  }
+}
+
+/**
+ * ============================================================================
+ * TESTE DE CONEXÃO & DIAGNÓSTICO DO BANCO DE DADOS (GOOGLE SHEETS)
+ * ============================================================================
+ * Função oficial para testar a comunicação entre o Apps Script e o Sheets.
+ * Como usar:
+ * 1. No editor do Apps Script, selecione "testarConexaoPlanilha" no menu de funções.
+ * 2. Clique no botão "Executar" (Run).
+ * 3. Veja os resultados detalhados no "Registro de execução" (Execution Log).
+ * ============================================================================
+ */
+function testarConexaoPlanilha() {
+  var relatorio = {
+    sucesso: false,
+    timestamp: new Date().toISOString(),
+    ambiente: '',
+    planilhaNome: '',
+    planilhaId: '',
+    planilhaUrl: '',
+    abasEncontradas: [],
+    abasAusentes: [],
+    detalhesAbas: {},
+    aulasNoCatalogo: 0,
+    usuariosCadastrados: 0,
+    erros: []
+  };
+
+  Logger.log('=====================================================');
+  Logger.log('🔍 [PYTHONLAB] INICIANDO TESTE DE CONEXÃO COM A PLANILHA');
+  Logger.log('=====================================================');
+
+  try {
+    var ss = null;
+    
+    // 1. Tenta obter planilha ativa (Container-bound)
+    try {
+      ss = SpreadsheetApp.getActiveSpreadsheet();
+      if (ss) {
+        relatorio.ambiente = 'Container-bound (Script associado à planilha via Extensões > Apps Script)';
+      }
+    } catch (eActive) {
+      relatorio.erros.push('getActiveSpreadsheet: ' + eActive.message);
+    }
+
+    // 2. Se for Standalone, tenta abrir pelo ID
+    if (!ss && CONFIG.SPREADSHEET_ID && CONFIG.SPREADSHEET_ID.trim().length > 10) {
+      try {
+        ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID.trim());
+        if (ss) {
+          relatorio.ambiente = 'Standalone (Conectado via CONFIG.SPREADSHEET_ID)';
+        }
+      } catch (eId) {
+        relatorio.erros.push('openById(' + CONFIG.SPREADSHEET_ID + '): ' + eId.message);
+      }
+    }
+
+    if (!ss) {
+      Logger.log('❌ FALHA CRÍTICA: Nenhuma planilha foi encontrada!');
+      Logger.log('👉 CENÁRIO A: Se este script foi criado diretamente pelo script.google.com (Standalone):');
+      Logger.log('   Copie o ID da sua planilha no Google Sheets e cole no topo do Code.gs:');
+      Logger.log('   CONFIG.SPREADSHEET_ID = "SEU_ID_AQUI";');
+      Logger.log('👉 CENÁRIO B: Abra sua planilha no Google Sheets e acesse:');
+      Logger.log('   Extensões ➔ Apps Script (para associá-la nativamente).');
+      relatorio.sucesso = false;
+      relatorio.mensagem = 'Planilha não encontrada. Verifique se o script está associado ao Google Sheets ou preencha CONFIG.SPREADSHEET_ID no Code.gs.';
+      return relatorio;
+    }
+
+    // Informações da Planilha
+    relatorio.sucesso = true;
+    relatorio.planilhaNome = ss.getName();
+    relatorio.planilhaId = ss.getId();
+    relatorio.planilhaUrl = ss.getUrl();
+
+    Logger.log('✅ Planilha Conectada com Sucesso!');
+    Logger.log('   📄 Nome do Arquivo: ' + relatorio.planilhaNome);
+    Logger.log('   🆔 ID da Planilha:  ' + relatorio.planilhaId);
+    Logger.log('   🌐 Modo de Vínculo: ' + relatorio.ambiente);
+    Logger.log('   🔗 Link de Acesso:  ' + relatorio.planilhaUrl);
+
+    // 3. Verificação das Abas Obrigatórias
+    var abasObrigatorias = [
+      CONFIG.SHEET_USERS,
+      CONFIG.SHEET_PROGRESS,
+      CONFIG.SHEET_CATALOG,
+      CONFIG.SHEET_IMAGES,
+      CONFIG.SHEET_AVALIACOES,
+      CONFIG.SHEET_ENVIOS
+    ];
+
+    var sheets = ss.getSheets();
+    var nomesAbas = sheets.map(function(s) { return s.getName(); });
+    relatorio.abasEncontradas = nomesAbas;
+
+    Logger.log('-----------------------------------------------------');
+    Logger.log('📋 VERIFICAÇÃO DAS ABAS DO BANCO DE DADOS:');
+
+    abasObrigatorias.forEach(function(nomeAba) {
+      var sheet = ss.getSheetByName(nomeAba);
+      if (sheet) {
+        var numLinhas = sheet.getLastRow();
+        var numColunas = sheet.getLastColumn();
+        relatorio.detalhesAbas[nomeAba] = {
+          linhas: numLinhas,
+          colunas: numColunas,
+          status: 'OK'
+        };
+        Logger.log('   ✅ Aba [' + nomeAba + ']: ' + numLinhas + ' linhas, ' + numColunas + ' colunas');
+      } else {
+        relatorio.abasAusentes.push(nomeAba);
+        relatorio.detalhesAbas[nomeAba] = { status: 'AUSENTE' };
+        Logger.log('   ⚠️ Aba [' + nomeAba + ']: NÃO ENCONTRADA (será criada no auto-reparo)');
+      }
+    });
+
+    // 4. Auto-reparo automático se houver abas ausentes
+    if (relatorio.abasAusentes.length > 0) {
+      Logger.log('-----------------------------------------------------');
+      Logger.log('⚙️ Inicializando auto-reparo do banco de dados (setupDatabase)...');
+      setupDatabase(false);
+      Logger.log('✅ Auto-reparo concluído! Todas as abas essenciais foram criadas.');
+    }
+
+    // 5. Teste de Leitura do Catálogo
+    var sheetCat = ss.getSheetByName(CONFIG.SHEET_CATALOG);
+    if (sheetCat && sheetCat.getLastRow() > 1) {
+      var totalAulas = sheetCat.getLastRow() - 1;
+      relatorio.aulasNoCatalogo = totalAulas;
+      Logger.log('-----------------------------------------------------');
+      Logger.log('📚 AULAS ATIVAS NO CATÁLOGO (' + totalAulas + ' aulas cadastradas):');
+      var dadosAulas = sheetCat.getRange(2, 1, totalAulas, 4).getValues();
+      dadosAulas.forEach(function(a, idx) {
+        Logger.log('   ' + (idx + 1) + '. ID: ' + a[0] + ' | Módulo: ' + a[1] + ' | Título: ' + a[3]);
+      });
+    }
+
+    // 6. Teste de Leitura de Usuários
+    var sheetUsers = ss.getSheetByName(CONFIG.SHEET_USERS);
+    if (sheetUsers && sheetUsers.getLastRow() > 1) {
+      relatorio.usuariosCadastrados = sheetUsers.getLastRow() - 1;
+      Logger.log('👥 USUÁRIOS CADASTRADOS: ' + relatorio.usuariosCadastrados + ' pessoas.');
+    }
+
+    Logger.log('=====================================================');
+    Logger.log('🎉 DIAGNÓSTICO FINAL: CONEXÃO COM A PLANILHA 100% OPERACIONAL!');
+    Logger.log('=====================================================');
+
+    relatorio.mensagem = 'Conexão estabelecida com sucesso com a planilha "' + relatorio.planilhaNome + '". ' +
+      relatorio.aulasNoCatalogo + ' aulas encontradas no catálogo.';
+    return relatorio;
+
+  } catch (err) {
+    Logger.log('❌ ERRO NO TESTE DE CONEXÃO: ' + err.message);
+    relatorio.sucesso = false;
+    relatorio.erros.push(err.message);
+    relatorio.mensagem = 'Erro ao conectar com a planilha: ' + err.message;
+    return relatorio;
   }
 }
 
@@ -238,9 +470,11 @@ function ensureDatabase() {
     var sheetCat = ss.getSheetByName(CONFIG.SHEET_CATALOG);
     var sheetProg = ss.getSheetByName(CONFIG.SHEET_PROGRESS);
     var sheetImg = ss.getSheetByName(CONFIG.SHEET_IMAGES);
+    var sheetEval = ss.getSheetByName(CONFIG.SHEET_AVALIACOES);
+    var sheetEnv = ss.getSheetByName(CONFIG.SHEET_ENVIOS);
     
     // Se qualquer uma das abas essenciais não existir, provisiona automaticamente
-    if (!sheetUsers || !sheetCat || !sheetProg || !sheetImg) {
+    if (!sheetUsers || !sheetCat || !sheetProg || !sheetImg || !sheetEval || !sheetEnv) {
       setupDatabase(false);
       sheetCat = ss.getSheetByName(CONFIG.SHEET_CATALOG);
     }
@@ -362,6 +596,30 @@ function setupDatabase(forcarRecriacao) {
         200,
         '55 min',
         'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.'
+      ],
+      [
+        'aula_1_5',
+        'Módulo 1: Fundamentos de CPython',
+        1,
+        'Estruturas de Repetição (While, For), Sequências e Controle de Fluxo',
+        'Aula1_5',
+        5,
+        'publicado',
+        220,
+        '65 min',
+        'Laços while e for, gerador range(), modificadores break, continue e else, rastreio de pilha e Heap e Totem do Refeitório.'
+      ],
+      [
+        'aula_2_1',
+        'Módulo 2: Estruturas de Dados e Coleções',
+        2,
+        'Introdução a Coleções, Tuplas e Funções Embutidas',
+        'Aula2_1',
+        1,
+        'publicado',
+        250,
+        '65 min',
+        'Coleções de dados, estrutura de tuplas imutáveis, indexação e desempacotamento, funções nativas (len, sum, max, min, abs) e auditoria de hardware.'
       ]
     ];
     for (var i = 0; i < aulasSementes.length; i++) {
@@ -500,20 +758,33 @@ function getUserSessionData(emailParam) {
     var ss = ensureDatabase();
     var sheetUsers = ss ? ss.getSheetByName(CONFIG.SHEET_USERS) : null;
     var userData = null;
+    var emailLower = email.toLowerCase();
+    var isKnownTeacher = (emailLower.indexOf('neylor') !== -1 || emailLower.indexOf('prof') !== -1 || emailLower.indexOf('admin') !== -1);
     
     if (sheetUsers) {
       var rows = sheetUsers.getDataRange().getValues();
       for (var i = 1; i < rows.length; i++) {
         var rowEmail = rows[i][0] ? rows[i][0].toString().trim().toLowerCase() : '';
-        if (rowEmail && rowEmail === email.trim().toLowerCase()) {
+        if (rowEmail && rowEmail === emailLower) {
           var rowPerfil = rows[i][2] ? rows[i][2].toString().trim().toLowerCase() : 'aluno';
+          // Se for o professor Neylor ou conter 'prof'/'admin', assegura perfil de professor
+          if (isKnownTeacher && rowPerfil !== 'professor') {
+            rowPerfil = 'professor';
+            try {
+              sheetUsers.getRange(i + 1, 3).setValue('professor');
+            } catch(e) {}
+          }
+          var nomeBanco = rows[i][1] ? rows[i][1].toString().trim() : '';
+          if (isKnownTeacher && (!nomeBanco || nomeBanco.toLowerCase().indexOf('aluno') !== -1)) {
+            nomeBanco = 'Professor Neylor FM';
+          }
           userData = {
             rowIndex: i + 1,
             email: rows[i][0].toString().trim(),
-            nome: (rows[i][1] ? rows[i][1].toString().trim() : '') || email.split('@')[0],
+            nome: nomeBanco || email.split('@')[0],
             perfil: rowPerfil,
             dataCadastro: rows[i][3] || new Date().toISOString(),
-            xpTotal: Number(rows[i][4]) || 0
+            xpTotal: Number(rows[i][4]) || (isKnownTeacher ? 2500 : 0)
           };
           // Atualiza último acesso
           try {
@@ -524,26 +795,36 @@ function getUserSessionData(emailParam) {
       }
     }
     
-    // Se o usuário informou um e-mail válido mas ainda não está cadastrado na planilha, realiza o auto-cadastro como Aluno
+    // Se o usuário informou um e-mail válido mas ainda não está cadastrado na planilha, realiza o auto-cadastro
     if (!userData && sheetUsers) {
-      var nomeExtraido = email.split('@')[0].replace(/[._]/g, ' ');
-      nomeExtraido = nomeExtraido.charAt(0).toUpperCase() + nomeExtraido.slice(1);
+      var nomeExtraido = isKnownTeacher ? 'Professor Neylor FM' : email.split('@')[0].replace(/[._]/g, ' ');
+      if (!isKnownTeacher) {
+        nomeExtraido = nomeExtraido.charAt(0).toUpperCase() + nomeExtraido.slice(1);
+      }
+      var perfilNovo = isKnownTeacher ? 'professor' : 'aluno';
+      var xpNovo = isKnownTeacher ? 2500 : 0;
       var agora = new Date().toISOString();
       
-      sheetUsers.appendRow([email, nomeExtraido, 'aluno', agora, 0, agora]);
+      try {
+        sheetUsers.appendRow([email, nomeExtraido, perfilNovo, agora, xpNovo, agora]);
+      } catch(e) {}
+
       userData = {
         email: email,
         nome: nomeExtraido,
-        perfil: 'aluno',
+        perfil: perfilNovo,
         dataCadastro: agora,
-        xpTotal: 0
+        xpTotal: xpNovo
       };
     }
     
-    // Carrega o histórico de progresso do estudante e dúvidas pendentes
+    // Carrega o histórico de progresso do estudante, exercícios concluídos e dúvidas pendentes
     var progressoIds = [];
+    var exerciciosConcluidos = [];
     var duvidasPendentes = [];
     var ultimaAula = 'aula_1_2';
+    var ultimoPontoParada = { idAula: 'aula_1_2', idExercicio: null, data: '' };
+    var maiorTimestampParada = '';
     var sheetProg = ss.getSheetByName(CONFIG.SHEET_PROGRESS);
     
     if (sheetProg && userData) {
@@ -554,19 +835,38 @@ function getUserSessionData(emailParam) {
           var pAula = pRows[j][2];
           var pTopico = pRows[j][3];
           var pDuvida = pRows[j][10] || '';
+          var pData = pRows[j][9] ? pRows[j][9].toString() : '';
           
           if (pStatus === 'concluido') {
-            progressoIds.push(pAula);
+            if (pTopico === 'geral' || pTopico === 'memoria_casting' || pTopico === 'aula_completa') {
+              if (progressoIds.indexOf(pAula) === -1) {
+                progressoIds.push(pAula);
+              }
+            } else {
+              exerciciosConcluidos.push(pAula + ':' + pTopico);
+            }
           } else if (pStatus === 'com_duvidas') {
             duvidasPendentes.push({
               idAula: pAula,
               idTopico: pTopico,
               duvida: pDuvida,
-              data: pRows[j][9]
+              data: pData
             });
           }
-          if (pStatus === 'em_andamento') {
-            ultimaAula = pAula;
+
+          // Rastreia o ponto de parada ou atividade mais recente
+          if (pStatus === 'em_andamento' || pStatus === 'concluido') {
+            if (!maiorTimestampParada || pData >= maiorTimestampParada) {
+              maiorTimestampParada = pData;
+              ultimaAula = pAula;
+              var idExResolvido = (pTopico !== 'geral' && pTopico !== 'memoria_casting' && pTopico !== 'aula_completa') ? (pTopico === 'ponto_parada' ? pDuvida : pTopico) : null;
+              ultimoPontoParada = {
+                idAula: pAula,
+                idExercicio: idExResolvido,
+                status: pStatus,
+                data: pData
+              };
+            }
           }
         }
       }
@@ -579,8 +879,10 @@ function getUserSessionData(emailParam) {
       perfil: userData.perfil,
       xpTotal: userData.xpTotal,
       progressoIds: progressoIds,
+      exerciciosConcluidos: exerciciosConcluidos,
       duvidasPendentes: duvidasPendentes,
       ultimaAulaAcessada: ultimaAula,
+      ultimoPontoParada: ultimoPontoParada,
       podeGravar: (userData.perfil === 'aluno' || userData.perfil === 'professor'),
       isProfessor: (userData.perfil === 'professor')
     };
@@ -593,8 +895,10 @@ function getUserSessionData(emailParam) {
       perfil: 'visitante',
       xpTotal: 0,
       progressoIds: [],
+      exerciciosConcluidos: [],
       duvidasPendentes: [],
       ultimaAulaAcessada: 'aula_1_2',
+      ultimoPontoParada: null,
       podeGravar: false,
       isProfessor: false,
       erro: err.message
@@ -683,7 +987,9 @@ function carregarConteudoAula(idAula) {
       var mapaFallback = {
         'aula_1_2': 'Aula1_2',
         'aula_1_3': 'Aula1_3',
-        'aula_1_4': 'Aula1_4'
+        'aula_1_4': 'Aula1_4',
+        'aula_1_5': 'Aula1_5',
+        'aula_2_1': 'Aula2_1'
       };
       arquivoHtmlAlvo = mapaFallback[idAula];
     }
@@ -791,7 +1097,7 @@ function salvarProgresso(idAula, idTopico, status, exResolvido, exProposto, desa
       var rowUserEmail = rowsUsers[u][0] ? rowsUsers[u][0].toString().trim().toLowerCase() : '';
       if (rowUserEmail && rowUserEmail === email.trim().toLowerCase()) {
         var xpAtual = Number(rowsUsers[u][4]) || 0;
-        var novoXp = xpAtual + pontosComputados;
+        var novoXp = Math.max(0, xpAtual + pontosComputados);
         sheetUsers.getRange(u + 1, 5).setValue(novoXp);
         sheetUsers.getRange(u + 1, 6).setValue(agora);
         break;
@@ -856,18 +1162,43 @@ function obterRelatorioTurma(emailParam) {
     }
     
     // Computa progresso individual
+    // Mapeia por aluno: conjunto de aulas distintas concluídas e total de atividades realizadas
+    var progressoMap = {}; // email -> { aulas: {}, totalAtividades: 0 }
+    
     if (sheetProg) {
       var pRows = sheetProg.getDataRange().getValues();
       for (var p = 1; p < pRows.length; p++) {
         if (pRows[p][4] === 'concluido') {
           var emailAluno = (pRows[p][1] || '').toString().trim().toLowerCase();
-          for (var a = 0; a < listaAlunos.length; a++) {
-            if (listaAlunos[a].email.toLowerCase() === emailAluno) {
-              listaAlunos[a].aulasConcluidas++;
-              break;
-            }
+          var idAula = (pRows[p][2] || '').toString().trim();
+          var idTopico = (pRows[p][3] || '').toString().trim();
+          
+          if (!progressoMap[emailAluno]) {
+            progressoMap[emailAluno] = { aulas: {}, totalAtividades: 0 };
+          }
+          progressoMap[emailAluno].totalAtividades++;
+          
+          // Conta como aula concluída se for o registro global da aula ou desafio final
+          if (idTopico === 'geral' || idTopico === 'memoria_casting' || idTopico === 'aula_completa' || idTopico.indexOf('desafio') > -1) {
+            progressoMap[emailAluno].aulas[idAula] = true;
           }
         }
+      }
+    }
+    
+    for (var a = 0; a < listaAlunos.length; a++) {
+      var mailKey = listaAlunos[a].email.toLowerCase();
+      var dadosProg = progressoMap[mailKey];
+      if (dadosProg) {
+        var numAulas = Object.keys(dadosProg.aulas).length;
+        if (numAulas === 0 && dadosProg.totalAtividades > 0) {
+          numAulas = Math.min(totalAulas, Math.ceil(dadosProg.totalAtividades / 4));
+        }
+        listaAlunos[a].aulasConcluidas = Math.min(totalAulas, numAulas);
+        listaAlunos[a].totalAtividades = dadosProg.totalAtividades;
+      } else {
+        listaAlunos[a].aulasConcluidas = 0;
+        listaAlunos[a].totalAtividades = 0;
       }
     }
     
@@ -1121,4 +1452,3 @@ function removerImagemExercicio(params) {
     };
   }
 }
-

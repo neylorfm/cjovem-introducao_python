@@ -4,11 +4,262 @@
      ============================================================================ -->
 
 <div class="view-section" id="view-aula">
+  <!-- Dados do Simulador CPython da Aula (Encapsulamento Local) -->
+  <script type="application/json" class="simulation-steps-data">
+[
+  {
+    "step": 0,
+    "line": null,
+    "insightTitle": "Passo 0: Preparação da Call Stack (Aula 1.4)",
+    "insightDesc": "Inicie o simulador para acompanhar o fluxo de execução condicional (if-else) e a avaliação booleana no CPython.",
+    "stack": [],
+    "heap": [],
+    "stdout": "> (Aguardando início...)"
+  },
+  {
+    "step": 1,
+    "line": 1,
+    "insightTitle": "Passo 1: Atribuição de renda (float)",
+    "insightDesc": "O literal float 1800.0 é alocado no Heap em 0x7FB01 e vinculado à variável local 'renda'.",
+    "stack": [
+      {
+        "name": "renda",
+        "type": "float",
+        "addr": "0x7FB01"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB01",
+        "val": "1800.0",
+        "type": "float"
+      }
+    ],
+    "stdout": ""
+  },
+  {
+    "step": 2,
+    "line": 2,
+    "insightTitle": "Passo 2: Atribuição de parcela (float)",
+    "insightDesc": "O literal 400.0 é alocado no Heap em 0x7FB02 e vinculado à variável local 'parcela'.",
+    "stack": [
+      {
+        "name": "renda",
+        "type": "float",
+        "addr": "0x7FB01"
+      },
+      {
+        "name": "parcela",
+        "type": "float",
+        "addr": "0x7FB02"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB01",
+        "val": "1800.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB02",
+        "val": "400.0",
+        "type": "float"
+      }
+    ],
+    "stdout": ""
+  },
+  {
+    "step": 3,
+    "line": 3,
+    "insightTitle": "Passo 3: Cálculo da Margem Consignável (30%)",
+    "insightDesc": "CPython multiplica renda (1800.0) por 0.30, resultando em 540.0 alocado no Heap em 0x7FB03 e vinculado a 'limite_margem'.",
+    "stack": [
+      {
+        "name": "renda",
+        "type": "float",
+        "addr": "0x7FB01"
+      },
+      {
+        "name": "parcela",
+        "type": "float",
+        "addr": "0x7FB02"
+      },
+      {
+        "name": "limite_margem",
+        "type": "float",
+        "addr": "0x7FB03"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB01",
+        "val": "1800.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB02",
+        "val": "400.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB03",
+        "val": "540.0",
+        "type": "float"
+      }
+    ],
+    "stdout": ""
+  },
+  {
+    "step": 4,
+    "line": 4,
+    "insightTitle": "Passo 4: Avaliação do Desvio Condicional (if)",
+    "insightDesc": "A CPU compara se parcela (400.0) <= limite_margem (540.0). A expressão booleana é TRUE! O fluxo entra no bloco indentado do if.",
+    "stack": [
+      {
+        "name": "renda",
+        "type": "float",
+        "addr": "0x7FB01"
+      },
+      {
+        "name": "parcela",
+        "type": "float",
+        "addr": "0x7FB02"
+      },
+      {
+        "name": "limite_margem",
+        "type": "float",
+        "addr": "0x7FB03"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB01",
+        "val": "1800.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB02",
+        "val": "400.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB03",
+        "val": "540.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> Condição 400.0 <= 540.0 é True. Desviando para bloco if..."
+  },
+  {
+    "step": 5,
+    "line": 5,
+    "insightTitle": "Passo 5: Execução do Bloco if (status = 'Aprovado')",
+    "insightDesc": "A string 'Aprovado' é alocada no Heap em 0x7FB04. O bloco 'else' (linhas 6-7) é completamente ignorado pelo interpretador.",
+    "stack": [
+      {
+        "name": "renda",
+        "type": "float",
+        "addr": "0x7FB01"
+      },
+      {
+        "name": "parcela",
+        "type": "float",
+        "addr": "0x7FB02"
+      },
+      {
+        "name": "limite_margem",
+        "type": "float",
+        "addr": "0x7FB03"
+      },
+      {
+        "name": "status",
+        "type": "str",
+        "addr": "0x7FB04"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB01",
+        "val": "1800.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB02",
+        "val": "400.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB03",
+        "val": "540.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB04",
+        "val": "\"Aprovado\"",
+        "type": "str"
+      }
+    ],
+    "stdout": "> Condição 400.0 <= 540.0 é True. Desviando para bloco if...\\n> status definido como 'Aprovado'"
+  },
+  {
+    "step": 6,
+    "line": 8,
+    "insightTitle": "Passo 6: Saída Formatada após Convergência de Fluxo",
+    "insightDesc": "Ambos os ramos convergem na Linha 8 (não indentada). print exibe 'Resultado da Linha: Aprovado' no STDOUT.",
+    "stack": [
+      {
+        "name": "renda",
+        "type": "float",
+        "addr": "0x7FB01"
+      },
+      {
+        "name": "parcela",
+        "type": "float",
+        "addr": "0x7FB02"
+      },
+      {
+        "name": "limite_margem",
+        "type": "float",
+        "addr": "0x7FB03"
+      },
+      {
+        "name": "status",
+        "type": "str",
+        "addr": "0x7FB04"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FB01",
+        "val": "1800.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB02",
+        "val": "400.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB03",
+        "val": "540.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FB04",
+        "val": "\"Aprovado\"",
+        "type": "str"
+      }
+    ],
+    "stdout": "> Resultado da Linha: Aprovado"
+  }
+]
+  </script>
+
 
   <!-- ========================================================================
        CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
        ======================================================================== -->
-  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+  <div class="lesson-header-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
     <div>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
         <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 1: Fundamentos</span>
@@ -21,7 +272,7 @@
           +200 XP
         </span>
       </div>
-      <h1 style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+      <h1 class="lesson-main-title" style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
         Estruturas Condicionais, Indentação e Operadores Lógicos
       </h1>
       <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
@@ -30,14 +281,14 @@
     </div>
 
     <!-- 3 Ações de Gestão pelo Próprio Aluno -->
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+    <div class="lesson-header-actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
       <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_1_4', 'Aula 1.4: Condicionais e Operadores Lógicos')">
         📌 Onde Parei
       </button>
       <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_1_4', 'Condicionais e Operadores Lógicos')">
         ❓ Tenho Dúvidas
       </button>
-      <button class="btn btn-success" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+      <button class="btn btn-success btn-concluir-action" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
         ✓ Compreendi e Concluí (+200 XP)
       </button>
     </div>
@@ -111,11 +362,12 @@
       </p>
 
       <!-- Diagrama de Fluxo de Desvio -->
-      <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
+      <div class="ascii-flowchart-card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
         <div style="font-size: 0.8rem; font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary); text-transform: uppercase; margin-bottom: 0.75rem;">
           Mapeamento Lógico de Bifurcação de Execução
         </div>
-        <div style="font-family: var(--font-code); font-size: 0.85rem; line-height: 1.45; color: var(--color-primary); display: inline-block; text-align: left; background: #0f172a; color: #38bdf8; padding: 1rem 1.5rem; border-radius: var(--radius-md);">
+        <div class="ascii-flowchart-box">
+          <div style="font-family: var(--font-code); font-size: 0.85rem; line-height: 1.45; color: var(--color-primary); display: inline-block; text-align: left; background: #0f172a; color: #38bdf8; padding: 1rem 1.5rem; border-radius: var(--radius-md);">
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌──────────────────┐<br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ Condição Lógica&nbsp;&nbsp;│<br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────────┬─────────┘<br>
@@ -132,6 +384,7 @@
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───────────────────────┐<br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ Continuação do Código │<br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───────────────────────┘
+        </div>
         </div>
       </div>
 
@@ -350,7 +603,7 @@
             <span>🐍</span>
             <span>simulador_credito.py</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;" class="code-editor-actions">
             <button class="player-btn" id="btn-prev-step" onclick="prevStep()">◀ Passo Anterior</button>
             <span style="font-family: var(--font-code); font-size: 0.8rem; color: #94a3b8;" id="step-counter">Passo 1 de 6</span>
             <button class="player-btn" id="btn-next-step" onclick="nextStep()">Próximo Passo ▶</button>
@@ -469,38 +722,47 @@
          4. CADERNO DE ATIVIDADES E PRÁTICAS DE CÓDIGO (4 SEÇÕES)
          ======================================================================== -->
     <div class="card" style="margin-bottom: 2rem;">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
-        <div>
-          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
-            Caderno de Oficinas
-          </span>
-          <h2 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
-            Atividades Práticas de Programação em Python
-          </h2>
-        </div>
-        <span style="font-size: 0.8rem; color: var(--color-outline);">
-          4 Seções Temáticas + Desafios
-        </span>
-      </div>
+      <!-- BARRA STICKY & CONTRAÍVEL DE NAVEGAÇÃO DOS EXERCÍCIOS (SEMPRE VISÍVEL EM 1 LINHA) -->
+    <div class="treinamento-sticky-bar" id="treinamento-gradual-sticky">
+      <div class="treinamento-sticky-inner">
+        <div class="treinamento-sticky-header">
+          <div class="treinamento-sticky-badge-wrap">
+            <span class="treinamento-sticky-pill">🎯 Treinamento Gradual</span>
+          </div>
 
-      <!-- Navegador de Abas por Seções -->
-      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-surface-container); padding-bottom: 0.5rem;">
-        <button class="btn tab-btn active" id="btn-tab-secao-1" onclick="switchOficinaBloco('secao-1')">
-          1. Simples e Composto (if / if-else)
-        </button>
-        <button class="btn tab-btn" id="btn-tab-secao-2" onclick="switchOficinaBloco('secao-2')">
-          2. Indentação & PEP 8
-        </button>
-        <button class="btn tab-btn" id="btn-tab-secao-3" onclick="switchOficinaBloco('secao-3')">
-          3. Encadeados & Aninhados
-        </button>
-        <button class="btn tab-btn" id="btn-tab-secao-4" onclick="switchOficinaBloco('secao-4')">
-          4. Operadores and, or, not
-        </button>
-        <button class="btn tab-btn" id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')">
-          🏆 Desafios & Desafio Mestre
-        </button>
+          <!-- Abas das 4 Seções em Linha Única Horizontal com Scroll Suave -->
+          <div class="treinamento-subtabs-scroll oficina-subtabs-bar">
+            <button class="treinamento-tab-btn active btn-primary" id="btn-tab-secao-1" onclick="switchOficinaBloco('secao-1')">
+              1. Simples e Composto (if / if-else)
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-2" onclick="switchOficinaBloco('secao-2')">
+              2. Indentação & PEP 8
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-3" onclick="switchOficinaBloco('secao-3')">
+              3. Encadeados & Aninhados
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-4" onclick="switchOficinaBloco('secao-4')">
+              4. Operadores and, or, not
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')">
+              🏆 Desafios & Desafio Mestre
+            </button>
+          </div>
+
+          <!-- Botão de Expandir / Recolher Detalhes (1 Linha por Padrão) -->
+          <button class="treinamento-toggle-btn" onclick="toggleTreinamentoDetalhes()" id="btn-toggle-treinamento-detalhes" title="Expandir ou recolher detalhes desta seção">
+            <span class="treinamento-toggle-icon" id="icon-treinamento-detalhes">▾</span>
+            <span class="treinamento-toggle-text" id="text-treinamento-detalhes">Detalhes</span>
+          </button>
+        </div>
+
+        <!-- Painel de Detalhes Expansível (Começa recolhido para ocupar apenas 1 linha!) -->
+        <div class="treinamento-detalhes-body" id="treinamento-detalhes-body" style="display: none;">
+          <h2 class="treinamento-full-title">4. Caderno de Oficinas Práticas: Estruturas Condicionais</h2>
+          <p class="treinamento-full-desc">Práticas guiadas de desvios condicionais simples, compostos, aninhados, regras de indentação PEP 8 e operadores lógicos.</p>
+        </div>
       </div>
+    </div>
 
       <!-- ======================================================================
            PAINEL 1: SEÇÃO 1 — DESVIOS SIMPLES E COMPOSTO
@@ -522,7 +784,7 @@
             Crie um programa para controle de velocidade de uma via escolar com limite máximo de 30 km/h. Solicite a velocidade medida e, caso seja superior a 30, exiba: <em>"Atenção: Limite de velocidade ultrapassado! Multa emitida."</em>. Ao final, exiba <em>"Fiscalização concluída."</em>.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_1_atv_1"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_1_atv_1" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_1_atv_1" data-titulo="Seção 1: Atividade 1.1 (Radar em Via Escolar)"></div>
           <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>velocidade = float(input("Digite a velocidade do veículo (km/h): "))
 if velocidade &gt; 30:
     print("Atenção: Limite de velocidade ultrapassado! Multa emitida.")
@@ -541,7 +803,7 @@ print("Fiscalização concluída.")</code></pre>
             Solicite a pontuação de um jogador. Se for maior ou igual a 100 pontos, imprima: <code>"Conquista desbloqueada: Guerreiro Veterano"</code>. Se for menor que 100, nada referente à conquista deve ser impresso.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_1_atv_2"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_1_atv_2" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_1_atv_2" data-titulo="Seção 1: Atividade 1.2 (Conquista em Jogo)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec1-atv2')">
               👁️ Ver Solução Modelo
@@ -566,7 +828,7 @@ if pontos &gt;= 100:
             Leia a média final do aluno (0 a 10) e exiba se ele foi aprovado ou reprovado, sendo a nota mínima de aprovação igual a 6.0.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_1_atv_3"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_1_atv_3" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_1_atv_3" data-titulo="Seção 1: Atividade 1.3 (Média Escolar com if-else)"></div>
           <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>media = float(input("Digite a média do estudante: "))
 if media &gt;= 6.0:
     print("Situação: Aprovado!")
@@ -586,7 +848,7 @@ else:
             Solicite um número inteiro e utilize o operador de resto da divisão (<code>%</code>) para imprimir se o número é <em>"Número Par"</em> ou <em>"Número Ímpar"</em>.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_1_atv_4"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_1_atv_4" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_1_atv_4" data-titulo="Seção 1: Atividade 1.4 (Verificador de Par ou Ímpar)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec1-atv4')">
               👁️ Ver Solução Modelo
@@ -605,7 +867,7 @@ else:
       <!-- ======================================================================
            PAINEL 2: SEÇÃO 2 — INDENTAÇÃO E REGRAS DE SINTAXE
            ====================================================================== -->
-      <div id="panel-secao-2" class="oficina-panel">
+      <div id="panel-secao-2" class="oficina-panel" style="display: none;">
         <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
           Seção 2: Indentação e Regras de Sintaxe em Python (PEP 8)
         </h3>
@@ -627,7 +889,7 @@ if temperatura &gt; 37.5:
     print("Recomenda-se aferição médica.") # Erro: 4 espaços misturados com 2
 print("Verificação terminada.")</code></pre>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_2_atv_1"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_2_atv_1" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_2_atv_1" data-titulo="Seção 2: Atividade 2.1 (Correção de Indentação)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec2-atv1')">
               👁️ Ver Correção Oficial
@@ -654,7 +916,7 @@ print("Verificação terminada.")</code></pre>
             Solicite um inteiro <code>pecas_defeituosas</code>. Se for maior que 5, execute 3 <code>print</code>s no <code>if</code> (paralisação, manutenção e retenção). Caso contrário, execute 2 <code>print</code>s no <code>else</code> (tolerância e liberação), mantendo 4 espaços perfeitos.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_2_atv_2"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_2_atv_2" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_2_atv_2" data-titulo="Seção 2: Atividade 2.2 (Controle de Qualidade Fabril)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec2-atv2')">
               👁️ Ver Solução Modelo
@@ -676,7 +938,7 @@ else:
       <!-- ======================================================================
            PAINEL 3: SEÇÃO 3 — ENCADEADOS E ANINHADOS
            ====================================================================== -->
-      <div id="panel-secao-3" class="oficina-panel">
+      <div id="panel-secao-3" class="oficina-panel" style="display: none;">
         <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
           Seção 3: Desvios Condicionais Encadeados (if-elif-else) e Aninhados (if em if)
         </h3>
@@ -689,11 +951,17 @@ else:
             </span>
             <span style="font-size: 0.75rem; color: var(--color-outline);">if-elif-else</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Classifique uma nota decimal (0 a 10): 9 a 10 ➔ A, 7 a 8.9 ➔ B, 5 a 6.9 ➔ C, abaixo de 5 ➔ D.
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Implemente um classificador de conceitos escolares. O programa deve receber uma nota decimal de 0 a 10 e atribuir um conceito conforme a tabela:
           </p>
+          <ul style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.75rem 1.25rem; padding: 0;">
+            <li><strong>Nota entre 9.0 e 10.0:</strong> Conceito A</li>
+            <li><strong>Nota entre 7.0 e 8.9:</strong> Conceito B</li>
+            <li><strong>Nota entre 5.0 e 6.9:</strong> Conceito C</li>
+            <li><strong>Nota abaixo de 5.0:</strong> Conceito D</li>
+          </ul>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_1"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_3_atv_1" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_3_atv_1" data-titulo="Seção 3: Atividade 3.1 (Classificador de Conceitos)"></div>
           <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>nota = float(input("Digite a nota do aluno (0 a 10): "))
 if nota &gt;= 9.0:
     conceito = "A"
@@ -712,13 +980,22 @@ print(f"Conceito obtido: {conceito}")</code></pre>
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 3.2 (Proposta) — Tarifador de Ingressos
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Faixas Etárias</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Faixas Etárias • if-elif-else</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Tarifador de parque: &lt; 5 anos (Gratuito), 5 a 12 anos (R$ 15,00), 13 a 59 anos (R$ 30,00), &gt;= 60 anos (R$ 10,00).
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Crie um tarifador de ingressos para um parque temático com base na idade do visitante:
+          </p>
+          <ul style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.5rem 1.25rem; padding: 0;">
+            <li><strong>Crianças com menos de 5 anos:</strong> Entrada gratuita.</li>
+            <li><strong>Visitantes de 5 a 12 anos:</strong> Bilhete Infantil (R$ 15,00).</li>
+            <li><strong>Visitantes de 13 a 59 anos:</strong> Bilhete Normal (R$ 30,00).</li>
+            <li><strong>Visitantes a partir de 60 anos:</strong> Bilhete Sênior (R$ 10,00).</li>
+          </ul>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Utilize a estrutura encadeada <code>if</code>, <code>elif</code> e <code>else</code> para exibir a categoria e o valor a pagar.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_2"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_3_atv_2" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_3_atv_2" data-titulo="Seção 3: Atividade 3.2 (Tarifador de Ingressos)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec3-atv2')">
               👁️ Ver Solução Modelo
@@ -745,19 +1022,23 @@ else:
             </span>
             <span style="font-size: 0.75rem; color: var(--color-outline);">if Aninhado (8 espaços)</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Primeiro nível: idade &gt;= 16. Segundo nível (interno): concluiu treinamento de segurança ("sim" ou "nao").
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Uma escola técnica está liberando o acesso ao laboratório de robótica para um projeto especial. Para que o estudante tenha permissão de entrada, o sistema precisa realizar duas validações em etapas:
           </p>
+          <ol style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.75rem 1.25rem; padding: 0;">
+            <li><strong>Primeira validação (nível externo):</strong> Verificar se o estudante é maior ou igual a 16 anos. Se não tiver a idade mínima, o acesso é negado imediatamente.</li>
+            <li><strong>Segunda validação (nível interno / aninhado):</strong> Se a idade for permitida, o sistema verifica se ele já concluiu o curso básico de segurança em laboratório (resposta "sim" ou "nao"). Se tiver concluído, o crachá é liberado; caso contrário, o acesso fica pendente até a realização do curso.</li>
+          </ol>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_3"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_3_atv_3" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_3_atv_3" data-titulo="Seção 3: Atividade 3.3 (Acesso ao Laboratório de Robótica)"></div>
           <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>idade = int(input("Digite a idade do estudante: "))
 if idade &gt;= 16:
     print("Idade mínima atingida. Verificando pré-requisitos...")
-    concluiu = input("Concluiu o treinamento de segurança? (sim/nao): ")
+    concluiu = input("Concluiu o curso básico de segurança? (sim/nao): ")
     if concluiu.lower() == "sim":
         print("Acesso autorizado! Crachá liberado.")
     else:
-        print("Acesso pendente: realize o treinamento primeiro.")
+        print("Acesso pendente: realize o curso de segurança primeiro.")
 else:
     print("Acesso não autorizado: idade mínima não atingida.")</code></pre>
         </div>
@@ -768,13 +1049,20 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 3.4 (Proposta) — Login com Dois Níveis
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Autenticação Segura</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Autenticação Segura • if Aninhado</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Peça usuário ("admin") e, se correto, valide senha ("1234") em if interno, imprimindo mensagens específicas para cada desvio.
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Desenvolva um sistema de login simplificado com dois níveis de validação em cascata (aninhados).
+          </p>
+          <ul style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.5rem 1.25rem; padding: 0;">
+            <li>Peça o nome do usuario e verifique se ele corresponde a <code>"admin"</code>.</li>
+            <li>Caso corresponda, abra um novo <code>if</code> interno para validar se a palavra-passe digitada é <code>"1234"</code>.</li>
+          </ul>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Exiba mensagens específicas: <strong>"Acesso concedido"</strong> (se ambos estiverem corretos), <strong>"Senha incorreta"</strong> (se o utilizador for correto, mas a senha falhar) ou <strong>"Usuário não registado"</strong> (se o login principal falhar logo na primeira checagem).
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_4"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_3_atv_4" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_3_atv_4" data-titulo="Seção 3: Atividade 3.4 (Login com Dois Níveis)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec3-atv4')">
               👁️ Ver Solução Modelo
@@ -789,7 +1077,7 @@ if user == "admin":
     else:
         print("Senha incorreta")
 else:
-    print("Usuário não registrado")</code></pre>
+    print("Usuário não registado")</code></pre>
           </div>
         </div>
 
@@ -799,13 +1087,22 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 3.5 (Proposta) — Alíquota de Retenção Salarial
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Cálculo Financeiro</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Cálculo Financeiro • if-elif-else</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Receba o salário bruto e aplique: até 1500 (isento), 1500.01 a 2500 (10%), 2500.01 a 4000 (15%), acima de 4000 (20%). Exiba percentual, desconto e salário líquido.
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Escreva um programa que solicite o salário bruto de um funcionário e aplique a alíquota de retenção correspondente:
+          </p>
+          <ul style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.5rem 1.25rem; padding: 0;">
+            <li><strong>Até 1.500,00:</strong> Isento de retenção (0%).</li>
+            <li><strong>De 1.500,01 a 2.500,00:</strong> Desconto de 10%.</li>
+            <li><strong>De 2.500,01 a 4.000,00:</strong> Desconto de 15%.</li>
+            <li><strong>Acima de 4.000,00:</strong> Desconto de 20%.</li>
+          </ul>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Exiba o percentual aplicado, o valor exato descontado e o salário líquido resultante.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_5"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_3_atv_5" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_3_atv_5" data-titulo="Seção 3: Atividade 3.5 (Alíquota de Retenção Salarial)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec3-atv5')">
               👁️ Ver Solução Modelo
@@ -833,13 +1130,49 @@ print(f"Alíquota: {int(taxa*100)}% | Desconto: R$ {desconto:.2f} | Líquido: R$
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 3.6 (Proposta) — Classificador Geométrico de Triângulos
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Desafio Algorítmico</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Desafio Algorítmico • if Aninhado</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Receba três lados float (A, B, C). Valide a existência no if externo: <code>(A + B &gt; C) and (A + C &gt; B) and (B + C &gt; A)</code>. No interno, classifique em: Equilátero (3 iguais), Isósceles (2 iguais) ou Escaleno (todos diferentes).
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Crie um programa que receba os três lados de um triângulo (A, B, C). Primeiro, verifique se as medidas formam um triângulo válido (a soma de dois lados deve ser sempre maior que o terceiro lado). Caso seja válido, utilize uma estrutura interna aninhada para identificar se o triângulo é:
           </p>
+          <ul style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.5rem 1.25rem; padding: 0;">
+            <li><strong>Equilátero:</strong> três lados iguais.</li>
+            <li><strong>Isósceles:</strong> dois lados iguais.</li>
+            <li><strong>Escaleno:</strong> todos os lados diferentes.</li>
+          </ul>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Se a primeira verificação falhar, exiba no <code>else</code> principal que as medidas não formam um triângulo.
+          </p>
+
+          <div style="background: var(--color-surface-low); border-left: 3px solid var(--color-secondary); padding: 0.75rem 1rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 0.75rem; font-size: 0.83rem; line-height: 1.5;">
+            <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">📋 Passo a Passo:</div>
+            <ol style="margin: 0 0 0.5rem 1.2rem; padding: 0;">
+              <li><strong>Entrada de dados:</strong> Peça três medidas com casas decimais (float): lado A, lado B e lado C.</li>
+              <li><strong>Primeiro if (Externo - 4 espaços de recuo ou 1 TAB):</strong>
+                Verifique se as retas formam um triângulo: a soma de quaisquer dois lados deve ser maior que o terceiro.<br>
+                <em>Condição:</em> <code>(A + B &gt; C) e (A + C &gt; B) e (B + C &gt; A)</code><br>
+                Se a condição for falsa, vá para o <code>else</code> externo e exiba: <code>"Não forma triângulo"</code>.
+              </li>
+              <li><strong>Segundo if (Interno/Aninhado - 8 espaços de recuo ou 2 TAB):</strong>
+                Se formou triângulo, faça os testes internos de classificação nesta ordem:
+                <ul style="margin: 0.25rem 0 0 1.2rem; padding: 0; list-style-type: disc;">
+                  <li><strong>Equilátero:</strong> se os três lados forem iguais (<code>A == B e B == C</code>).</li>
+                  <li><strong>Isósceles:</strong> se tiver dois lados iguais (<code>A == B ou A == C ou B == C</code>).</li>
+                  <li><strong>Escaleno:</strong> se não for nenhum dos anteriores (<code>else</code> interno).</li>
+                </ul>
+              </li>
+            </ol>
+            <div style="font-weight: 700; color: var(--color-primary); margin-top: 0.5rem; margin-bottom: 0.25rem;">🧪 Valores para Testar:</div>
+            <ul style="margin: 0 0 0 1.2rem; padding: 0; font-family: var(--font-code); font-size: 0.8rem; color: var(--color-on-surface-variant);">
+              <li>5.0, 5.0, 5.0 → Triângulo Equilátero</li>
+              <li>5.0, 5.0, 8.0 → Triângulo Isósceles</li>
+              <li>3.0, 4.0, 5.0 → Triângulo Escaleno</li>
+              <li>1.0, 2.0, 9.0 → Não forma triângulo</li>
+            </ul>
+          </div>
+
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_3_atv_6"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_3_atv_6" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_3_atv_6" data-titulo="Seção 3: Atividade 3.6 (Classificador Geométrico de Triângulos)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec3-atv6')">
               👁️ Ver Solução Modelo
@@ -866,7 +1199,7 @@ else:
       <!-- ======================================================================
            PAINEL 4: SEÇÃO 4 — OPERADORES LÓGICOS
            ====================================================================== -->
-      <div id="panel-secao-4" class="oficina-panel">
+      <div id="panel-secao-4" class="oficina-panel" style="display: none;">
         <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
           Seção 4: Operadores Lógicos Individuais e Combinados (and, or, not)
         </h3>
@@ -877,13 +1210,13 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 4.1 (Resolvida) — Média e Presença com 'and'
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Conjunção</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Conjunção • Operador and</span>
           </div>
           <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Aprovação apenas com média &gt;= 7.0 <strong>e</strong> presença &gt;= 75%.
+            Um estudante só pode ser aprovado na disciplina se tiver média final maior ou igual a 7.0 e presença maior ou igual a 75%. Crie um programa que leia a média e a presença do aluno e informe se ele foi aprovado ou reprovado.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_1"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_4_atv_1" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_4_atv_1" data-titulo="Seção 4: Atividade 4.1 (Média e Presença com and)"></div>
           <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>media = float(input("Média final: "))
 presenca = float(input("Presença (%): "))
 if (media &gt;= 7.0) and (presenca &gt;= 75):
@@ -898,13 +1231,20 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 4.2 (Proposta) — Acesso à Montanha-Russa
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Dupla Validação</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Dupla Validação • Operador and</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Exige altura &gt;= 1.40 m e idade &gt;= 12 anos para permitir a entrada no brinquedo usando <code>and</code>.
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Uma montanha-russa em um parque de diversões exige dois requisitos de segurança para liberar a entrada de uma pessoa:
+          </p>
+          <ul style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.5rem 1.25rem; padding: 0;">
+            <li>A altura da pessoa deve ser maior ou igual a 1.40 metros.</li>
+            <li>A idade da pessoa deve ser maior ou igual a 12 anos.</li>
+          </ul>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Escreva um programa que solicite a altura e a idade do visitante. Usando o operador <code>and</code>, informe se ele tem permissão para andar no brinquedo ou se a entrada foi negada.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_2"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_4_atv_2" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_4_atv_2" data-titulo="Seção 4: Atividade 4.2 (Acesso à Montanha-Russa)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec4-atv2')">
               👁️ Ver Solução Modelo
@@ -926,13 +1266,13 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 4.3 (Resolvida) — Meia-Entrada no Cinema com 'or'
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Disjunção</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Disjunção • Operador or</span>
           </div>
           <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Idade &gt;= 60 anos <strong>ou</strong> ser estudante concede meia-entrada (R$ 15,00 contra R$ 30,00).
+            Um cinema concede meia-entrada para quem é estudante ou para quem tem 60 anos ou mais. Crie um programa que receba a idade e a confirmação se a pessoa é estudante (sim ou nao), exibindo o valor a ser pago (Ingresso Inteiro: R$ 30,00; Meia-entrada: R$ 15,00).
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_3"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_4_atv_3" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_4_atv_3" data-titulo="Seção 4: Atividade 4.3 (Meia-Entrada no Cinema com or)"></div>
           <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>idade = int(input("Idade: "))
 resp = input("É estudante? (sim/nao): ")
 e_estudante = resp.lower() == "sim"
@@ -948,13 +1288,20 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 4.4 (Proposta) — Frete Grátis na Loja Virtual
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Condição Alternativa</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Condição Alternativa • Operador or</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Frete grátis se compra &gt;= 150.0 <strong>ou</strong> cliente possui clube fidelidade (resposta sim).
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Uma loja virtual oferece frete grátis para compras que atendam a pelo menos uma destas opções:
+          </p>
+          <ul style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.5rem 1.25rem; padding: 0;">
+            <li>O valor total da compra for de R$ 150,00 ou mais.</li>
+            <li>O cliente possuir a assinatura do clube fidelidade (resposta sim).</li>
+          </ul>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Crie um programa que receba o valor da compra e pergunte se o cliente faz parte do clube fidelidade. Utilizando a estrutura <code>if-else</code> com o operador <code>or</code>, exiba na tela "Frete Grátis Liberado!" ou "Frete Cobrado: R$ 20,00".
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_4"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_4_atv_4" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_4_atv_4" data-titulo="Seção 4: Atividade 4.4 (Frete Grátis na Loja Virtual)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec4-atv4')">
               👁️ Ver Solução Modelo
@@ -976,13 +1323,13 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 4.5 (Resolvida) — Manutenção de Computadores com 'not'
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Inversor Booleano</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Inversor Booleano • Operador not</span>
           </div>
           <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            O computador só pode ser usado se <code>not em_manutencao</code> for verdadeiro.
+            Em um laboratório de informática, os computadores só podem ser inicializados para as aulas se o sistema não estiver bloqueado para manutenção. Receba o status se o computador está em manutenção (True para sim, False para não) e use o operador <code>not</code> para tomar a decisão.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_5"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_4_atv_5" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_4_atv_5" data-titulo="Seção 4: Atividade 4.5 (Manutenção de Computadores com not)"></div>
           <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>resposta = input("Computador em manutenção? (sim/nao): ")
 em_manutencao = resposta.lower() == "sim"
 if not em_manutencao:
@@ -997,13 +1344,19 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 4.6 (Proposta) — Validação de Tarefas com 'not'
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Negação Direta</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Negação Direta • Operador not</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Pergunte se a tarefa já foi enviada. Com <code>if not tarefa_entregue:</code>, alerte sobre pendências.
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Crie um sistema de validação de envio de tarefas escolares:
           </p>
+          <ul style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.5rem 1.25rem; padding: 0;">
+            <li>Crie uma variável booleana chamada <code>tarefa_entregue</code>.</li>
+            <li>Pergunte ao aluno se ele já enviou a atividade (se responder "sim", a variável recebe <code>True</code>; se responder "nao", recebe <code>False</code>).</li>
+            <li>Usando a estrutura <code>if not tarefa_entregue:</code>, imprima uma mensagem de alerta: <strong>"Atenção: Você tem pendências de envio!"</strong>.</li>
+            <li>No <code>else</code>, imprima: <strong>"Parabéns, sua tarefa já foi registrada!"</strong>.</li>
+          </ul>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_6"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_4_atv_6" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_4_atv_6" data-titulo="Seção 4: Atividade 4.6 (Validação de Tarefas com not)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec4-atv6')">
               👁️ Ver Solução Modelo
@@ -1027,11 +1380,15 @@ else:
             </span>
             <span style="font-size: 0.75rem; color: var(--color-outline);">Expressão Combinada</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Critérios: (matemática &gt;= 8.0 <strong>ou</strong> ciências &gt;= 8.0) <strong>e</strong> (<strong>não</strong> possuir advertência).
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Uma escola selecionará estudantes para um curso avançado de robótica. Para se qualificar, o candidato precisa atender a todos os seguintes pontos:
           </p>
+          <ol style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.75rem 1.25rem; padding: 0;">
+            <li><strong>Ter boa pontuação:</strong> Média de matemática maior ou igual a 8.0 ou média de ciências maior ou igual a 8.0.</li>
+            <li><strong>Histórico limpo:</strong> Não pode ter advertência disciplinar no ano (<code>tem_advertencia</code> deve ser falso).</li>
+          </ol>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_7"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_4_atv_7" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_4_atv_7" data-titulo="Seção 4: Atividade 4.7 (Robótica Avançada and/or/not)"></div>
           <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; margin-bottom: 0.5rem;"><code>nota_mat = float(input("Nota Matemática: "))
 nota_cie = float(input("Nota Ciências: "))
 tem_adv = input("Possui advertência? (sim/nao): ").lower() == "sim"
@@ -1048,13 +1405,20 @@ else:
             <span style="font-family: var(--font-headline); font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); background: var(--color-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
               Atividade 4.8 (Proposta) — Sorteio de Viagem Esportiva
             </span>
-            <span style="font-size: 0.75rem; color: var(--color-outline);">Condição Complexa</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline);">Condição Complexa • and, or, not</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Regras: (treinos &gt;= 85% <strong>ou</strong> medalha no torneio) <strong>e</strong> (<strong>não</strong> estar com mensalidade atrasada).
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Um clube de esportes vai sortear vagas em uma viagem de treinamento. Para participar do sorteio, o atleta deve cumprir a seguinte combinação de regras:
+          </p>
+          <ol style="font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.6; margin: 0 0 0.5rem 1.25rem; padding: 0;">
+            <li>Ter frequentado pelo menos 85% dos treinos ou ter conquistado uma medalha no último torneio (resposta sim).</li>
+            <li>Não estar com a mensalidade do clube atrasada (resposta sim para atraso tornará a verificação falsa).</li>
+          </ol>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Escreva um programa em Python que receba a porcentagem de treinos, a resposta sobre a medalha e a resposta sobre a mensalidade atrasada. Crie uma condição lógica única contendo <code>and</code>, <code>or</code> e <code>not</code> com parênteses adequados para informar se o atleta está apto ou inapto a participar do sorteio.
           </p>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="secao_4_atv_8"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_secao_4_atv_8" data-aula="aula_1_4" data-exercicio="aula_1_4_secao_4_atv_8" data-titulo="Seção 4: Atividade 4.8 (Sorteio de Viagem Esportiva)"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-sec4-atv8')">
               👁️ Ver Solução Modelo
@@ -1076,10 +1440,15 @@ else:
       <!-- ======================================================================
            PAINEL 5: DESAFIOS TEMÁTICOS E DESAFIO MESTRE
            ====================================================================== -->
-      <div id="panel-desafios" class="oficina-panel">
+      <div id="panel-desafios" class="oficina-panel" style="display: none;">
         <h3 style="font-family: var(--font-headline); font-size: 1.15rem; color: var(--color-primary); margin-bottom: 1rem;">
           Desafios Práticos de Decisão & Desafio Mestre Integrador
         </h3>
+
+        <!-- Banner de Restrição Pedagógica dos Desafios -->
+        <div style="background: var(--color-surface-container); border-left: 4px solid var(--color-secondary); padding: 0.85rem 1.25rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--color-on-surface); line-height: 1.5;">
+          <strong>📌 Restrição Pedagógica dos Desafios:</strong> Todos os desafios a seguir foram desenvolvidos estritamente dentro do escopo acumulado das Aulas 1.2, 1.3 e 1.4 (<code>print</code>, <code>input</code>, conversão de tipos, operadores aritméticos, atribuição composta, parênteses e estruturas condicionais <code>if-elif-else</code> com <code>and</code>, <code>or</code>, <code>not</code>). Não utilize laços de repetição (<code>while</code> ou <code>for</code>) nem listas!
+        </div>
 
         <!-- Desafio 1 -->
         <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.5rem;">
@@ -1089,11 +1458,21 @@ else:
             </span>
             <span style="font-size: 0.75rem; color: var(--color-outline);">Juros e Margem</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Receba renda mensal, valor do equipamento e parcelas (6, 12 ou 24). Aplique juros de 5% (6x), 10% (12x) ou 18% (24x). A parcela calculada não pode exceder 30% da renda comprovada.
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            Um banco parceiro da escola oferece uma linha especial de crédito para compra de computadores portáteis. Para aprovar o financiamento, o sistema precisa avaliar a renda mensal do estudante/responsável e o valor da parcela solicitada.
           </p>
+          <div style="background: var(--color-surface-low); border-left: 3px solid var(--color-primary); padding: 0.75rem 1rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 0.75rem; font-size: 0.83rem; line-height: 1.5;">
+            <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">📋 Regras de Negócio Obrigatórias:</div>
+            <ol style="margin: 0 0 0 1.2rem; padding: 0;">
+              <li>Solicite a renda mensal do responsável (float), o valor total do equipamento (float) e a quantidade de parcelas desejada (número inteiro: 6, 12 ou 24).</li>
+              <li>Se a quantidade de parcelas for igual a 6, aplique uma taxa de juros total de 5% sobre o valor da máquina; se for 12, aplique 10%; se for 24, aplique 18%. Caso seja digitado qualquer outro número de parcelas, encerre informando que o plano de parcelamento é inválido.</li>
+              <li>Calcule o valor da parcela mensal: <code>parcela = valor com juros / quantidade de parcelas</code></li>
+              <li><strong>Critério de Aprovação Bancária:</strong> A parcela calculada não pode ultrapassar 30% da renda mensal informada.</li>
+              <li>Exiba o valor total com juros, o valor individual da prestação e a mensagem de decisão: <code>"Crédito Aprovado! Parabéns pela aquisição."</code> ou <code>"Crédito Recusado: Parcela excede 30% da renda comprovada."</code>.</li>
+            </ol>
+          </div>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="desafio_1"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_desafio_1" data-aula="aula_1_4" data-exercicio="aula_1_4_desafio_1" data-titulo="Desafio 1: Simulador de Financiamento Estudantil"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-desafio-1')">
               👁️ Ver Solução Comentada
@@ -1133,11 +1512,25 @@ if total &gt; 0:
             </span>
             <span style="font-size: 0.75rem; color: var(--color-outline);">Sensores Ambientais</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Classifique a sala em: <strong>Nível 1 (Ideal)</strong>: 20 a 24°C e CO2 &lt;= 800; <strong>Nível 2 (Atenção Térmica)</strong>: &gt; 24 e &lt;= 28°C com CO2 normal; <strong>Nível 3 (Ventilação)</strong>: CO2 de 801 a 1500; <strong>Nível 4 (Crítico)</strong>: Temp &gt; 28°C ou CO2 &gt; 1500.
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            A coordenação do laboratório de informática instalou sensores ambientais para preservar os equipamentos e garantir a saúde dos estudantes durante as aulas de programação.
           </p>
+          <div style="background: var(--color-surface-low); border-left: 3px solid var(--color-secondary); padding: 0.75rem 1rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 0.75rem; font-size: 0.83rem; line-height: 1.5;">
+            <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">📋 Regras de Negócio Obrigatórias:</div>
+            <ol style="margin: 0 0 0 1.2rem; padding: 0;">
+              <li>Receba a leitura de temperatura em graus Celsius (float) e a leitura do nível de dióxido de carbono (CO2) em ppm (partes por milhão, valor int).</li>
+              <li>Utilizando estruturas condicionais encadeadas (<code>if-elif-else</code>) e operadores lógicos combinados (<code>and</code> e <code>or</code>), classifique o estado da sala em uma das seguintes categorias:
+                <ul style="margin: 0.25rem 0 0 1.2rem; padding: 0; list-style-type: disc;">
+                  <li><strong>Nível 1 (Ambiente Ideal):</strong> Temperatura entre 20.0 °C e 24.0 °C (inclusive) e CO2 menor ou igual a 800 ppm. Mensagem: <code>"Status: Ambiente Ideal para Aprendizagem."</code>.</li>
+                  <li><strong>Nível 2 (Atenção Térmica):</strong> Temperatura maior que 24.0 °C mas menor ou igual a 28.0 °C, com CO2 normal (&le; 800). Mensagem: <code>"Status: Ajustar climatizadores para resfriamento."</code>.</li>
+                  <li><strong>Nível 3 (Alerta de Ventilação):</strong> CO2 entre 801 ppm e 1500 ppm, independentemente da temperatura. Mensagem: <code>"Status: Abrir janelas ou acionar renovação de ar."</code>.</li>
+                  <li><strong>Nível 4 (Crítico / Evacuação):</strong> Temperatura superior a 28.0 °C ou CO2 acima de 1500 ppm. Mensagem: <code>"ALERTA CRÍTICO: Risco de superaquecimento dos computadores e fadiga! Interromper aula."</code>.</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="desafio_2"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_desafio_2" data-aula="aula_1_4" data-exercicio="aula_1_4_desafio_2" data-titulo="Desafio 2: Monitor de Conforto Térmico e CO2"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-desafio-2')">
               👁️ Ver Solução Comentada
@@ -1168,11 +1561,30 @@ else:
             </span>
             <span style="font-size: 0.75rem; color: var(--color-outline);">Aninhamento Estruturado</span>
           </div>
-          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.75rem;">
-            Nível externo: Se alarme de incêndio ativo ➔ destranque como rota de fuga. Nível interno (else): crachá 9901 e senha "Alpha2026".
+          <p style="font-size: 0.88rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+            A porta da sala de servidores do laboratório exige dupla autenticação para liberação da tranca eletrônica, combinando verificação de credencial e estado do sistema contra bloqueios de emergência.
           </p>
+          <div style="background: var(--color-surface-low); border-left: 3px solid var(--color-tertiary); padding: 0.75rem 1rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 0.75rem; font-size: 0.83rem; line-height: 1.5;">
+            <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">📋 Regras de Negócio Obrigatórias:</div>
+            <ol style="margin: 0 0 0 1.2rem; padding: 0;">
+              <li>Solicite o código numérico do crachá do técnico (int) e a senha mestre (str).</li>
+              <li>Pergunte se o sistema de alarme de incêndio está em estado de emergência (resposta "sim" ou "nao", armazenada como booleano).</li>
+              <li><strong>Estrutura Aninhada Exigida:</strong>
+                <ul style="margin: 0.25rem 0 0 1.2rem; padding: 0; list-style-type: disc;">
+                  <li><strong>Nível Externo:</strong> Se o alarme de incêndio estiver ativado (<code>if em_emergencia:</code>), destranque a porta imediatamente por segurança com a mensagem <code>"ROTA DE FUGA: Porta destrancada automaticamente devido a emergência!"</code>.</li>
+                  <li><strong>Nível Interno (else do alarme desativado):</strong> Verifique se o código do crachá é igual a 9901 e se a senha mestre é <code>"Alpha2026"</code>:
+                    <ul style="margin: 0.25rem 0 0 1.2rem; padding: 0; list-style-type: circle;">
+                      <li>Se ambos baterem: <code>"Acesso Autorizado: Bem-vindo à Sala de Servidores."</code>.</li>
+                      <li>Se o crachá for 9901 mas a senha estiver incorreta: <code>"Falha de Autenticação: Senha mestre inválida."</code>.</li>
+                      <li>Se o crachá for incorreto: <code>"Acesso Negado: Identificador não autorizado no perímetro."</code>.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ol>
+          </div>
           <!-- Slot de Imagem Opcional do Professor -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="desafio_3"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_desafio_3" data-aula="aula_1_4" data-exercicio="aula_1_4_desafio_3" data-titulo="Desafio 3: Fechadura Digital Biométrica com Rota de Fuga"></div>
           <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.7rem;" onclick="toggleGabarito('gab-desafio-3')">
               👁️ Ver Solução Comentada
@@ -1217,12 +1629,70 @@ else:
             </span>
           </div>
 
-          <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1rem;">
-            Você foi encarregado de implementar o motor de triagem do edital de monitoria da coordenação de computação. O sistema deve validar requisitos eliminatórios em uma única expressão lógica, calcular o valor mensal conforme a carga horária (10h ou 20h) e aplicar a bonificação de excelência com o operador de atribuição composta <code>+=</code>.
+          <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 0.75rem;">
+            A coordenação da área de Computação está contratando novos monitores para o laboratório de informática. Você foi encarregado de implementar o motor de validação e precificação do edital em Python.
           </p>
 
+          <div class="ascii-flowchart-card" style="margin-bottom: 1.25rem;">
+            <pre class="ascii-flowchart-box" style="font-size: 0.78rem; line-height: 1.35;">┌────────────────────────────────────────────────────────────────────────┐
+│                   TRIAGEM DO EDITAL DE MONITORIA                       │
+├────────────────────────────────────────────────────────────────────────┤
+│  Requisitos Mínimos Obrigatórios (Eliminatórios):                      │
+│  - Média da disciplina &gt;= 8.5 OU Média Geral Acadêmica &gt;= 8.0          │
+│  - Frequência Escolar &gt;= 80%                                           │
+│  - NÃO possuir suspensão ativa no semestre                             │
+│  - NÃO acumular vínculo com outra bolsa remunerada                     │
+├────────────────────────────────────────────────────────────────────────┤
+│  Cálculo do Valor da Bolsa:                                            │
+│  - Carga Horária 10h semanais: R$ 400,00 base                          │
+│  - Carga Horária 20h semanais: R$ 700,00 base                          │
+│  - Bonificação por Excelência (+ R$ 100,00): Se Média Geral &gt;= 9.5     │
+└────────────────────────────────────────────────────────────────────────┘</pre>
+          </div>
+
+          <div style="background: var(--color-surface-low); border-left: 3px solid var(--color-primary); padding: 0.75rem 1rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 1.25rem; font-size: 0.83rem; line-height: 1.55;">
+            <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem; font-size: 0.9rem;">📋 Regras de Negócio e Cálculos:</div>
+            <ol style="margin: 0 0 0 1.2rem; padding: 0;">
+              <li><strong>Entrada de Identificação e Desempenho:</strong>
+                <ul style="margin: 0.2rem 0 0.4rem 1.2rem; padding: 0; list-style-type: disc;">
+                  <li>Nome do candidato (<code>str</code>).</li>
+                  <li>Média específica na disciplina de programação (<code>float</code>, 0 a 10).</li>
+                  <li>Média geral do histórico escolar (<code>float</code>, 0 a 10).</li>
+                  <li>Frequência percentual às aulas (<code>float</code>, ex: 85.0).</li>
+                </ul>
+              </li>
+              <li><strong>Entrada de Condições Disciplinares e de Vínculo:</strong>
+                <ul style="margin: 0.2rem 0 0.4rem 1.2rem; padding: 0; list-style-type: disc;">
+                  <li>Possui registro de suspensão disciplinar no semestre? (<code>sim</code> ou <code>nao</code>).</li>
+                  <li>Já recebe outra bolsa remunerada ativa? (<code>sim</code> ou <code>nao</code>).</li>
+                  <li>Carga horária semanal pretendida (<code>int</code>: informar 10 ou 20).</li>
+                </ul>
+              </li>
+              <li><strong>Validação Lógica Eliminatória:</strong>
+                O candidato só é considerado apto se cumprir a seguinte condição lógica em uma única instrução com parênteses:<br>
+                <code>(Média na matéria &ge; 8.5 ou Média geral &ge; 8.0) e (Frequência &ge; 80.0) e (não tem suspensão) e (não tem outra bolsa)</code>.
+              </li>
+              <li><strong>Precificação da Bolsa:</strong>
+                <ul style="margin: 0.2rem 0 0 1.2rem; padding: 0; list-style-type: disc;">
+                  <li><strong>Se o candidato for considerado apto:</strong>
+                    <ul style="margin: 0.2rem 0 0.2rem 1.2rem; padding: 0; list-style-type: circle;">
+                      <li>Defina o valor base de acordo com a carga horária (10 horas &rarr; R$ 400,00; 20 horas &rarr; R$ 700,00; qualquer outro valor &rarr; carga inválida).</li>
+                      <li>Verifique se o aluno tem direito ao bônus de excelência: se a Média Geral for maior ou igual a 9.5, incremente R$ 100,00 ao valor da bolsa utilizando o operador de atribuição composta <code>+=</code>.</li>
+                      <li>Exiba o parecer final: nome do bolsista, situação (DEFERIDO), carga horária homologada e o valor final da remuneração mensal.</li>
+                    </ul>
+                  </li>
+                  <li><strong>Se for considerado inapto:</strong>
+                    <ul style="margin: 0.2rem 0 0 1.2rem; padding: 0; list-style-type: circle;">
+                      <li>Imprima o parecer INDEFERIDO e liste de forma clara qual ou quais critérios causaram a recusa através de verificações simples adicionais.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+
           <!-- Slot de Imagem do Professor no Desafio Mestre -->
-          <div class="questao-imagem-slot" data-img-aula="aula_1_4" data-img-exercicio="desafio_mestre"></div>
+          <div class="questao-imagem-slot" id="slot-img-aula_1_4_desafio_mestre" data-aula="aula_1_4" data-exercicio="aula_1_4_desafio_mestre" data-titulo="Desafio Mestre: Edital de Monitoria Acadêmica"></div>
 
           <!-- Tabela de Casos I/O do Edital -->
           <h4 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">

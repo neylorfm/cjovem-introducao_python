@@ -1,0 +1,49 @@
+<!-- ============================================================================
+     PYTHONLAB — PAINEL ADMINISTRATIVO DO PROFESSOR (Professor.html)
+     Módulo de Gestão Docente:
+     - Relatório Consolidado de Progresso da Turma (Métricas & Desempenho)
+     ============================================================================ -->
+
+<div class="view-section" id="view-professor">
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+      <div>
+        <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+          Módulo de Gestão Docente
+        </span>
+        <h2 style="font-family: var(--font-headline); font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin-top: 0.35rem;">
+          Relatório Consolidado de Progresso da Turma
+        </h2>
+      </div>
+      <button class="btn btn-secondary" onclick="carregarRelatorioProfessor()">
+        🔄 Atualizar Dados
+      </button>
+    </div>
+
+    <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); margin-bottom: 1.5rem;">
+      Acompanhamento individual e coletivo dos estudantes cadastrados na planilha Google Sheets.
+    </p>
+
+    <!-- Tabela de Alunos -->
+    <div class="trace-table-container">
+      <table class="trace-table">
+        <thead>
+          <tr>
+            <th>Aluno</th>
+            <th>E-mail</th>
+            <th>Taxa de Conclusão de Aulas</th>
+            <th>XP Total</th>
+            <th>Última Atividade</th>
+          </tr>
+        </thead>
+        <tbody id="teacher-students-tbody">
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 1.5rem; color: var(--color-outline);">
+              Carregando dados da turma...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div> <!-- Fim de #view-professor -->

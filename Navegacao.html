@@ -1,0 +1,82 @@
+<!-- ============================================================================
+     PYTHONLAB — BARRAS DE NAVEGAÇÃO E DRAWER (Navegacao.html)
+     Componente Modular de Navegação e Atalhos Rápidos:
+     1. Barra Flutuante de Navegação entre Seções e Aulas (.floating-lesson-bar)
+     2. Drawer Lateral / Modal de Navegação Rápida entre Módulos (#modal-quick-nav)
+     3. Dock Móvel de Navegação Inferior para Celulares (#mobile-app-nav)
+     ============================================================================ -->
+
+<!-- 1. Barra Flutuante de Navegação entre Aulas (Sempre Visível sem Rolar a Página) -->
+<div class="floating-lesson-bar" id="floating-lesson-bar" style="display: none;">
+  <button class="floating-nav-btn" onclick="navegarSecaoRelativa(-1)" id="btn-floating-prev" title="Seção Anterior">
+    <span>◀</span>
+    <span class="floating-btn-text" id="floating-prev-text">Anterior</span>
+  </button>
+  <button class="floating-nav-btn primary" onclick="abrirMenuNavegacaoRapida()" id="btn-floating-catalog" title="Abrir menu de navegação de aulas e seções">
+    <span>📚</span>
+    <span class="floating-btn-text">Navegação</span>
+    <span class="floating-btn-badge" id="floating-lesson-badge">Aula 1.2</span>
+  </button>
+  <button class="floating-nav-btn" onclick="navegarSecaoRelativa(1)" id="btn-floating-next" title="Próxima Seção">
+    <span class="floating-btn-text" id="floating-next-text">Próxima</span>
+    <span>▶</span>
+  </button>
+  <button class="floating-nav-btn icon-only" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Subir para o Topo da Aula">
+    <span>⬆</span>
+  </button>
+</div>
+
+<!-- 2. Drawer / Modal de Navegação Rápida entre Cursos, Módulos e Aulas -->
+<div class="modal-overlay quick-nav-overlay" id="modal-quick-nav" style="display: none;" onclick="if(event.target===this) fecharMenuNavegacaoRapida()">
+  <div class="quick-nav-drawer" id="quick-nav-drawer-content">
+    <div class="quick-nav-header">
+      <div class="quick-nav-header-left">
+        <span style="font-size: 1.35rem;">📚</span>
+        <div>
+          <h3 class="quick-nav-title">Navegação Rápida de Aulas</h3>
+          <span class="quick-nav-subtitle">Navegue entre módulos e aulas instantaneamente sem rolar a página</span>
+        </div>
+      </div>
+      <button class="quick-nav-close-btn" onclick="fecharMenuNavegacaoRapida()" title="Fechar (Esc)">✕</button>
+    </div>
+
+    <!-- Abas dos Cursos no Menu Suspenso -->
+    <div class="quick-nav-courses-bar" id="drawer-course-tabs">
+      <button class="quick-nav-course-tab active" id="drawer-tab-logica" onclick="selecionarCursoNoDrawer('curso_logica_python')">
+        🐍 1º Curso: Lógica em Python
+      </button>
+      <button class="quick-nav-course-tab" id="drawer-tab-vis" onclick="selecionarCursoNoDrawer('curso_visualizacao_dados')">
+        📊 2º Curso: Visualização de Dados
+      </button>
+    </div>
+
+    <!-- Lista Hierárquica de Módulos e Aulas -->
+    <div class="quick-nav-body" id="quick-nav-drawer-body">
+      <!-- Injetado dinamicamente por renderQuickNavDrawer() -->
+    </div>
+  </div>
+</div>
+
+<!-- 3. Barra de Navegação Móvel Fixa no Rodapé (Mobile Bottom Navigation Dock) -->
+<nav class="mobile-bottom-nav" id="mobile-app-nav" aria-label="Navegação móvel">
+  <button class="nav-item active" id="mob-nav-trilha" data-view="view-dashboard" onclick="navigateTo('view-dashboard')" title="Ir para Cursos e Módulos">
+    <span class="nav-icon">📚</span>
+    <span class="nav-label">Cursos</span>
+  </button>
+  <button class="nav-item" id="mob-nav-aula" data-view="view-aula" onclick="abrirModoAulaTeoria()" title="Explicações e Fundamentos da Aula">
+    <span class="nav-icon">📖</span>
+    <span class="nav-label">Aula</span>
+  </button>
+  <button class="nav-item" id="mob-nav-oficina" data-view="view-aula" onclick="abrirModoAulaOficina()" title="Exercícios Propostos e Treinamento Gradual">
+    <span class="nav-icon">🛠️</span>
+    <span class="nav-label">Oficina</span>
+  </button>
+  <button class="nav-item" id="mob-nav-simulador" data-view="view-aula" onclick="abrirModoAulaSimulador()" title="Simulador CPython e Teste de Mesa">
+    <span class="nav-icon">🔬</span>
+    <span class="nav-label">Lab IDE</span>
+  </button>
+  <button class="nav-item" id="nav-teacher-mobile" data-view="view-professor" style="display: none;" onclick="navigateTo('view-professor')" title="Painel Docente da Turma">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">Turma</span>
+  </button>
+</nav>

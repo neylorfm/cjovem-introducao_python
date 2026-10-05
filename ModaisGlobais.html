@@ -1,0 +1,138 @@
+<!-- ============================================================================
+     PYTHONLAB — MODAIS UTILITÁRIOS GLOBAIS (ModaisGlobais.html)
+     Componente Modular de Diálogos de Suporte e Perfil:
+     1. Modal de Perfil / Login por E-mail (#visitor-modal)
+     2. Modal do Caderno de Dúvidas para o Professor (#modal-duvida)
+     3. Modal de Upload / Gerenciamento de Imagem Didática (#modal-imagem-professor)
+     4. Modal Lightbox de Zoom de Imagem em Tela Cheia (#modal-lightbox-imagem)
+     ============================================================================ -->
+
+<!-- 1. Modal de Perfil / Login por E-mail -->
+<div class="modal-overlay" id="visitor-modal" style="display: none;" onclick="if(event.target===this) closeVisitorModal()">
+  <div class="modal-card" id="visitor-modal-card">
+    <div class="modal-icon-circle" id="modal-user-icon">🔐</div>
+    <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;" id="visitor-modal-title">
+      Identificação do Estudante
+    </h3>
+    <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1.25rem;" id="visitor-modal-desc">
+      Informe seu e-mail cadastrado na planilha (ex.: <code>neylor@gmail.com</code>) para conectar seu perfil, sincronizar seu histórico e acumular XP.
+    </p>
+
+    <div id="modal-login-form-container" style="margin-bottom: 1.25rem; text-align: left;">
+      <label for="login-email-input" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-on-surface-variant); margin-bottom: 0.4rem;">
+        E-mail cadastrado na turma:
+      </label>
+      <input type="email" id="login-email-input" placeholder="exemplo@gmail.com" style="width: 100%; box-sizing: border-box; padding: 0.75rem 1rem; border: 1.5px solid var(--color-outline-variant); border-radius: var(--radius-md); font-size: 0.95rem; font-family: var(--font-body); outline: none;" onkeydown="if(event.key==='Enter') loginComEmail()">
+    </div>
+
+    <div id="modal-actions-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <button class="btn btn-primary" id="btn-conectar-email" onclick="loginComEmail()">
+        🚀 Conectar Perfil
+      </button>
+      <button class="btn btn-outline" onclick="closeVisitorModal()">
+        Continuar como Visitante
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Modal de Registro de Dúvida para o Professor -->
+<div class="modal-overlay" id="modal-duvida" style="display: none;">
+  <div class="modal-card" style="max-width: 520px; text-align: left;">
+    <div style="display: flex; align-items: gap: 0.75rem; margin-bottom: 1rem;">
+      <div style="width: 2.5rem; height: 2.5rem; border-radius: var(--radius-full); background: #fee2e2; color: #b91c1c; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+        ❓
+      </div>
+      <div>
+        <h3 style="font-family: var(--font-headline); font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+          Caderno de Dúvidas para o Professor
+        </h3>
+        <span style="font-size: 0.8rem; color: var(--color-outline);" id="modal-duvida-topico">
+          Aula Selecionada
+        </span>
+      </div>
+    </div>
+    <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+      Escreva abaixo sua dúvida ou dificuldade. O item ficará registrado no seu Dashboard para você consultar na aula e o professor poderá visualizar os tópicos com mais dúvidas para reforço.
+    </p>
+    <textarea id="modal-duvida-texto" rows="4" style="width: 100%; border: 1px solid var(--color-outline-variant); border-radius: var(--radius-md); padding: 0.75rem; font-family: var(--font-body); font-size: 0.85rem; margin-bottom: 1.25rem; resize: vertical;" placeholder="Ex: Não compreendi a diferença entre id() e o operador is, ou por que o valor não foi alterado na memória..."></textarea>
+    <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+      <button class="btn btn-outline" onclick="fecharModalDuvida()">
+        Cancelar
+      </button>
+      <button class="btn btn-secondary" onclick="confirmarSalvarDuvida()">
+        Salvar no Caderno de Dúvidas
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Modal de Upload / Gerenciamento de Imagem Didática (Exclusivo Professor) -->
+<div class="modal-overlay" id="modal-imagem-professor" style="display: none;">
+  <div class="modal-card" style="max-width: 520px; text-align: left;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <span style="font-size: 1.5rem;">📷</span>
+        <div>
+          <h3 style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Anexar Imagem Explicativa
+          </h3>
+          <span style="font-size: 0.75rem; color: var(--color-outline);" id="modal-img-subtitulo">
+            Exercício Resolvido
+          </span>
+        </div>
+      </div>
+      <button class="btn btn-outline" style="padding: 0.2rem 0.5rem; font-size: 1rem; border: none;" onclick="fecharModalImagemProfessor()">✕</button>
+    </div>
+
+    <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 1rem; line-height: 1.45;">
+      Faça upload de um diagrama, mapa mental ou foto de lousa. A imagem será salva automaticamente na pasta <strong>imagens</strong> do Google Drive (mesma pasta da planilha). As imagens são opcionais.
+    </p>
+
+    <!-- Preview / Dropzone -->
+    <div id="modal-img-dropzone" style="border: 2px dashed var(--color-outline-variant); border-radius: var(--radius-lg); padding: 1.25rem; text-align: center; background: var(--color-surface-low); cursor: pointer; margin-bottom: 1rem;" onclick="document.getElementById('modal-img-file-input').click()">
+      <input type="file" id="modal-img-file-input" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="aoSelecionarArquivoImagem(event)">
+      <div id="modal-img-placeholder">
+        <div style="font-size: 2rem; margin-bottom: 0.25rem;">📁</div>
+        <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-primary);">Clique para selecionar imagem</div>
+        <div style="font-size: 0.75rem; color: var(--color-outline); margin-top: 0.2rem;">PNG, JPG ou WebP (máx. 5 MB)</div>
+      </div>
+      <div id="modal-img-preview-container" style="display: none;">
+        <img id="modal-img-preview" src="" alt="Pré-visualização" style="max-height: 180px; max-width: 100%; border-radius: var(--radius-md); object-fit: contain; margin: 0 auto; display: block; box-shadow: var(--shadow-sm);">
+        <div style="font-size: 0.75rem; color: var(--color-secondary); margin-top: 0.4rem; font-weight: 600;">Clique para trocar a imagem</div>
+      </div>
+    </div>
+
+    <!-- Campo de Legenda Opcional -->
+    <div style="margin-bottom: 1.25rem;">
+      <label for="modal-img-legenda" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-on-surface-variant); margin-bottom: 0.35rem;">
+        Legenda explicativa da imagem (opcional):
+      </label>
+      <input type="text" id="modal-img-legenda" placeholder="Ex: Diagrama de transição de ponteiros e imutabilidade de inteiros" style="width: 100%; box-sizing: border-box; padding: 0.65rem 0.85rem; border: 1px solid var(--color-outline-variant); border-radius: var(--radius-md); font-size: 0.85rem; font-family: var(--font-body); outline: none;">
+    </div>
+
+    <!-- Ações -->
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+      <button class="btn btn-outline" id="btn-remover-img-prof" style="color: #b91c1c; border-color: #fca5a5; display: none;" onclick="confirmarRemoverImagemProfessor()">
+        🗑️ Remover Imagem
+      </button>
+      <div style="display: flex; gap: 0.5rem; margin-left: auto;">
+        <button class="btn btn-outline" onclick="fecharModalImagemProfessor()">
+          Cancelar
+        </button>
+        <button class="btn btn-primary" id="btn-salvar-img-prof" onclick="confirmarSalvarImagemProfessor()">
+          💾 Salvar no Google Drive
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Modal Lightbox de Zoom de Imagem Didática (Tela Cheia) -->
+<div class="lightbox-overlay" id="modal-lightbox-imagem" onclick="if(event.target===this) fecharLightboxImagem()">
+  <div class="lightbox-content">
+    <button class="lightbox-close-btn" onclick="fecharLightboxImagem()" title="Fechar (Esc)">✕</button>
+    <img class="lightbox-img" id="lightbox-img-element" src="" alt="Imagem Didática Ampliada">
+    <div class="lightbox-caption" id="lightbox-caption-element"></div>
+  </div>
+</div>

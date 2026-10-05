@@ -1,0 +1,1866 @@
+<!-- ============================================================================
+     PYTHONLAB — AULA 1.5: ESTRUTURAS DE REPETIÇÃO (WHILE, FOR), SEQUÊNCIAS E CONTROLE DE FLUXO (Aula1_5.html)
+     Alinhada integralmente às diretrizes pedagógicas de aulas/aula1_5.md
+     ============================================================================ -->
+
+<div class="view-section" id="view-aula">
+  <!-- Dados do Simulador CPython da Aula (Encapsulamento Local) -->
+  <script type="application/json" class="simulation-steps-data">
+[
+  {
+    "step": 0,
+    "line": null,
+    "insightTitle": "Passo 0: Preparação da Call Stack (Aula 1.5)",
+    "insightDesc": "Inicie o simulador para acompanhar a execução do laço for com interrupção prematura (break) e o rastreio de memória CPython.",
+    "stack": [],
+    "heap": [],
+    "stdout": "> (Aguardando início...)"
+  },
+  {
+    "step": 1,
+    "line": 1,
+    "insightTitle": "Passo 1: Inicialização do Acumulador (soma = 0.0)",
+    "insightDesc": "O literal float 0.0 é alocado no Heap em 0x7FC01 e vinculado à variável local 'soma'.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC01"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC01",
+        "val": "0.0",
+        "type": "float"
+      }
+    ],
+    "stdout": ""
+  },
+  {
+    "step": 2,
+    "line": 2,
+    "insightTitle": "Passo 2: Início do Laço for — 1ª Iteração (valor = 8.0)",
+    "insightDesc": "O iterador da lista fornece o 1º elemento. A variável 'valor' aponta para 8.0 em 0x7FC02.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC01"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC02"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC01",
+        "val": "0.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC02",
+        "val": "8.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 1] valor = 8.0"
+  },
+  {
+    "step": 3,
+    "line": 3,
+    "insightTitle": "Passo 3: Teste Condicional (8.0 < 5.0)",
+    "insightDesc": "CPython avalia a condição: 8.0 < 5.0 resulta em False. O bloco do break é ignorado e o laço prossegue.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC01"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC02"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC01",
+        "val": "0.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC02",
+        "val": "8.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 1] valor = 8.0 | Teste 8.0 < 5.0 -> False"
+  },
+  {
+    "step": 4,
+    "line": 5,
+    "insightTitle": "Passo 4: Acumulação (soma += valor)",
+    "insightDesc": "0.0 + 8.0 = 8.0. Um novo float 8.0 é alocado no Heap em 0x7FC03 e 'soma' passa a apontar para ele (imutabilidade de números).",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC03"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC02"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC01",
+        "val": "0.0 (antigo)",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC02",
+        "val": "8.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC03",
+        "val": "8.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 1] soma acumulada: 8.0"
+  },
+  {
+    "step": 5,
+    "line": 2,
+    "insightTitle": "Passo 5: 2ª Iteração do Laço for (valor = 7.5)",
+    "insightDesc": "O iterador avança para o 2º elemento. A variável 'valor' agora aponta para 7.5 em 0x7FC04.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC03"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC04"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC03",
+        "val": "8.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC04",
+        "val": "7.5",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 2] valor = 7.5"
+  },
+  {
+    "step": 6,
+    "line": 3,
+    "insightTitle": "Passo 6: Teste Condicional (7.5 < 5.0)",
+    "insightDesc": "CPython avalia: 7.5 < 5.0 resulta em False. O bloco do break é novamente ignorado.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC03"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC04"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC03",
+        "val": "8.0",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC04",
+        "val": "7.5",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 2] valor = 7.5 | Teste 7.5 < 5.0 -> False"
+  },
+  {
+    "step": 7,
+    "line": 5,
+    "insightTitle": "Passo 7: Acumulação (soma += valor)",
+    "insightDesc": "8.0 + 7.5 = 15.5. Novo objeto 15.5 em 0x7FC05 no Heap. A variável 'soma' é atualizada.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC05"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC04"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC03",
+        "val": "8.0 (antigo)",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC04",
+        "val": "7.5",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC05",
+        "val": "15.5",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 2] soma acumulada: 15.5"
+  },
+  {
+    "step": 8,
+    "line": 2,
+    "insightTitle": "Passo 8: 3ª Iteração do Laço for (valor = 4.0)",
+    "insightDesc": "O iterador avança para o 3º elemento: 4.0 em 0x7FC06 no Heap.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC05"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC06"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC05",
+        "val": "15.5",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC06",
+        "val": "4.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 3] valor = 4.0"
+  },
+  {
+    "step": 9,
+    "line": 3,
+    "insightTitle": "Passo 9: Teste Condicional (4.0 < 5.0) -> TRUE!",
+    "insightDesc": "4.0 < 5.0 é avaliado como True! O fluxo entra imediatamente no bloco if da Linha 4.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC05"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC06"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC05",
+        "val": "15.5",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC06",
+        "val": "4.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 3] valor = 4.0 | Teste 4.0 < 5.0 -> True! Entrando no if..."
+  },
+  {
+    "step": 10,
+    "line": 4,
+    "insightTitle": "Passo 10: Interrupção Imediata com break",
+    "insightDesc": "A instrução break é disparada! O laço for é abortado instantaneamente, ignorando os passos seguintes e o elemento 9.0 restante na lista.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC05"
+      },
+      {
+        "name": "valor",
+        "type": "float",
+        "addr": "0x7FC06"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC05",
+        "val": "15.5",
+        "type": "float"
+      },
+      {
+        "addr": "0x7FC06",
+        "val": "4.0",
+        "type": "float"
+      }
+    ],
+    "stdout": "> [Iteração 3] Comando break executado! Laço encerrado prematuramente."
+  },
+  {
+    "step": 11,
+    "line": 6,
+    "insightTitle": "Passo 11: Saída Final no Terminal (Linha 6)",
+    "insightDesc": "O fluxo é direcionado para a primeira linha fora do laço. print exibe o acumulador 'soma' preservado com o valor 15.5.",
+    "stack": [
+      {
+        "name": "soma",
+        "type": "float",
+        "addr": "0x7FC05"
+      }
+    ],
+    "heap": [
+      {
+        "addr": "0x7FC05",
+        "val": "15.5",
+        "type": "float"
+      }
+    ],
+    "stdout": "Soma homologada: 15.5"
+  }
+]
+  </script>
+
+
+  <!-- ========================================================================
+       CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
+       ======================================================================== -->
+  <div class="lesson-header-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+    <div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
+        <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 1: Fundamentos</span>
+        <span style="color: var(--color-outline);">›</span>
+        <span style="font-weight: 600; color: var(--color-on-surface-variant);">Aula 1.5</span>
+        <span style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          Intermediário Inicial • 65 min
+        </span>
+        <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          +220 XP
+        </span>
+      </div>
+      <h1 class="lesson-main-title" style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+        Estruturas de Repetição (While, For), Sequências e Controle de Fluxo
+      </h1>
+      <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
+        Prática no <strong>Jupyter Notebook</strong> (Anaconda3) ou <strong>Google Colab</strong> (Tablet/Navegador).
+      </p>
+    </div>
+
+    <!-- 3 Ações de Gestão pelo Próprio Aluno -->
+    <div class="lesson-header-actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_1_5', 'Aula 1.5: Estruturas de Repetição (While, For)')">
+        📌 Onde Parei
+      </button>
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_1_5', 'Estruturas de Repetição')">
+        ❓ Tenho Dúvidas
+      </button>
+      <button class="btn btn-success btn-concluir-action" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+        ✓ Compreendi e Concluí (+220 XP)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       DIVISOR DIDÁTICO NO TOPO: ESCOLHA DA TRILHA DE ESTUDO
+       ======================================================================== -->
+  <div class="lesson-mode-bifurcator" id="lesson-mode-bifurcator">
+    <div class="bifurcator-header">
+      <div>
+        <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary);">
+          🧭 Como você deseja estudar esta aula hoje?
+        </div>
+        <div style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.2rem;">
+          Decida se prefere reforçar os conceitos teóricos ou ir direto para a prática no Google Colab/Jupyter.
+        </div>
+      </div>
+      <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+        Fast-Track ou Deep-Dive
+      </span>
+    </div>
+    <div class="bifurcator-nav">
+      <button class="bifurcator-btn active" id="btn-mode-explicacoes" onclick="setModoVisualizacaoAula('explicacoes')">
+        <span class="btn-mode-icon">📖</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">1. Explicações & Fundamentos</span>
+          <span class="btn-mode-subtitle">while e for • range() • break, continue, else • Stack vs Heap • Trace Table</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-pratica" onclick="setModoVisualizacaoAula('pratica')">
+        <span class="btn-mode-icon">🛠️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">2. Exercícios Propostos & Prática</span>
+          <span class="btn-mode-subtitle">5 Grupos Práticos • 5 Desafios • Desafio Mestre Totem do Refeitório</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-tudo" onclick="setModoVisualizacaoAula('tudo')">
+        <span class="btn-mode-icon">👁️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">Visualização Completa</span>
+          <span class="btn-mode-subtitle">Exibir tudo em sequência linear contínua</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTAINER TRILHA 1: EXPLICAÇÕES & FUNDAMENTOS -->
+  <div id="bloco-aula-explicacoes">
+
+    <!-- ========================================================================
+         1. VISÃO GERAL E FUNDAMENTOS TEÓRICOS
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Fundamentos Conceituais
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            1. O Conceito de Laço de Repetição (Loop) e Controle de Fluxo
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          CPython Iteration Engine
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Até a aula anterior, os algoritmos executavam as instruções sequencialmente ou tomavam desvios de caminho único (<code>if-elif-else</code>). Os <strong>laços de repetição</strong> permitem executar um mesmo conjunto de instruções várias vezes de maneira automatizada, evitando a duplicação manual de código e viabilizando o processamento de grandes volumes de dados.
+      </p>
+
+      <!-- Diagrama de Fluxo do Laço -->
+      <div class="ascii-flowchart-card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
+        <div style="font-size: 0.8rem; font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary); text-transform: uppercase; margin-bottom: 0.75rem;">
+          Mapeamento Lógico de um Ciclo de Repetição
+        </div>
+        <div class="ascii-flowchart-box">
+          <div style="font-family: var(--font-code); font-size: 0.85rem; line-height: 1.45; color: var(--color-primary); display: inline-block; text-align: left; background: #0f172a; color: #38bdf8; padding: 1rem 1.5rem; border-radius: var(--radius-md);">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌────────────────────────┐<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;Bloco Anterior ao Laço │<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───────────┬────────────┘<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───────────▼────────────┐<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌──────&gt;│&nbsp;&nbsp;&nbsp;&nbsp;Condição Lógica&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───────────┬────────────┘<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;[ Repetir: True ]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ Encerrar: False ]<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌────────────────────────┐&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───────┤ Bloco Interno (Iteração)│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────────────────────────┘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌────────────────────────┐<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ Bloco Posterior ao Laço │<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└────────────────────────┘
+          </div>
+        </div>
+      </div>
+
+      <!-- As Duas Estruturas: while e for -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.25rem;">🔁</span>
+            <strong style="font-size: 1rem; color: var(--color-primary);">1. O Laço while (Enquanto-Faça)</strong>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Executa o bloco delimitado enquanto a condição lógica permanecer <code>True</code>. Indicado quando <strong>não sabemos previamente quantas vezes o laço irá rodar</strong> (ex.: validação contínua até o usuário digitar o valor correto).
+          </p>
+          <ul style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.6; padding-left: 1.2rem; margin: 0;">
+            <li><strong>Inicialização:</strong> Declaração de contadores ou sentinelas antes do laço.</li>
+            <li><strong>Condição:</strong> Teste booleano avaliado antes de cada volta.</li>
+            <li><strong>Atualização (Passo):</strong> Alteração obrigatória (<code>+=</code> ou <code>-=</code>) para evitar <em>loop infinito</em>.</li>
+          </ul>
+        </div>
+
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.25rem;">🎯</span>
+            <strong style="font-size: 1rem; color: var(--color-primary);">2. O Laço for (Para-Cada-Em)</strong>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+            Em Python, o <code>for</code> itera diretamente sobre os elementos de uma sequência (listas, tuplas, strings) ou intervalos gerados por <code>range()</code>. A cada ciclo, a variável recebe automaticamente o próximo item.
+          </p>
+          <ul style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.6; padding-left: 1.2rem; margin: 0;">
+            <li><strong>Iteração Direta:</strong> <code>for item in lista:</code> percorre item a item sem precisar gerenciar índices manualmente.</li>
+            <li><strong>Iteração por Índice:</strong> <code>for i in range(len(lista)):</code> permite acessar ou correlacionar múltiplas listas.</li>
+            <li><strong>Controle de Ciclo:</strong> Encerra naturalmente ao esgotar os itens da coleção.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tabela da Função Geradora range() -->
+      <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+        A Função Geradora range() sob Demanda
+      </h3>
+      <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+        Gera sequências numéricas de inteiros sob demanda, consumindo espaço constante na memória RAM (lazy evaluation):
+      </p>
+      <div style="overflow-x: auto; margin-bottom: 1.5rem;">
+        <table class="trace-table" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>Sintaxe</th>
+              <th>Início (Start)</th>
+              <th>Fim (Stop - Exclusivo)</th>
+              <th>Passo (Step)</th>
+              <th>Sequência Produzida</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>range(5)</code></td>
+              <td>0 (padrão)</td>
+              <td>5 (para no 4)</td>
+              <td>+1 (padrão)</td>
+              <td><span style="font-family: var(--font-code); color: #0284c7; font-weight: 700;">0, 1, 2, 3, 4</span></td>
+            </tr>
+            <tr>
+              <td><code>range(2, 7)</code></td>
+              <td>2</td>
+              <td>7 (para no 6)</td>
+              <td>+1 (padrão)</td>
+              <td><span style="font-family: var(--font-code); color: #0284c7; font-weight: 700;">2, 3, 4, 5, 6</span></td>
+            </tr>
+            <tr>
+              <td><code>range(10, 0, -2)</code></td>
+              <td>10</td>
+              <td>0 (para no 2)</td>
+              <td>-2 (decrescente)</td>
+              <td><span style="font-family: var(--font-code); color: #0284c7; font-weight: 700;">10, 8, 6, 4, 2</span></td>
+            </tr>
+            <tr>
+              <td><code>range(10, 0, 2)</code></td>
+              <td>10</td>
+              <td>0</td>
+              <td>+2 (incompatível)</td>
+              <td><span style="font-family: var(--font-code); color: #dc2626; font-weight: 700;">Intervalo Vazio (0 iterações)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modificadores de Fluxo: break, continue e else -->
+      <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+        Modificadores de Fluxo: break, continue e Cláusula else
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+        <div style="background: var(--color-surface-lowest); border: 1.5px solid #fca5a5; border-radius: var(--radius-md); padding: 0.85rem;">
+          <strong style="color: #b91c1c; font-size: 0.88rem;">🛑 break</strong>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.25rem; line-height: 1.45;">
+            Interrompe a execução do laço <em>imediatamente</em> e salta para a primeira instrução após o laço. Cancela a cláusula <code>else</code>.
+          </p>
+        </div>
+        <div style="background: var(--color-surface-lowest); border: 1.5px solid #fed7aa; border-radius: var(--radius-md); padding: 0.85rem;">
+          <strong style="color: #c2410c; font-size: 0.88rem;">⏭️ continue</strong>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.25rem; line-height: 1.45;">
+            Interrompe apenas a iteração atual e avança diretamente para a próxima repetição do laço.
+          </p>
+        </div>
+        <div style="background: var(--color-surface-lowest); border: 1.5px solid #bbf7d0; border-radius: var(--radius-md); padding: 0.85rem;">
+          <strong style="color: #15803d; font-size: 0.88rem;">✅ Cláusula else no Laço</strong>
+          <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.25rem; line-height: 1.45;">
+            Bloco executado <em>exclusivamente</em> quando o laço percorre todas as voltas sem ser interrompido por um <code>break</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         2. DIAGRAMA DE MEMÓRIA CPYTHON (STACK VS HEAP NO LOOP)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Engenharia de Baixo Nível
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            2. Diagrama de Memória CPython (Stack vs Heap no Loop)
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          Imutabilidade de Inteiros
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Em Python, inteiros são <strong>objetos imutáveis</strong>. Acompanhe o que acontece na memória quando uma variável contadora sofre incrementos numéricos sucessivos (<code>contador += 1</code>):
+      </p>
+
+      <div style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.85rem; color: #f8fafc; margin-bottom: 1.25rem;">
+        <span style="color: #64748b;"># Código em Execução</span><br>
+        <span style="color: #f59e0b;">contador</span> = <span style="color: #38bdf8;">0</span><br>
+        <span style="color: #f43f5e;">while</span> <span style="color: #f59e0b;">contador</span> &lt; <span style="color: #38bdf8;">3</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #f59e0b;">contador</span> += <span style="color: #38bdf8;">1</span>
+      </div>
+
+      <!-- Comparativo Visual Stack vs Heap -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="font-size: 0.8rem; font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary); margin-bottom: 0.5rem;">
+            PASSO 0 (Inicialização: contador = 0)
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-code); font-size: 0.8rem;">
+            <div style="background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: 4px; border-left: 3px solid #0284c7;">
+              <strong>Call Stack:</strong> <code>contador</code> ➔ ponteiro <code>0x7FA00</code>
+            </div>
+            <div style="background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: 4px; border-left: 3px solid #10b981;">
+              <strong>Heap:</strong> <code>[0x7FA00] int = 0</code>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+          <div style="font-size: 0.8rem; font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary); margin-bottom: 0.5rem;">
+            PASSO 1 (Após a volta 1: contador += 1)
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-code); font-size: 0.8rem;">
+            <div style="background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: 4px; border-left: 3px solid #0284c7;">
+              <strong>Call Stack:</strong> <code>contador</code> ➔ novo ponteiro <code>0x7FA01</code>
+            </div>
+            <div style="background: var(--color-surface-low); padding: 0.5rem 0.75rem; border-radius: 4px; border-left: 3px solid #10b981;">
+              <strong>Heap:</strong> <code>[0x7FA01] int = 1</code> (o objeto 0 foi descartado)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: var(--radius-md); padding: 0.85rem 1rem; font-size: 0.85rem; color: #92400e;">
+        <strong>⚠️ Alerta Pedagógico:</strong> Como números inteiros em Python são objetos imutáveis, a cada incremento a variável aponta para um novo endereço de memória na Heap. Se a instrução de incremento for omitida, a condição permanecerá verdadeira infinitamente, travando o programa e sobrecarregando a CPU!
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         3. SIMULADOR PASSO A PASSO & TESTE DE MESA (TRACE TABLE)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Simulação Interativa
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            3. Player de Linha Ativa e Tabela de Rastreio (Trace Table)
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          Algoritmo: Acúmulo com Interrupção (break)
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Acompanhe a simulação do algoritmo de homologação de notas com critério de parada (<code>break</code>). Observe como o laço é encerrado no momento em que uma nota inferior a 5.0 é encontrada:
+      </p>
+
+      <!-- Player de Código e Terminal -->
+      <div class="code-player" style="margin-bottom: 1.5rem;">
+        <div class="code-editor-header">
+          <div class="code-editor-title">
+            <span>🐍</span>
+            <span>simulador_loop_break.py</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;" class="code-editor-actions">
+            <button class="player-btn" id="btn-prev-step" onclick="prevStep()">◀ Passo Anterior</button>
+            <span style="font-family: var(--font-code); font-size: 0.8rem; color: #94a3b8;" id="step-counter">Passo 1 de 11</span>
+            <button class="player-btn" id="btn-next-step" onclick="nextStep()">Próximo Passo ▶</button>
+            <button class="player-btn" onclick="resetSimulation()">🔄 Reiniciar</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 0;">
+          <pre class="code-display" id="code-snippet-box"><code><span class="code-line" id="line-1"><span class="line-num">1</span><span class="code-text"><span class="token-var">soma</span> = <span class="token-num">0.0</span></span></span>
+<span class="code-line" id="line-2"><span class="line-num">2</span><span class="code-text"><span class="token-keyword">for</span> <span class="token-var">valor</span> <span class="token-keyword">in</span> [<span class="token-num">8.0</span>, <span class="token-num">7.5</span>, <span class="token-num">4.0</span>, <span class="token-num">9.0</span>]:</span></span>
+<span class="code-line" id="line-3"><span class="line-num">3</span><span class="code-text">    <span class="token-keyword">if</span> <span class="token-var">valor</span> &lt; <span class="token-num">5.0</span>:</span></span>
+<span class="code-line" id="line-4"><span class="line-num">4</span><span class="code-text">        <span class="token-keyword">break</span></span></span>
+<span class="code-line" id="line-5"><span class="line-num">5</span><span class="code-text">    <span class="token-var">soma</span> += <span class="token-var">valor</span></span></span>
+<span class="code-line" id="line-6"><span class="line-num">6</span><span class="code-text"><span class="token-keyword">print</span>(<span class="token-str">"Soma homologada:"</span>, <span class="token-var">soma</span>)</span></span></code></pre>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span>Terminal / Console STDOUT</span>
+            <span style="font-size: 0.75rem; color: #64748b;">Python 3.12</span>
+          </div>
+          <div class="terminal-body" id="terminal-stdout">
+            &gt; Aguardando execução do primeiro passo...
+          </div>
+        </div>
+      </div>
+
+      <!-- Explicação Contextual do Passo -->
+      <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;" id="step-insight-container">
+        <h4 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;" id="step-insight-title">
+          Passo 1: Inicialização do Acumulador
+        </h4>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin: 0; line-height: 1.5;" id="step-insight-desc">
+          O interpretador avalia o literal float 0.0 e cria o objeto na Heap, associando o identificador 'soma' na Call Stack.
+        </p>
+      </div>
+
+      <!-- Tabela Trace Table Canônica -->
+      <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+        Tabela de Teste de Mesa (Trace Table Oficial)
+      </h3>
+      <div class="trace-table-container">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th>Passo</th>
+              <th>Linha</th>
+              <th>Variável valor</th>
+              <th>Variável soma</th>
+              <th>Teste Lógico (valor &lt; 5.0)</th>
+              <th>Ação / STDOUT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>01</td>
+              <td>Linha 1</td>
+              <td>—</td>
+              <td><code>0.0</code></td>
+              <td>—</td>
+              <td>Inicialização de acumulador</td>
+            </tr>
+            <tr>
+              <td>02</td>
+              <td>Linha 2</td>
+              <td><code>8.0</code></td>
+              <td><code>0.0</code></td>
+              <td><code>8.0 &lt; 5.0</code> ➔ False</td>
+              <td>Não entra no if</td>
+            </tr>
+            <tr>
+              <td>03</td>
+              <td>Linha 5</td>
+              <td><code>8.0</code></td>
+              <td><code>8.0</code></td>
+              <td>—</td>
+              <td>Acumula: 0.0 + 8.0</td>
+            </tr>
+            <tr>
+              <td>04</td>
+              <td>Linha 2</td>
+              <td><code>7.5</code></td>
+              <td><code>8.0</code></td>
+              <td><code>7.5 &lt; 5.0</code> ➔ False</td>
+              <td>Não entra no if</td>
+            </tr>
+            <tr>
+              <td>05</td>
+              <td>Linha 5</td>
+              <td><code>7.5</code></td>
+              <td><code>15.5</code></td>
+              <td>—</td>
+              <td>Acumula: 8.0 + 7.5</td>
+            </tr>
+            <tr>
+              <td>06</td>
+              <td>Linha 2</td>
+              <td><code>4.0</code></td>
+              <td><code>15.5</code></td>
+              <td><code>4.0 &lt; 5.0</code> ➔ <strong style="color: #dc2626;">True</strong></td>
+              <td>Entra no if</td>
+            </tr>
+            <tr>
+              <td>07</td>
+              <td>Linha 4</td>
+              <td><code>4.0</code></td>
+              <td><code>15.5</code></td>
+              <td>—</td>
+              <td><strong style="color: #b91c1c;">Executa break (encerra o laço)</strong></td>
+            </tr>
+            <tr>
+              <td>08</td>
+              <td>Linha 6</td>
+              <td>—</td>
+              <td><code>15.5</code></td>
+              <td>—</td>
+              <td><span style="color: #10b981; font-weight: 700;">Exibe: Soma homologada: 15.5</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div> <!-- FIM DO BLOCO DE EXPLICAÇÕES & FUNDAMENTOS -->
+
+  <!-- CONTAINER TRILHA 2: EXERCÍCIOS PROPOSTOS & PRÁTICA -->
+  <div id="bloco-aula-pratica">
+
+    <!-- ========================================================================
+         4. CADERNO DE ATIVIDADES POR GRUPOS & PROJETOS INTEGRADORES
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <!-- BARRA STICKY & CONTRAÍVEL DE NAVEGAÇÃO DOS EXERCÍCIOS (SEMPRE VISÍVEL EM 1 LINHA) -->
+    <div class="treinamento-sticky-bar" id="treinamento-gradual-sticky">
+      <div class="treinamento-sticky-inner">
+        <div class="treinamento-sticky-header">
+          <div class="treinamento-sticky-badge-wrap">
+            <span class="treinamento-sticky-pill">🎯 Treinamento Gradual</span>
+          </div>
+
+          <!-- Abas dos Grupos 1 a 5 em Linha Única Horizontal com Scroll Suave -->
+          <div class="treinamento-subtabs-scroll oficina-subtabs-bar">
+            <button class="treinamento-tab-btn active btn-primary" id="btn-tab-secao-1" onclick="switchOficinaBloco('secao-1')">
+              Grupo 1: while
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-2" onclick="switchOficinaBloco('secao-2')">
+              Grupo 2: for
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-3" onclick="switchOficinaBloco('secao-3')">
+              Grupo 3: range()
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-4" onclick="switchOficinaBloco('secao-4')">
+              Grupo 4: Modificadores
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-secao-5" onclick="switchOficinaBloco('secao-5')">
+              Grupo 5: Combinadas
+            </button>
+            <button class="treinamento-tab-btn btn-outline" id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')">
+              🏆 Desafios & Desafio Mestre
+            </button>
+          </div>
+
+          <!-- Botão de Expandir / Recolher Detalhes (1 Linha por Padrão) -->
+          <button class="treinamento-toggle-btn" onclick="toggleTreinamentoDetalhes()" id="btn-toggle-treinamento-detalhes" title="Expandir ou recolher detalhes desta seção">
+            <span class="treinamento-toggle-icon" id="icon-treinamento-detalhes">▾</span>
+            <span class="treinamento-toggle-text" id="text-treinamento-detalhes">Detalhes</span>
+          </button>
+        </div>
+
+        <!-- Painel de Detalhes Expansível (Começa recolhido para ocupar apenas 1 linha!) -->
+        <div class="treinamento-detalhes-body" id="treinamento-detalhes-body" style="display: none;">
+          <h2 class="treinamento-full-title">4. Caderno de Oficinas: Laços e Repetições (While, For, Range)</h2>
+          <p class="treinamento-full-desc">Oficinas práticas graduais para fixação de laços iterativos e condicionais, interrupções e acumuladores com testes de mesa.</p>
+        </div>
+      </div>
+    </div>
+
+      <!-- ====================================================================
+           PAINEL GRUPO 1: ESTRUTURA E LÓGICA DO LAÇO WHILE
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-1" style="display: block;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Grupo 1: Estrutura e Lógica do Laço while
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 3 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Exercícios focados em contadores, sentinelas, validação contínua de dados de entrada e controle de loops com <code>while True</code>.
+          </p>
+
+          <!-- Atividade 1.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 1.0 (Resolvida) — Validador de Acesso Contínuo</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Crie um validador de acesso contínuo (<code>while True</code>) que solicite uma senha numérica. O sistema deve controlar o número de tentativas através de um contador, validar se a entrada digitada possui 4 dígitos e interromper o ciclo ao atingir o acesso correto ou esgotar 3 tentativas.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              <span class="syn-comment"># Resolução Modelo</span><br>
+              tentativas = <span class="syn-num">0</span><br><br>
+              <span class="syn-kw">while</span> <span class="syn-bool">True</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;tentativas += <span class="syn-num">1</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;senha = <span class="syn-builtin">int</span>(<span class="syn-builtin">input</span>(<span class="syn-str">"Digite a senha de 4 dígitos: "</span>))<br><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">if</span> senha == <span class="syn-num">2026</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Acesso autorizado com sucesso!"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">break</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">else</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">f"Senha incorreta! Tentativa {tentativas} de 3."</span>)<br><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">if</span> tentativas == <span class="syn-num">3</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Limite de tentativas esgotado. Sistema bloqueado!"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">break</span>
+            </div>
+            <!-- Slot de Imagem Didática do Professor -->
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_1_5_g1_resolvido" data-aula="aula_1_5" data-exercicio="aula_1_5_g1_resolvido" data-titulo="Grupo 1: Atividade 1.0 (Validador de Acesso)"></div>
+          </div>
+
+          <!-- Atividade 1.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 1.1 (Proposta) — Contagem Regressiva do Motor Térmico</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Contadores & Sentinelas</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Desenvolva uma contagem regressiva para o acionamento de um motor térmico de testes. Inicialize a variável <code>tempo = 5</code>. Com um laço <code>while</code>, exiba o tempo restante a cada segundo e decremente 1 da variável até que atinja 0. Ao término do laço, imprima <em>"Motor ativado com sucesso!"</em>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g1_atv_1" data-aula="aula_1_5" data-exercicio="aula_1_5_g1_atv_1" data-titulo="Grupo 1: Atividade 1.1 (Contagem Regressiva)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g1-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g1-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>tempo = 5
+
+while tempo &gt; 0:
+    print(f"Contagem: {tempo} segundos...")
+    tempo -= 1
+
+print("Motor ativado com sucesso!")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 1.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 1.2 (Proposta) — Validação Contínua de Entradas</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Filtro de Entrada</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie um leitor de notas escolares com validação contínua. Peça ao usuário uma nota entre 0.0 e 10.0. Enquanto o valor informado for menor que 0 ou maior que 10, o programa deve exibir uma mensagem de erro e solicitar a nota novamente. Quando o valor for válido, imprima a nota homologada.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g1_atv_2" data-aula="aula_1_5" data-exercicio="aula_1_5_g1_atv_2" data-titulo="Grupo 1: Atividade 1.2 (Validação de Notas)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g1-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g1-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>nota = float(input("Digite uma nota entre 0.0 e 10.0: "))
+
+while nota &lt; 0.0 or nota &gt; 10.0:
+    print("Nota inválida! O valor precisa estar entre 0.0 e 10.0.")
+    nota = float(input("Tente novamente. Digite a nota: "))
+
+print(f"Nota validada e registrada: {nota}")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 1.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 1.3 (Proposta) — Laço Contínuo com Eco e break</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">while True</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Implemente um terminal de repetição textual. O programa deve ler repetidamente frases digitadas pelo usuário. A cada frase recebida, ele imprime o eco antecedido por <code>"Eco: "</code>. O laço contínuo deve ser finalizado apenas quando o usuário digitar a palavra <code>"fim"</code> (utilizando o comando <code>break</code>).
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g1_atv_3" data-aula="aula_1_5" data-exercicio="aula_1_5_g1_atv_3" data-titulo="Grupo 1: Atividade 1.3 (Terminal de Eco)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g1-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g1-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>while True:
+    mensagem = input("Digite uma mensagem (ou 'fim' para sair): ")
+    if mensagem.lower() == "fim":
+        print("Sessão finalizada pelo usuário.")
+        break
+    print(f"Eco: {mensagem}")</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL GRUPO 2: LAÇO FOR COM COLEÇÕES E ÍNDICES
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-2" style="display: none;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Grupo 2: Laço for com Coleções e Índices
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 3 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Iteração direta sobre itens de listas, acesso posicional por índice através de <code>range(len(...))</code> e filtragem acumulativa com condicionais.
+          </p>
+
+          <!-- Atividade 2.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 2.0 (Resolvida) — Análise de Temperaturas do Laboratório</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Dada uma lista de temperaturas diárias registradas no laboratório, percorra a lista diretamente para exibir os valores, acesse os dados por índice numérico para identificar o dia da semana correspondente e acumule a soma de todas as medições para calcular a média semanal consolidada.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              <span class="syn-comment"># Resolução Modelo</span><br>
+              temperaturas = [<span class="syn-num">24.5</span>, <span class="syn-num">26.0</span>, <span class="syn-num">23.5</span>, <span class="syn-num">28.0</span>, <span class="syn-num">25.0</span>]<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"--- 1. Iteração Direta ---"</span>)<br>
+              <span class="syn-kw">for</span> temp <span class="syn-kw">in</span> temperaturas:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">f"Temperatura aferida: {temp}°C"</span>)<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"\n--- 2. Acesso por Índice ---"</span>)<br>
+              <span class="syn-kw">for</span> i <span class="syn-kw">in</span> <span class="syn-builtin">range</span>(<span class="syn-num">0</span>, <span class="syn-builtin">len</span>(temperaturas), <span class="syn-num">1</span>):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">f"Dia {i + 1} -&gt; Leitura: {temperaturas[i]}°C"</span>)<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"\n--- 3. Acumulador de Média ---"</span>)<br>
+              soma_total = <span class="syn-num">0.0</span><br>
+              <span class="syn-kw">for</span> temp <span class="syn-kw">in</span> temperaturas:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;soma_total += temp<br><br>
+              media = soma_total / <span class="syn-builtin">len</span>(temperaturas)<br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">f"Média semanal consolidada: {media:.2f}°C"</span>)
+            </div>
+            <!-- Slot de Imagem Didática do Professor -->
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_1_5_g2_resolvido" data-aula="aula_1_5" data-exercicio="aula_1_5_g2_resolvido" data-titulo="Grupo 2: Atividade 2.0 (Temperaturas do Laboratório)"></div>
+          </div>
+
+          <!-- Atividade 2.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 2.1 (Proposta) — Iteração Direta com Coleções</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">for item in lista</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Defina a lista <code>equipamentos = ["Monitor", "Teclado", "Mouse", "Estabilizador"]</code>. Utilizando <code>for item in equipamentos:</code>, percorra a coleção e imprima cada item com o prefixo <em>"Dispositivo disponível: "</em>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g2_atv_1" data-aula="aula_1_5" data-exercicio="aula_1_5_g2_atv_1" data-titulo="Grupo 2: Atividade 2.1 (Lista de Equipamentos)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g2-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g2-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>equipamentos = ["Monitor", "Teclado", "Mouse", "Estabilizador"]
+
+for item in equipamentos:
+    print(f"Dispositivo disponível: {item}")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 2.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 2.2 (Proposta) — Acesso por Índice com len e range</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Listas Paralelas</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Considere duas listas alinhadas de mesmo tamanho: <code>alunos = ["Marina", "Carlos", "Lucas"]</code> e <code>pontos = [95, 78, 88]</code>. Utilizando <code>for i in range(0, len(alunos)):</code>, acesse o índice compartilhado <code>i</code> e imprima o nome de cada aluno acompanhado de sua pontuação: <em>"Aluno(a) [Nome] obteve [Pontos] pontos"</em>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g2_atv_2" data-aula="aula_1_5" data-exercicio="aula_1_5_g2_atv_2" data-titulo="Grupo 2: Atividade 2.2 (Acesso por Índice Alunos/Pontos)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g2-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g2-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>alunos = ["Marina", "Carlos", "Lucas"]
+pontos = [95, 78, 88]
+
+for i in range(0, len(alunos)):
+    print(f"Aluno(a) {alunos[i]} obteve {pontos[i]} pontos")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 2.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 2.3 (Proposta) — Acumuladores e Filtros em Listas</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Filtro Positivo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Dada a lista de movimentações bancárias <code>lancamentos = [120.0, -50.0, 300.0, -80.0, 45.0]</code>, crie um acumulador <code>saldo_positivo = 0.0</code> antes do laço. Percorra a lista e, utilizando uma condição <code>if</code>, some apenas os depósitos (valores maiores que zero), exibindo o total acumulado ao final.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g2_atv_3" data-aula="aula_1_5" data-exercicio="aula_1_5_g2_atv_3" data-titulo="Grupo 2: Atividade 2.3 (Filtro de Depósitos Bancários)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g2-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g2-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>lancamentos = [120.0, -50.0, 300.0, -80.0, 45.0]
+saldo_positivo = 0.0
+
+for valor in lancamentos:
+    if valor &gt; 0:
+        saldo_positivo += valor
+
+print(f"Total exclusivo de depósitos: R$ {saldo_positivo:.2f}")</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL GRUPO 3: A FUNÇÃO RANGE()
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-3" style="display: none;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Grupo 3: A Função range()
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 3 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Exploração prática de sequências progressivas, contagens regressivas com salto negativo e entendimento de intervalos matematicamente vazios.
+          </p>
+
+          <!-- Atividade 3.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 3.0 (Resolvida) — As Três Configurações de range()</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Demonstre em um único programa as três configurações da função <code>range()</code>: uma contagem crescente com limite simples, uma progressão com salto decrescente e um caso de intervalo vazio, exibindo uma mensagem de encerramento.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              <span class="syn-comment"># Resolução Modelo</span><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"--- 1. Sequência Simples: range(1, 5) ---"</span>)<br>
+              <span class="syn-kw">for</span> x <span class="syn-kw">in</span> <span class="syn-builtin">range</span>(<span class="syn-num">1</span>, <span class="syn-num">5</span>):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Contagem:"</span>, x)<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"\n--- 2. Salto Decrescente: range(10, 0, -2) ---"</span>)<br>
+              <span class="syn-kw">for</span> par <span class="syn-kw">in</span> <span class="syn-builtin">range</span>(<span class="syn-num">10</span>, <span class="syn-num">0</span>, -<span class="syn-num">2</span>):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Par decrescente:"</span>, par)<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"\n--- 3. Teste de Intervalo Vazio: range(5, 1, 1) ---"</span>)<br>
+              <span class="syn-kw">for</span> z <span class="syn-kw">in</span> <span class="syn-builtin">range</span>(<span class="syn-num">5</span>, <span class="syn-num">1</span>, <span class="syn-num">1</span>):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Este print nunca será executado:"</span>, z)<br><br>
+              <span class="syn-builtin">print</span>(<span class="syn-str">"A verificação do intervalo vazio seguiu diretamente para esta linha."</span>)
+            </div>
+            <!-- Slot de Imagem Didática do Professor -->
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_1_5_g3_resolvido" data-aula="aula_1_5" data-exercicio="aula_1_5_g3_resolvido" data-titulo="Grupo 3: Atividade 3.0 (Configurações de range)"></div>
+          </div>
+
+          <!-- Atividade 3.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 3.1 (Proposta) — Quadrados com range(1, 11)</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Parâmetros Start e Stop</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Utilize um laço <code>for</code> com a instrução <code>range(1, 11)</code> para exibir no console o quadrado de cada número de 1 até 10 (ex.: <em>"1 elevado ao quadrado é: 1"</em> até <em>"10 elevado ao quadrado é: 100"</em>).
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g3_atv_1" data-aula="aula_1_5" data-exercicio="aula_1_5_g3_atv_1" data-titulo="Grupo 3: Atividade 3.1 (Quadrados de 1 a 10)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g3-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g3-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>for num in range(1, 11):
+    quadrado = num ** 2
+    print(f"{num} elevado ao quadrado é: {quadrado}")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 3.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 3.2 (Proposta) — Saltos e Contagens Decrescentes</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Passo Negativo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Escreva um laço <code>for</code> com <code>range(30, 0, -5)</code> que gere uma contagem regressiva de 5 em 5 unidades, iniciando em 30 e parando em 5. Exiba cada valor e, ao término, imprima <em>"Contagem regressiva finalizada!"</em>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g3_atv_2" data-aula="aula_1_5" data-exercicio="aula_1_5_g3_atv_2" data-titulo="Grupo 3: Atividade 3.2 (Salto Decrescente de 5 em 5)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g3-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g3-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>for valor in range(30, 0, -5):
+    print(f"Marcador: {valor}")
+
+print("Contagem regressiva finalizada!")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 3.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 3.3 (Proposta) — Comprovação de Intervalos Vazios</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">range(10, 2, 2)</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Declare um laço <code>for</code> utilizando <code>range(10, 2, 2)</code> (saída de 10 até 2 com incremento positivo de 2). Dentro coloque <code>print("Executou")</code> e fora imprima <em>"O laço foi ignorado por gerar um intervalo com 0 elementos."</em>. Comprove que o bloco interno não executa nenhuma volta.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g3_atv_3" data-aula="aula_1_5" data-exercicio="aula_1_5_g3_atv_3" data-titulo="Grupo 3: Atividade 3.3 (Intervalo Vazio)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g3-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g3-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>for item in range(10, 2, 2):
+    print("Executou:", item)
+
+print("O laço foi ignorado por gerar um intervalo com 0 elementos.")</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL GRUPO 4: MODIFICADORES DE FLUXO (BREAK, CONTINUE E ELSE)
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-4" style="display: none;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Grupo 4: Modificadores de Fluxo (break, continue e else)
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 3 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Interrupção imediata de ciclos com <code>break</code>, salto seletivo de iterações com <code>continue</code> e execução de integridade pós-laço com a cláusula <code>else</code>.
+          </p>
+
+          <!-- Atividade 4.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 4.0 (Resolvida) — Auditoria com continue, break e else</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Percorra uma lista de avaliações processando apenas os valores válidos: ignore notas negativas com <code>continue</code>, encerre o processamento com <code>break</code> se encontrar um valor proibido (código 999), e utilize a cláusula <code>else</code> para avisar quando a lista for lida integralmente sem incidentes.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              <span class="syn-comment"># Resolução Modelo</span><br>
+              leituras = [<span class="syn-num">7.5</span>, -<span class="syn-num">1.0</span>, <span class="syn-num">8.0</span>, <span class="syn-num">9.5</span>, <span class="syn-num">6.0</span>]<br><br>
+              <span class="syn-kw">for</span> nota <span class="syn-kw">in</span> leituras:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">if</span> nota &lt; <span class="syn-num">0</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Aviso: Leitura negativa ignorada."</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">continue</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">if</span> nota == <span class="syn-num">999</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Alerta: Código crítico 999 detectado! Interrompendo laço..."</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">break</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">f"Nota homologada: {nota}"</span>)<br>
+              <span class="syn-kw">else</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Auditoria concluída com sucesso: Todas as notas válidas foram lidas."</span>)
+            </div>
+            <!-- Slot de Imagem Didática do Professor -->
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_1_5_g4_resolvido" data-aula="aula_1_5" data-exercicio="aula_1_5_g4_resolvido" data-titulo="Grupo 4: Atividade 4.0 (Auditoria de Notas)"></div>
+          </div>
+
+          <!-- Atividade 4.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 4.1 (Proposta) — Busca de Produto no Estoque</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Instrução break</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie a lista <code>estoque = ["Caneta", "Borracha", "Apontador", "Régua", "Caderno"]</code>. Peça ao usuário o nome de um produto procurado. Percorra com <code>for</code> e, assim que encontrar o produto, imprima <em>"Item localizado no estoque!"</em> e interrompa a busca imediatamente com <code>break</code>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g4_atv_1" data-aula="aula_1_5" data-exercicio="aula_1_5_g4_atv_1" data-titulo="Grupo 4: Atividade 4.1 (Busca no Estoque com break)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g4-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g4-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>estoque = ["Caneta", "Borracha", "Apontador", "Régua", "Caderno"]
+procurado = input("Digite o nome do material para pesquisar: ")
+
+for produto in estoque:
+    if produto.lower() == procurado.lower():
+        print(f"Sucesso: {produto} foi localizado no estoque!")
+        break</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 4.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 4.2 (Proposta) — Filtro de Múltiplos de 4 com continue</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Instrução continue</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Escreva um laço <code>for</code> que itere pelos números de 1 a 20 utilizando <code>range(1, 21)</code>. Se o número for múltiplo de 4 (<code>num % 4 == 0</code>), utilize o comando <code>continue</code> para saltá-lo. Imprima apenas os números aceitos que não são múltiplos de 4.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g4_atv_2" data-aula="aula_1_5" data-exercicio="aula_1_5_g4_atv_2" data-titulo="Grupo 4: Atividade 4.2 (Filtro com continue)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g4-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g4-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>for num in range(1, 21):
+    if num % 4 == 0:
+        continue
+    print("Número aceito:", num)</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 4.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 4.3 (Proposta) — Consulta de Matrículas com for-else</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Cláusula else</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie a lista <code>cadastros = [101, 102, 103, 104, 105]</code>. Peça uma matrícula ao usuário. Percorra a lista com <code>for</code>; se encontrar, exiba <em>"Matrícula ativa confirmada!"</em> e pare com <code>break</code>. No bloco <code>else</code> do <code>for</code>, imprima <em>"Matrícula não localizada no banco de dados."</em>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g4_atv_3" data-aula="aula_1_5" data-exercicio="aula_1_5_g4_atv_3" data-titulo="Grupo 4: Atividade 4.3 (Consulta com for-else)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g4-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g4-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>cadastros = [101, 102, 103, 104, 105]
+alvo = int(input("Digite a matrícula a consultar: "))
+
+for mat in cadastros:
+    if mat == alvo:
+        print("Matrícula ativa confirmada!")
+        break
+else:
+    print("Matrícula não localizada no banco de dados.")</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL GRUPO 5: ALGORITMOS E ESTRUTURAS COMBINADAS DE REPETIÇÃO
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-secao-5" style="display: none;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary);">
+              Grupo 5: Algoritmos e Estruturas Combinadas de Repetição
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-surface-high); color: var(--color-primary); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-weight: 600;">
+              1 Resolvida • 3 Propostas
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1rem;">
+            Integração avançada: validação de credenciais com limites de tentativa, laços aninhados bidimensionais e menus interativos de múltiplas opções.
+          </p>
+
+          <!-- Atividade 5.0 (Resolvida) -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-primary); font-size: 0.9rem;">Atividade 5.0 (Resolvida) — Menu Bancário com PIN e Divisores</strong>
+              <span style="font-size: 0.7rem; background: var(--color-success-container); color: var(--color-on-success-container); padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">Gabarito Modelo</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); margin-bottom: 0.5rem;">
+              Construa um menu interativo bancário (<code>while True</code>). Antes de liberar as opções, exija a senha em até 3 tentativas. No menu liberado, permita ao usuário: 1 - Verificar se um número é divisível por outro (laço aninhado) e 2 - Sair do sistema.
+            </p>
+            <div style="background-color: var(--color-code-bg); padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 0.5rem;">
+              <span class="syn-comment"># Resolução Modelo</span><br>
+              tentativas = <span class="syn-num">0</span><br>
+              autenticado = <span class="syn-bool">False</span><br><br>
+              <span class="syn-kw">while</span> tentativas &lt; <span class="syn-num">3</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;pin = <span class="syn-builtin">int</span>(<span class="syn-builtin">input</span>(<span class="syn-str">"Informe o PIN do terminal (3 tentativas): "</span>))<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;tentativas += <span class="syn-num">1</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">if</span> pin == <span class="syn-num">8888</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;autenticado = <span class="syn-bool">True</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Autenticação homologada!"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">break</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">else</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"PIN incorreto."</span>)<br><br>
+              <span class="syn-kw">if</span> autenticado:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">while</span> <span class="syn-bool">True</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"\n--- MENU DE FERRAMENTAS ---"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"1 - Testar Divisores de um Número
+2 - Sair"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;opcao = <span class="syn-builtin">input</span>(<span class="syn-str">"Escolha uma opção: "</span>)<br><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">if</span> opcao == <span class="syn-str">"1"</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n = <span class="syn-builtin">int</span>(<span class="syn-builtin">input</span>(<span class="syn-str">"Digite um número inteiro: "</span>))<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">f"Divisores de {n} entre 1 e {n}:"</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">for</span> div <span class="syn-kw">in</span> <span class="syn-builtin">range</span>(<span class="syn-num">1</span>, n + <span class="syn-num">1</span>):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">if</span> n % div == <span class="syn-num">0</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(div, end=<span class="syn-str">" "</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>()<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">elif</span> opcao == <span class="syn-str">"2"</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Encerrando terminal..."</span>)<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">break</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-kw">else</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Opção inválida!"</span>)<br>
+              <span class="syn-kw">else</span>:<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-builtin">print</span>(<span class="syn-str">"Terminal bloqueado por tentativas excessivas."</span>)
+            </div>
+            <!-- Slot de Imagem Didática do Professor -->
+            <div class="exercicio-resolvido-slot" id="slot-img-aula_1_5_g5_resolvido" data-aula="aula_1_5" data-exercicio="aula_1_5_g5_resolvido" data-titulo="Grupo 5: Atividade 5.0 (Menu com PIN e Divisores)"></div>
+          </div>
+
+          <!-- Atividade 5.1 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 5.1 (Proposta) — Cofre Eletrônico com Limite de Tentativas</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">3 Tentativas</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Desenvolva um cofre eletrônico que solicite um código numérico de segurança com no máximo 3 tentativas. A senha correta é <code>7410</code>. Se acertar antes de esgotar as chances, exiba <em>"Cofre aberto!"</em> e pare com <code>break</code>. Se as 3 tentativas falharem, emita <em>"Alarme acionado: Cofre bloqueado!"</em>.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g5_atv_1" data-aula="aula_1_5" data-exercicio="aula_1_5_g5_atv_1" data-titulo="Grupo 5: Atividade 5.1 (Cofre Eletrônico)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g5-atv1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g5-atv1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>tentativas = 0
+aberto = False
+
+while tentativas &lt; 3:
+    codigo = int(input("Digite a senha do cofre: "))
+    tentativas += 1
+    if codigo == 7410:
+        aberto = True
+        print("Cofre aberto com sucesso!")
+        break
+    else:
+        print(f"Senha incorreta! Restam {3 - tentativas} tentativa(s).")
+
+if not aberto:
+    print("Alarme acionado: Cofre bloqueado!")</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 5.2 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 5.2 (Proposta) — Grade Retangular com Laços Aninhados</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Nested Loops</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Utilizando dois laços <code>for</code> aninhados, crie um gerador de grade retangular: o laço externo controla 4 linhas (<code>range(4)</code>) e o laço interno imprime 6 asteriscos (<code>*</code>) lado a lado na mesma linha usando <code>end=" "</code>. Dê uma quebra de linha ao final de cada fileira.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g5_atv_2" data-aula="aula_1_5" data-exercicio="aula_1_5_g5_atv_2" data-titulo="Grupo 5: Atividade 5.2 (Grade de Asteriscos)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g5-atv2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g5-atv2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>for linha in range(4):
+    for coluna in range(6):
+        print("*", end=" ")
+    print()  # Quebra de linha ao término de cada fileira</code></pre>
+            </div>
+          </div>
+
+          <!-- Atividade 5.3 (Proposta) -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.88rem;">Atividade 5.3 (Proposta) — Calculadora com Menu Contínuo</strong>
+              <span style="font-size: 0.72rem; color: var(--color-outline);">Menu while True</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie um programa com um laço <code>while True</code> exibindo o menu: 1 - Somar, 2 - Subtrair, 3 - Sair do programa. O programa lê os dois valores, efetua a operação matemática selecionada e retorna ao menu até que o usuário digite a opção 3.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_g5_atv_3" data-aula="aula_1_5" data-exercicio="aula_1_5_g5_atv_3" data-titulo="Grupo 5: Atividade 5.3 (Calculadora com Menu Contínuo)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-g5-atv3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-g5-atv3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>while True:
+    print("\n--- CALCULADORA BÁSICA ---")
+    print("1 - Somar\n2 - Subtrair\n3 - Sair")
+    opcao = input("Digite a opção: ")
+    
+    if opcao == "1":
+        n1 = float(input("Digite o primeiro número: "))
+        n2 = float(input("Digite o segundo número: "))
+        print(f"Resultado da soma: {n1 + n2}")
+    elif opcao == "2":
+        n1 = float(input("Digite o primeiro número: "))
+        n2 = float(input("Digite o segundo número: "))
+        print(f"Resultado da subtração: {n1 - n2}")
+    elif opcao == "3":
+        print("Encerrando calculadora...")
+        break
+    else:
+        print("Opção inválida! Escolha entre 1 e 3.")</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           PAINEL 6: 🏆 OFICINAS DE DESAFIO PRÁTICO & DESAFIO MESTRE
+           ==================================================================== -->
+      <div class="oficina-panel" id="panel-desafios" style="display: none;">
+        <div style="background: linear-gradient(135deg, var(--color-surface-low) 0%, var(--color-surface-lowest) 100%); border: 1.5px solid var(--color-secondary-fixed); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <h3 style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 800; color: var(--color-primary);">
+              🏆 Desafios Práticos Integradores por Grupo & Desafio Mestre
+            </h3>
+            <span style="font-size: 0.75rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 700;">
+              Projetos de Síntese
+            </span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-bottom: 1.25rem;">
+            Aplicações contextualizadas completas combinando laços <code>while</code>, <code>for</code>, acumuladores, modificadores e estruturas de decisão.
+          </p>
+
+          <!-- Desafio 1 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 1: Cofrinho Digital com Meta Financeira</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • while</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Crie um cofrinho digital que receba o valor da meta financeira a ser atingida (<code>float</code>). Em seguida, abra um laço <code>while</code> ativo enquanto o saldo acumulado for menor que a meta. A cada volta, solicite o valor de um depósito e atualize o total com <code>+=</code>. Ao atingir ou superar a meta, exiba o total poupado e informe quantas parcelas foram necessárias.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_desafio_1" data-aula="aula_1_5" data-exercicio="aula_1_5_desafio_1" data-titulo="Desafio 1: Cofrinho Digital (while)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-desafio1')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-desafio1" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>meta = float(input("Digite a meta de economia (R$): "))
+saldo = 0.0
+depositos = 0
+
+while saldo &lt; meta:
+    valor = float(input("Digite o valor do depósito: "))
+    saldo += valor
+    depositos += 1
+    print(f"Saldo atual: R$ {saldo:.2f} | Faltam: R$ {max(0.0, meta - saldo):.2f}")
+
+print(f"Parabéns! Meta de R$ {meta:.2f} alcançada em {depositos} depósitos!")</code></pre>
+            </div>
+          </div>
+
+          <!-- Desafio 2 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 2: Análise de Rendimento do Atleta</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • for & range(len)</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Dada a lista <code>tempos = [12.4, 11.8, 13.1, 11.5, 12.0]</code> com as voltas de um atleta em segundos, use <code>for</code> por índice para exibir cada volta, determine a volta mais rápida (menor tempo) e a mais lenta (maior tempo) sem usar bibliotecas externas (apenas comparando valores com <code>if</code>), e calcule a média final.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_desafio_2" data-aula="aula_1_5" data-exercicio="aula_1_5_desafio_2" data-titulo="Desafio 2: Rendimento do Atleta (for)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-desafio2')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-desafio2" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>tempos = [12.4, 11.8, 13.1, 11.5, 12.0]
+
+soma = 0.0
+mais_rapido = tempos[0]
+mais_lento = tempos[0]
+
+for i in range(len(tempos)):
+    atual = tempos[i]
+    print(f"Volta {i + 1}: {atual}s")
+    soma += atual
+    
+    if atual &lt; mais_rapido:
+        mais_rapido = atual
+    if atual &gt; mais_lento:
+        mais_lento = atual
+
+media = soma / len(tempos)
+print(f"\nMédia: {media:.2f}s | Mais rápida: {mais_rapido}s | Mais lenta: {mais_lento}s")</code></pre>
+            </div>
+          </div>
+
+          <!-- Desafio 3 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 3: Escada Numérica com range()</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • range Aninhado</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Solicite ao usuário um número inteiro de passos entre 3 e 9 (variável <code>N</code>). Utilizando <code>range()</code>, imprima uma escada numérica no console onde cada linha exiba os números de 1 até o índice da linha atual (ex.: se N=4: Linha 1: <code>1</code>; Linha 2: <code>1 2</code>; Linha 3: <code>1 2 3</code>; Linha 4: <code>1 2 3 4</code>).
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_desafio_3" data-aula="aula_1_5" data-exercicio="aula_1_5_desafio_3" data-titulo="Desafio 3: Escada Numérica (range)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-desafio3')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-desafio3" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>n = int(input("Digite a quantidade de degraus (3 a 9): "))
+
+for linha in range(1, n + 1):
+    for col in range(1, linha + 1):
+        print(col, end=" ")
+    print()</code></pre>
+            </div>
+          </div>
+
+          <!-- Desafio 4 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 4: Scanner Óptico de Sensores</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • break, continue, else</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Dada a lista <code>sensores = [100, 95, 0, 88, -99, 92]</code>, percorra os lotes: sensores iguais a 0 indicam falha temporária (ignore com <code>continue</code>); valores negativos como -99 representam curto-circuito (emita alerta e interrompa com <code>break</code>); e utilize o <code>else</code> do laço para aprovar o lote integral caso não ocorra interrupção crítica.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_desafio_4" data-aula="aula_1_5" data-exercicio="aula_1_5_desafio_4" data-titulo="Desafio 4: Scanner Óptico (break/continue/else)"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-desafio4')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-desafio4" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>sensores = [100, 95, 0, 88, -99, 92]
+
+for lote in sensores:
+    if lote == 0:
+        print("Sensor nulo ignorado pelo filtro.")
+        continue
+    if lote &lt; 0:
+        print(f"PERIGO: Curto-circuito detectado ({lote})! Linha paralisada.")
+        break
+    print(f"Sensor em operação: {lote}% de integridade.")
+else:
+    print("Lote inspecionado e aprovado na íntegra!")</code></pre>
+            </div>
+          </div>
+
+          <!-- Desafio 5 -->
+          <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <strong style="color: var(--color-secondary); font-size: 0.92rem;">Desafio Prático 5: Verificador de Números Primos</strong>
+              <span style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">+50 XP • Flag Booleana & break</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; margin-bottom: 0.5rem;">
+              Solicite ao usuário um número inteiro N maior que 1. Utilizando uma variável de controle booleana <code>e_primo = True</code> e um laço <code>for divisor in range(2, N):</code>, teste se o número possui algum divisor exato (<code>N % divisor == 0</code>). Se possuir, defina <code>e_primo = False</code> e encerre com <code>break</code>. Ao final, exiba se o número digitado é ou não primo.
+            </p>
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_desafio_5" data-aula="aula_1_5" data-exercicio="aula_1_5_desafio_5" data-titulo="Desafio 5: Verificador de Números Primos"></div>
+            <div style="margin-top: 0.5rem;">
+              <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="toggleGabarito('gab-aula15-desafio5')">
+                👁️ Ver Solução Modelo
+              </button>
+            </div>
+            <div id="gab-aula15-desafio5" style="display: none; margin-top: 0.75rem;">
+              <pre style="background: #0f172a; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc;"><code>n = int(input("Digite um número inteiro maior que 1: "))
+e_primo = True
+
+for divisor in range(2, n):
+    if n % divisor == 0:
+        e_primo = False
+        break
+
+if e_primo and n &gt; 1:
+    print(f"O número {n} é PRIMO!")
+else:
+    print(f"O número {n} NÃO é primo.")</code></pre>
+            </div>
+          </div>
+
+          <!-- ================================================================
+               DESAFIO MESTRE INTEGRADOR: TOTEM DO REFEITÓRIO
+               ================================================================ -->
+          <div class="card" style="background: linear-gradient(135deg, #fffbeb 0%, var(--color-surface-lowest) 100%); border: 2px solid #f59e0b; border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-md);">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <div>
+                <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; background: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); border: 1px solid #fde68a;">
+                  🌟 Avaliação Global de XP
+                </span>
+                <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 800; color: #92400e; margin-top: 0.4rem;">
+                  Totem de Autoatendimento do Refeitório Estudantil
+                </h3>
+              </div>
+              <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-size: 0.85rem; font-weight: 800; padding: 0.3rem 0.8rem; border-radius: var(--radius-full);">
+                +100 XP
+              </span>
+            </div>
+
+            <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1rem;">
+              Você foi contratado para implementar o núcleo lógico do totem de autoatendimento da cantina escolar. O sistema gerencia continuamente o saldo de fichas do estudante, valida compras com desconto promocional para 3 ou mais fichas, registra lançamentos em lista de extrato e encerra a sessão com relatório discriminado.
+            </p>
+
+            <!-- Menu do Totem em ASCII Box -->
+            <div style="background: #0f172a; padding: 1rem 1.25rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.85rem; color: #38bdf8; margin-bottom: 1.25rem; line-height: 1.45;">
+              ┌────────────────────────────────────────────────────────┐<br>
+              │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TOTEM DE AUTOATENDIMENTO - PYTHONLAB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+              ├────────────────────────────────────────────────────────┤<br>
+              │&nbsp;&nbsp;1 - Consultar Saldo Disponível&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+              │&nbsp;&nbsp;2 - Comprar Ficha de Lanche (R$ 8,00 unid. / 10% desc &gt;= 3)│<br>
+              │&nbsp;&nbsp;3 - Recarregar Saldo Estudantil&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+              │&nbsp;&nbsp;4 - Encerrar Sessão e Imprimir Extrato&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
+              └────────────────────────────────────────────────────────┘
+            </div>
+
+            <!-- Tabela de Cenários de Teste de I/O -->
+            <h4 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+              Cenários de Teste Canônicos (I/O)
+            </h4>
+            <div style="overflow-x: auto; margin-bottom: 1.25rem;">
+              <table class="trace-table" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Cenário de Teste</th>
+                    <th>Entradas Fornecidas</th>
+                    <th>Saída Esperada no Terminal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Cenário 1:</strong> Compra e Recarga</td>
+                    <td>Opção: 2 | Qtd: 2<br>Opção: 3 | Recarga: 20.0<br>Opção: 4</td>
+                    <td>Débito: R$ 16.00 (saldo 14.00)<br>Crédito: +R$ 20.00<br>Extrato: 2 lançamentos | Saldo final: R$ 34.00</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Cenário 2:</strong> Desconto de 10%</td>
+                    <td>Opção: 2 | Qtd: 3<br>Opção: 4</td>
+                    <td>Subtotal com 10%: R$ 21.60<br>Extrato: Compra de 3 fichas<br>Saldo final: R$ 8.40</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Cenário 3:</strong> Saldo Insuficiente</td>
+                    <td>Opção: 2 | Qtd: 5<br>Opção: 4</td>
+                    <td>Alerta: Saldo insuficiente! Recarregue.<br>Extrato: Nenhuma movimentação | Saldo: R$ 30.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Slot de Imagem do Desafio Mestre -->
+            <div class="questao-imagem-slot" id="slot-img-aula_1_5_desafio_mestre" data-aula="aula_1_5" data-exercicio="aula_1_5_desafio_mestre" data-titulo="Desafio Mestre: Totem de Autoatendimento do Refeitório"></div>
+
+            <div style="margin-top: 1rem;">
+              <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;" onclick="toggleGabarito('gab-aula15-mestre')">
+                👁️ Ver Código Completo da Resolução Modelo
+              </button>
+            </div>
+
+            <div id="gab-aula15-mestre" style="display: none; margin-top: 1rem;">
+              <pre style="background: #0f172a; padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; color: #f8fafc; line-height: 1.5;"><code>saldo = 30.0
+extrato = []
+
+while True:
+    print("\n" + "=" * 45)
+    print("    TOTEM DE AUTOATENDIMENTO - PYTHONLAB")
+    print("=" * 45)
+    print("1 - Consultar Saldo")
+    print("2 - Comprar Ficha de Lanche (R$ 8,00)")
+    print("3 - Recarregar Saldo")
+    print("4 - Encerrar Sessão e Imprimir Extrato")
+    print("=" * 45)
+    
+    opcao = input("Selecione uma opção (1 a 4): ")
+    
+    if opcao == "1":
+        print(f"\n[SALDO ATUAL]: R$ {saldo:.2f}")
+        
+    elif opcao == "2":
+        qtd = int(input("\nQuantas fichas de lanche deseja comprar? "))
+        if qtd &lt;= 0:
+            print("Quantidade inválida!")
+            continue
+            
+        subtotal = qtd * 8.0
+        if qtd &gt;= 3:
+            subtotal *= 0.90
+            print("Desconto de 10% aplicado para compras de 3 ou mais fichas!")
+            
+        if saldo &gt;= subtotal:
+            saldo -= subtotal
+            registro = f"Compra: {qtd} ficha(s) (-R$ {subtotal:.2f})"
+            extrato.append(registro)
+            print(f"Compra autorizada! Foram debitados R$ {subtotal:.2f}.")
+        else:
+            print(f"Saldo insuficiente! O valor necessário é R$ {subtotal:.2f}.")
+            
+    elif opcao == "3":
+        recarga = float(input("\nDigite o valor da recarga em R$: "))
+        if recarga &gt; 0:
+            saldo += recarga
+            registro = f"Recarga: +R$ {recarga:.2f}"
+            extrato.append(registro)
+            print(f"Crédito de R$ {recarga:.2f} realizado com sucesso!")
+        else:
+            print("Valor de recarga inválido! A recarga deve ser positiva.")
+            
+    elif opcao == "4":
+        print("\n" + "-" * 35)
+        print("        EXTRATO DA SESSÃO")
+        print("-" * 35)
+        if len(extrato) == 0:
+            print("Nenhuma movimentação realizada nesta sessão.")
+        else:
+            for item in extrato:
+                print(f"• {item}")
+        print("-" * 35)
+        print(f"Saldo final consolidado: R$ {saldo:.2f}")
+        print("Sessão finalizada. Obrigado por utilizar o totem!")
+        break
+        
+    else:
+        print("Opção inválida! Escolha um número válido entre 1 e 4.")</code></pre>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================
+         7. GUIA PRÁTICO PARA OS AMBIENTES DE DESENVOLVIMENTO
+         ======================================================================== -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+      <!-- PC: Jupyter Notebook -->
+      <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.5rem;">💻</span>
+          <h3 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Alunos no Computador (Jupyter Notebook / Anaconda3)
+          </h3>
+        </div>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem; margin: 0;">
+          <li>Se o notebook travar ou exibir <code>[*]</code> continuamente, o código entrou em <strong>loop infinito</strong>. Clique no botão quadrado <strong>Interrupt (⏹)</strong> na barra superior para interromper.</li>
+          <li>Para limpar a memória de variáveis anteriores antes de testar novos laços, clique em <strong>Kernel ➔ Restart Kernel</strong>.</li>
+          <li>Execute as células rapidamente com o atalho de teclado <strong>Shift + Enter</strong>.</li>
+        </ol>
+      </div>
+
+      <!-- Tablet: Google Colab -->
+      <div class="card" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.5rem;">📱</span>
+          <h3 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Alunos no Tablet (Google Colab)
+          </h3>
+        </div>
+        <ol style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem; margin: 0;">
+          <li>Para parar um loop infinito, toque no ícone circular de <strong>Stop (⏹)</strong> que substitui o botão de Play à esquerda da célula ativa.</li>
+          <li>Se o teclado virtual fechar durante o comando <code>input()</code>, toque dentro da barra de texto na base da célula para reabri-lo.</li>
+          <li>Utilize os botões de seta da barra de atalhos para garantir a indentação correta de 4 espaços dentro de laços aninhados.</li>
+        </ol>
+      </div>
+    </div>
+
+  </div> <!-- FIM DO BLOCO DE EXERCÍCIOS PROPOSTOS & PRÁTICA -->
+
+</div>

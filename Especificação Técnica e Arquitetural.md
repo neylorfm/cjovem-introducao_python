@@ -360,17 +360,24 @@ Todo arquivo `AulaX_Y.html` deve seguir rigidamente a seguinte hierarquia visual
 ```html
 <div class="view-section" id="view-aula">
 
-  <!-- 1. CABEÇALHO DA AULA -->
-  <!-- Breadcrumbs (Módulo > Aula), Badges de Dificuldade, Tempo e XP Base -->
-  <!-- 3 Botões de Gestão pelo Aluno:
-       - 📍 Marcar Onde Parei: onclick="marcarOndeParei('aula_X_Y', 'Título da Aula')"
-       - ❓ Tenho Dúvidas: onclick="abrirModalDuvida('aula_X_Y', 'topico_principal')"
-       - 🏆 Concluir Aula (+XP Base): onclick="concluirAulaAtual(xpBase)" -->
+  <!-- 1. CABEÇALHO DA AULA (Responsivo: .lesson-header-card) -->
+  <div class="lesson-header-card" style="...">
+    <div>
+      <!-- Breadcrumbs (Módulo > Aula), Badges de Dificuldade, Tempo e XP Base -->
+      <h1 class="lesson-main-title">...</h1>
+    </div>
+    <!-- 3 Botões de Gestão pelo Aluno (.lesson-header-actions):
+         - 📍 Marcar Onde Parei: onclick="marcarComoOndeParei('aula_X_Y', 'Título')"
+         - ❓ Tenho Dúvidas: onclick="abrirModalDuvida('aula_X_Y', 'Tópico')"
+         - 🏆 Concluir Aula (+XP Base): .btn-concluir-action onclick="concluirEtapaAtual()" -->
+    <div class="lesson-header-actions">...</div>
+  </div>
 
   <!-- 2. DIVISOR DIDÁTICO NO TOPO (Bifurcação Fast-Track vs Deep-Dive) -->
-  <div class="bifurcador-container">
-    <!-- Botão 1: 📖 Explicações & Fundamentos (onclick="aplicarModoVisualizacaoAula('explicacoes')") -->
-    <!-- Botão 2: 🛠️ Exercícios Propostos & Prática (onclick="aplicarModoVisualizacaoAula('exercicios')") -->
+  <div class="lesson-mode-bifurcator" id="lesson-mode-bifurcator">
+    <!-- Botão 1: 📖 Explicações & Fundamentos (onclick="setModoVisualizacaoAula('explicacoes')") -->
+    <!-- Botão 2: 🛠️ Exercícios Propostos & Prática (onclick="setModoVisualizacaoAula('pratica')") -->
+    <!-- Botão 3: 👁️ Visualização Completa (onclick="setModoVisualizacaoAula('tudo')") -->
   </div>
 
   <!-- ======================================================================
@@ -382,16 +389,22 @@ Todo arquivo `AulaX_Y.html` deve seguir rigidamente a seguinte hierarquia visual
     
     <!-- A.2 Infográficos de Lógica e Decomposição Algorítmica -->
     <!-- Cards visuais destacando os conceitos fundamentais da aula -->
+    <!-- Se contiver diagramas ou fluxogramas em texto/ASCII, envelopar obrigatoriamente:
+         <div class="ascii-flowchart-card"><pre class="ascii-flowchart-box">...</pre></div> -->
     
     <!-- A.3 Tabela Sintática / Operadores / Regras de Precedência -->
-    <!-- Tabelas estilizadas (.trace-table) com exemplos, tipos resultantes e pegadinhas -->
+    <!-- Tabelas estilizadas envelopadas em <div class="trace-table-container"><table class="trace-table"> -->
     
     <!-- A.4 Simulador de Memória CPython (Stack vs Heap) -->
     <!-- Representação visual de Call Stack (Frames e identificadores locais) vs Heap Space -->
     <!-- Evidenciar imutabilidade de tipos primitivos e ponteiros de endereços -->
     
     <!-- A.5 Player Interativo de Linha Ativa + Console Stdout + Teste de Mesa (Trace Table) -->
-    <!-- Visor de código com linha ativa destacada, botões de passo e tabela sincronizada -->
+    <!-- Barra de Stepper: <div class="stepper-header-row">
+         Controles de Passo: <div class="stepper-controls-container">
+           - Botão Anterior: id="btn-step-prev" onclick="prevStep()"
+           - Botões Numéricos Roláveis: <div id="step-buttons-container"></div>
+           - Botão Próximo: id="btn-step-next" onclick="nextStep()" -->
     
     <!-- A.6 Exercício Resolvido de Demonstração -->
     <!-- Decomposição passo a passo, código comentado e:
@@ -405,28 +418,30 @@ Todo arquivo `AulaX_Y.html` deve seguir rigidamente a seguinte hierarquia visual
        ====================================================================== -->
   <div class="secao-exercicios">
     
-    <!-- B.1 Navegador de Abas por Seções ou Blocos Temáticos -->
-    <!-- Botões: .tab-btn com onclick="switchOficinaBloco('secao-1')", etc. -->
+    <!-- B.1 Navegador de Abas por Seções ou Blocos Temáticos (.oficina-subtabs-bar) -->
+    <!-- Contêiner de chips deslizantes: <div class="oficina-subtabs-bar">
+         Botões das seções: .btn com onclick="switchOficinaBloco('secao-1')", etc.
+         Botão Obrigatório de Desafios: id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')" -->
     
-    <!-- B.2 Paineis de Exercícios Propostos -->
-    <!-- Para CADA questão proposta:
+    <!-- B.2 Painéis Individuais por Seção (.oficina-panel) -->
+    <!-- Cada seção temática deve possuir: class="oficina-panel" id="panel-secao-X"
+         Para CADA questão proposta:
          1. Enunciado claro com especificações de entradas e saídas esperadas
          2. SLOT DE IMAGEM DIDÁTICA DO PROFESSOR (Obrigatório em 100% das questões):
             <div class="questao-imagem-slot" data-img-aula="aula_X_Y" data-img-exercicio="secao_1_atv_1"></div>
          3. Gabarito comentado expansível com toggle individual
          4. Botão de feedback/conclusão de etapa (+XP) -->
          
-    <!-- B.3 Desafios Temáticos Intermediários -->
-    <!-- Problemas abertos com casos de teste e slot de imagem didática -->
-    
-    <!-- B.4 Desafio Mestre Integrador (Clímax da Aula) -->
-    <!-- 1. Enunciado contextualizado com regras de negócio realistas
-         2. Slot de Imagem Didática Opcional (data-img-exercicio="desafio_mestre")
-         3. Tabela de Casos de Validação I/O (mínimo de 2 cenários completos)
-         4. Botão com 1 clique para Copiar Template Python para Área de Transferência
-         5. Gabarito comentado expansível
-         6. Checklist interativo de autoavaliação (mínimo de 4 itens checkbox)
-         7. Botão reativo "Homologar Desafio Mestre (+60 XP)" habilitado apenas com o checklist 100% marcado -->
+    <!-- B.3 Painel Exclusivo de Desafios (.oficina-panel id="panel-desafios" style="display: none;") -->
+    <!-- 1. Desafios Integradores de Código (Desafios Temáticos Intermediários)
+         2. Desafio Mestre Integrador (Clímax da Aula):
+            - Enunciado contextualizado com regras de negócio realistas
+            - Slot de Imagem Didática Opcional (data-img-exercicio="desafio_mestre")
+            - Tabela de Casos de Validação I/O (mínimo de 2 cenários completos)
+            - Botão com 1 clique para Copiar Template Python para Área de Transferência
+            - Gabarito comentado expansível
+            - Checklist interativo de autoavaliação (mínimo de 4 itens checkbox)
+            - Botão reativo "Homologar Desafio Mestre (+60 XP)" habilitado apenas com checklist 100% -->
 
   </div>
 
@@ -463,7 +478,34 @@ Cada aula deve culminar em um **Desafio Mestre**:
 
 ---
 
-### 8.6. Contrato de Código no Backend ([Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs))
+### 8.6. Regras de Isolamento e Navegação dos Desafios em Aba Própria (`btn-tab-desafios` / `panel-desafios`)
+
+1. **Premissa Pedagógica e Sobrecarga Cognitiva**:
+   - Os **Desafios Integradores de Código** e o **Problema Integrador para Homologação de XP (Desafio Mestre)** **NUNCA** devem ser renderizados de forma estática e persistente no rodapé de todas as seções temáticas da aula.
+   - O estudante que está cursando os sub-tópicos iniciais (ex.: Seção 1, 2, 3...) não deve ter sua atenção dispersada ou ser sobrecarregado visualmente pelas dezenas de linhas dos desafios complexos finais enquanto ainda consolida a base.
+2. **Botão Obrigatório na Barra de Navegação**:
+   - Todas as aulas da plataforma devem incluir na barra de abas do Caderno de Práticas o botão dedicado aos desafios:
+     ```html
+     <button class="btn btn-outline" id="btn-tab-desafios" onclick="switchOficinaBloco('desafios')">
+       🏆 Desafios & Desafio Mestre
+     </button>
+     ```
+3. **Encapsulamento no Painel `panel-desafios`**:
+   - O conjunto integral composto pelos desafios intermediários e pelo Desafio Mestre integrador deve residir estritamente dentro do container:
+     ```html
+     <div id="panel-desafios" class="oficina-panel" style="display: none;">
+       <!-- Desafios Integradores de Código -->
+       <!-- Desafio Mestre: Problema Integrador para Homologação de XP -->
+     </div>
+     ```
+4. **Comportamento Reativo com `switchOficinaBloco('desafios')`**:
+   - Ao navegar por qualquer seção temática (`secao-1`, `secao-2`, `bloco-a`, etc.), o `panel-desafios` permanece estritamente oculto (`display: none`).
+   - Ao clicar em `btn-tab-desafios`, a rotina `switchOficinaBloco('desafios')` oculta o painel temático atual e torna visível exclusivamente `panel-desafios`.
+   - A função `switchOficinaBloco(blocoId)` em `Script.html` e `preview_local.html` deve manter `'desafios'` permanentemente no array `todasAbas`.
+
+---
+
+### 8.7. Contrato de Código no Backend ([Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs))
 
 Em [Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs), incluir a nova aula em **4 funções**:
 
@@ -478,7 +520,7 @@ Em [Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs), i
 
 ---
 
-### 8.7. Contrato de Código no Shell e Script ([Index.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Index.html) e [Script.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Script.html))
+### 8.8. Contrato de Código no Shell e Script ([Index.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Index.html) e [Script.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Script.html))
 
 1. **Em [Index.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Index.html)**:
    ```html
@@ -486,28 +528,95 @@ Em [Code.gs](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Code.gs), i
      <?!= include('AulaX_Y'); ?>
    </template>
    ```
-2. **Em [Script.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Script.html)**:
-   - Declarar `const SIMULATION_STEPS_AULAX_Y = [ ... ];` com no mínimo 5 a 8 passos contendo: `line`, `codeHighlight`, `title`, `desc`, `stack` e `stdout`.
-   - Atualizar a função `abrirAula(idAula)` para selecionar os passos correspondentes e carregar o template instantâneo.
-   - Atualizar a função `switchOficinaBloco(blocoId)` para incluir os IDs das abas da nova aula (se houver oficinas interativas com abas).
-   - **Arquitetura Genérica do Core (Opção 1)**: O arquivo `Script.html` **NÃO deve conter strings de templates Python hardcoded nem funções duplicadas por aula**. As funções universais `copiarCodigo()`, `toggleGabarito()`, `atualizarChecklist()` e `validarEConcluirDesafioMestre()` atendem a todas as aulas de forma 100% agnóstica a conteúdo.
-   - Adicionar o item correspondente no array do catálogo mock de fallback com `ordem` rigorosamente coerente.
+2. **No próprio arquivo da aula ([AulaX_Y.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/AulaX_Y.html))**:
+   - **Encapsulamento Total dos Dados da Aula**: O arquivo `Script.html` **NÃO deve conter arrays de passos nem strings de código hardcoded por aula**. Todos os passos do simulador CPython residem no próprio arquivo da lição em uma tag declarativa:
+     ```html
+     <script type="application/json" class="simulation-steps-data">
+     [
+       {
+         "step": 0,
+         "line": null,
+         "insightTitle": "...",
+         "insightDesc": "...",
+         "stack": [ ... ],
+         "heap": [ ... ],
+         "stdout": "..."
+       }
+     ]
+     </script>
+     ```
+   - O motor `Script.html` carrega os passos automaticamente via `obterPassosSimulacao(idAula)`.
+
+3. **Em [Script.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Script.html)**:
+   - **Gerenciamento 100% Genérico e Agonístico**: `Script.html` apenas orquestra o motor do player (`initSimulation`, `goToStep`, etc.), navegação SPA (`abrirAula`) e persistência. Novas aulas são adicionadas **sem precisar alterar o Script.html para passos ou templates**.
+   - As funções universais `copiarCodigo()`, `toggleGabarito()`, `atualizarChecklist()` e `validarEConcluirDesafioMestre()` atendem a todas as aulas sem nenhuma duplicação.
+   - O mock de fallback do catálogo em `loadCatalog` apenas reflete as aulas disponíveis para teste offline.
 
 ---
 
-### 8.8. Contrato de Código no Preview Offline ([preview_local.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/preview_local.html))
+### 8.9. Contrato de Código no Preview Offline ([preview_local.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/preview_local.html))
 
 Para permitir que a nova aula seja testada no Windows com **dois cliques** sem precisar do Google Apps Script:
 1. Embutir o código completo de `AulaX_Y.html` dentro de um `<template id="template-aula-X-Y">` no corpo do [preview_local.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/preview_local.html).
-2. Adicionar as rotinas JS do Desafio Mestre e a constante `SIMULATION_STEPS_AULAX_Y` na tag `<script>` do preview.
+2. Com o encapsulamento local, os dados do simulador já viajam automaticamente dentro do template da aula.
 3. Testar a troca de aula pelo Dashboard local confirmando que a alternância ocorre com sucesso.
 
 ---
 
-### 8.9. Regra Canônica de Layout do Dashboard
+### 8.10. Regra Canônica de Layout do Dashboard
 
 A estrutura do Dashboard do Estudante ([Dashboard.html](file:///c:/Users/T-GAMER/desenvolvimento/python-reforco/Dashboard.html)) segue rigorosamente a ordem de prioridade visual:
 1. **Banner Superior / Onde você parou**: Retomada rápida com 1 clique para a aula onde o estudante parou.
 2. **Trilha de Aprendizagem & Módulos**: Posicionado **obrigatoriamente logo após o card de retomada**. Apresenta todos os módulos agrupados e cards de aulas disponíveis para acesso imediato sem necessidade de rolagem de página.
 3. **Indicadores de Engajamento e Conquistas**: Métricas consolidadas (percentual de conclusão da trilha, contador de dúvidas pendentes e total de XP).
 4. **Meu Caderno de Dúvidas para o Professor**: Painel de autonomia com os tópicos sinalizados pelo próprio estudante para revisão.
+
+---
+
+## 9. Diretrizes Canônicas de Responsividade e Ergonomia Mobile (Mobile-First)
+
+Como a esmagadora maioria dos estudantes do projeto acessa o PythonLab através de **smartphones** (dispositivos móveis com viewports entre 360px e 430px de largura física), toda e qualquer interface da plataforma deve obedecer com rigor cirúrgico aos seguintes requisitos arquiteturais responsivos:
+
+### 9.1. Dock de Navegação Inferior Móvel (*Mobile Bottom Navigation Dock*)
+1. **Separação Estrutural**:
+   - Em telas grandes (`> 768px`), a navegação reside no cabeçalho superior (`.main-nav.desktop-nav`), com botões horizontais estilizados.
+   - Em celulares e telas compactas (`<= 768px`), o menu superior é ocultado (`display: none !important;`) e assume a forma de uma barra inferior fixa (`.mobile-bottom-nav`) ancorada diretamente no rodapé da viewport (`position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;`).
+2. **Regra de Isolamento do Contexto de Empilhamento (Stacking / Containing Block)**:
+   - O elemento `.mobile-bottom-nav` **NUNCA** deve residir como filho de elementos que utilizam `backdrop-filter`, `transform` ou `position: sticky` (como o `.app-header`), sob pena de anular o comportamento de fixação em relação à janela (conforme especificação W3C para CSS filters/backdrop-filters). O dock móvel reside diretamente sob a raiz do `<body>`.
+3. **Ergonomia do Polegar**:
+   - Os botões de navegação no dock móvel possuem altura mínima de 56px, ícone centralizado acima do rótulo (`flex-direction: column`) e área de toque acessível para o polegar.
+4. **Compensação Inferior de Margem**:
+   - O container principal da aplicação (`.app-shell`) recebe `padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px))` em viewports `<= 768px`, garantindo que os rodapés, botões e caixas de código nunca fiquem encobertos pelo dock.
+
+### 9.2. Cabeçalho Limpo e Compacto no Mobile
+1. **Altura Fixa e Alinhamento**:
+   - No celular, o cabeçalho superior (`.app-header`) reduz para `3.5rem` de altura, mantendo apenas a marca (logotipo 🐍 **PythonLab**) alinhada à esquerda e os badges de engajamento (🔥 Sequência, ⭐ XP e Avatar) alinhados à direita.
+   - A tag de perfil (`.role-tag`) e o subtítulo curricular são ocultados automaticamente no cabeçalho mobile para evitar transbordamento horizontal.
+
+### 9.3. Stepper Responsivo com Rolagem e Auto-Centralização
+1. **Container Rolável**:
+   - O conjunto numérico do player passo a passo (`#step-buttons-container`) reside dentro de `.stepper-controls-container` com `overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch;`.
+   - Botões numéricos utilizam `flex-shrink: 0; min-width: 32px; height: 32px;` preservando legibilidade mesmo em aulas com mais de 7 passos.
+2. **Auto-Scroll Suave**:
+   - Ao avançar ou retroceder passos via `goToStep(index)`, a rotina JavaScript aciona `activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });`, mantendo o número ativo sempre visível no centro da tela do celular.
+
+### 9.4. Sub-abas de Oficinas em Formato de Chips Deslizantes
+- As abas de seções temáticas e desafios no Caderno de Práticas (`.oficina-subtabs-bar`) utilizam `display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 0.5rem; padding-bottom: 0.25rem;`.
+- Os botões de abas não quebram em múltiplas linhas verticais caóticas; em vez disso, deslizam horizontalmente com efeito de chips (*touch swipe*).
+
+### 9.5. Contenção Estrita de Diagramas ASCII, Código e Tabelas
+1. **Diagramas e Fluxogramas ASCII**:
+   - Devem ser envelopados obrigatoriamente dentro de `.ascii-flowchart-card` com o bloco de texto pré-formatado dentro de `.ascii-flowchart-box`.
+   - A classe `.ascii-flowchart-box` impõe `overflow-x: auto; max-width: 100%; white-space: pre; font-size: 0.72rem;`, impedindo que linhas extensas de diagramas empurrem a largura da página.
+2. **Tabelas de Rastreio (Trace Tables)**:
+   - Toda e qualquer tabela (`.trace-table`) deve ser envelopada por `<div class="trace-table-container">`, com rolagem horizontal interna suave e sombra indicativa de continuidade.
+3. **Visor de Código e Terminal**:
+   - Classes `.code-player`, `.code-body` e `.terminal-console` têm `max-width: 100%; overflow-x: auto;` assegurando que quebras de instrução ou strings longas sejam navegáveis sem deformar o grid.
+
+### 9.6. Prevenção de Auto-Zoom no iOS Safari / Chrome
+- Em navegadores WebKit/iOS, qualquer `<input>`, `<select>` ou `<textarea>` com `font-size` inferior a 16px provoca zoom automático involuntário da tela ao receber foco, deslocando o layout da aplicação.
+- Regra obrigatória: em viewports móveis, todos os campos interativos de formulário utilizam `font-size: 16px !important;`.
+
+### 9.7. Neutralização de Grids com `minmax()` em Viewports Estreitas
+- Grids desktop que utilizam `grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))` ou `minmax(300px, 1fr)` causam transbordamento lateral em smartphones de 360px a 390px (pois 300px + paddings laterais excedem a tela).
+- Regra obrigatória: no media query `@media (max-width: 768px)`, todas as declarações de grid que utilizam `minmax()` acima de 220px são neutralizadas automaticamente para `grid-template-columns: 1fr !important;`.

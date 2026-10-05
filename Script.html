@@ -20,10 +20,13 @@ const AppState = {
     perfil: 'visitante',
     xpTotal: 0,
     progressoIds: [],
+    exerciciosConcluidos: [],
+    ultimoPontoParada: null,
     podeGravar: false,
     isProfessor: false
   },
   catalog: [],
+  currentCourseId: 'curso_logica_python',
   currentLessonId: 'aula_1_2',
   currentLessonData: null,
   currentStepIndex: 0,
@@ -33,338 +36,43 @@ const AppState = {
   uploadContext: null
 };
 
-// Dados padrão de simulação para a Aula 1.2: Cálculo de Idade com Type Casting (CPython)
-const DEFAULT_SIMULATION_STEPS = [
-  {
-    step: 0,
-    line: 1,
-    insightTitle: "Passo 0: Preparação da Call Stack",
-    insightDesc: "O interpretador CPython inicializa o frame local na Call Stack e prepara para ler a primeira instrução.",
-    stack: [],
-    heap: [],
-    stdout: ""
-  },
-  {
-    step: 1,
-    line: 1,
-    insightTitle: "Passo 1: Entrada de Texto via input()",
-    insightDesc: "O usuário digita '2010'. Atenção: o comando input() SEMPRE retorna um objeto do tipo texto (str). O valor '2010' é alocado no Heap em 0x7FFF01 e o identificador 'dado_bruto' aponta para ele.",
-    stack: [
-      { name: "dado_bruto", type: "str", addr: "0x7FFF01" }
-    ],
-    heap: [
-      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" }
-    ],
-    stdout: "Digite o ano de nascimento: 2010"
-  },
-  {
-    step: 2,
-    line: 2,
-    insightTitle: "Passo 2: Conversão de Tipo (Type Casting com int())",
-    insightDesc: "A função int(dado_bruto) converte a string '2010' para um número inteiro 2010 no Heap (0x7FFF02), apontado por 'ano_nasc'. Agora operações matemáticas são válidas sem erro de TypeError!",
-    stack: [
-      { name: "dado_bruto", type: "str", addr: "0x7FFF01" },
-      { name: "ano_nasc", type: "int", addr: "0x7FFF02" }
-    ],
-    heap: [
-      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" },
-      { addr: "0x7FFF02", val: "2010", type: "int (número)" }
-    ],
-    stdout: "Digite o ano de nascimento: 2010"
-  },
-  {
-    step: 3,
-    line: 3,
-    insightTitle: "Passo 3: Alocação do Ano Vigente (Constante)",
-    insightDesc: "O identificador 'ano_atual' recebe o número inteiro 2026, alocado em 0x7FFF03 no Heap.",
-    stack: [
-      { name: "dado_bruto", type: "str", addr: "0x7FFF01" },
-      { name: "ano_nasc", type: "int", addr: "0x7FFF02" },
-      { name: "ano_atual", type: "int", addr: "0x7FFF03" }
-    ],
-    heap: [
-      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" },
-      { addr: "0x7FFF02", val: "2010", type: "int (número)" },
-      { addr: "0x7FFF03", val: "2026", type: "int (número)" }
-    ],
-    stdout: "Digite o ano de nascimento: 2010"
-  },
-  {
-    step: 4,
-    line: 4,
-    insightTitle: "Passo 4: Processamento Matemático (2026 - 2010)",
-    insightDesc: "CPython executa a subtração entre dois inteiros (2026 - 2010). O resultado 16 é alocado no Heap em 0x7FFF04, e 'idade_calculada' aponta para ele.",
-    stack: [
-      { name: "dado_bruto", type: "str", addr: "0x7FFF01" },
-      { name: "ano_nasc", type: "int", addr: "0x7FFF02" },
-      { name: "ano_atual", type: "int", addr: "0x7FFF03" },
-      { name: "idade_calculada", type: "int", addr: "0x7FFF04" }
-    ],
-    heap: [
-      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" },
-      { addr: "0x7FFF02", val: "2010", type: "int (número)" },
-      { addr: "0x7FFF03", val: "2026", type: "int (número)" },
-      { addr: "0x7FFF04", val: "16", type: "int (número)" }
-    ],
-    stdout: "Digite o ano de nascimento: 2010"
-  },
-  {
-    step: 5,
-    line: 5,
-    insightTitle: "Passo 5: Saída Formatada no Console (print())",
-    insightDesc: "A função print() busca o valor no Heap através do identificador 'idade_calculada' e exibe a mensagem final no terminal STDOUT.",
-    stack: [
-      { name: "dado_bruto", type: "str", addr: "0x7FFF01" },
-      { name: "ano_nasc", type: "int", addr: "0x7FFF02" },
-      { name: "ano_atual", type: "int", addr: "0x7FFF03" },
-      { name: "idade_calculada", type: "int", addr: "0x7FFF04" }
-    ],
-    heap: [
-      { addr: "0x7FFF01", val: '"2010"', type: "str (texto)" },
-      { addr: "0x7FFF02", val: "2010", type: "int (número)" },
-      { addr: "0x7FFF03", val: "2026", type: "int (número)" },
-      { addr: "0x7FFF04", val: "16", type: "int (número)" }
-    ],
-    stdout: "Digite o ano de nascimento: 2010\nIdade aproximada: 16"
+/**
+ * Localiza e carrega dinamicamente os passos do simulador CPython encapsulados
+ * no próprio HTML da aula ativa (via tag <script type="application/json" class="simulation-steps-data">).
+ * Isso garante que o Script.html não infle com centenas de linhas de dados a cada nova aula.
+ */
+function obterPassosSimulacao(idAula) {
+  // 1. Tenta obter diretamente do container da aula ativa no DOM
+  const container = document.getElementById('dynamic-lesson-content');
+  if (container) {
+    const el = container.querySelector('.simulation-steps-data');
+    if (el && el.textContent.trim()) {
+      try {
+        return JSON.parse(el.textContent);
+      } catch (e) {
+        console.error('Erro ao ler passos de simulação do container:', e);
+      }
+    }
   }
-];
-
-const SIMULATION_STEPS_AULA1_3 = [
-  {
-    step: 0,
-    line: null,
-    insightTitle: "Passo 0: Preparação da Call Stack (Aula 1.3)",
-    insightDesc: "Inicie o simulador para acompanhar a resolução da expressão '100 - 4 ** 2 * 3 + 24 // (2 + 4)' decomposta passo a passo de acordo com as regras de precedência.",
-    stack: [],
-    heap: [],
-    stdout: "> (Aguardando início...)"
-  },
-  {
-    step: 1,
-    line: 1,
-    insightTitle: "Passo 1: Resolução de Parênteses (bloco_par = 2 + 4)",
-    insightDesc: "Regra 1: Parênteses possuem a maior precedência de todos! O CPython calcula (2 + 4) = 6 antes de qualquer outra operação. O valor 6 é alocado no Heap em 0x7FA11.",
-    stack: [
-      { name: "bloco_par", type: "int", addr: "0x7FA11" }
-    ],
-    heap: [
-      { addr: "0x7FA11", val: "6", type: "int" }
-    ],
-    stdout: "> (Calculando bloco dos parênteses...)"
-  },
-  {
-    step: 2,
-    line: 2,
-    insightTitle: "Passo 2: Exponenciação (bloco_pot = 4 ** 2)",
-    insightDesc: "Regra 2: A exponenciação (**) tem prioridade superior à multiplicação e divisão. CPython eleva 4 ao quadrado resultando em 16 (0x7FA12).",
-    stack: [
-      { name: "bloco_par", type: "int", addr: "0x7FA11" },
-      { name: "bloco_pot", type: "int", addr: "0x7FA12" }
-    ],
-    heap: [
-      { addr: "0x7FA11", val: "6", type: "int" },
-      { addr: "0x7FA12", val: "16", type: "int" }
-    ],
-    stdout: "> (Calculando exponenciação: 4 ** 2 = 16)"
-  },
-  {
-    step: 3,
-    line: 3,
-    insightTitle: "Passo 3: Multiplicação (bloco_mult = bloco_pot * 3)",
-    insightDesc: "Regra 3: Multiplicação entre 16 e 3 resulta em 48 (0x7FA13). O termo multiplicativo intermediário está resolvido.",
-    stack: [
-      { name: "bloco_par", type: "int", addr: "0x7FA11" },
-      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
-      { name: "bloco_mult", type: "int", addr: "0x7FA13" }
-    ],
-    heap: [
-      { addr: "0x7FA11", val: "6", type: "int" },
-      { addr: "0x7FA12", val: "16", type: "int" },
-      { addr: "0x7FA13", val: "48", type: "int" }
-    ],
-    stdout: "> (Calculando multiplicação: 16 * 3 = 48)"
-  },
-  {
-    step: 4,
-    line: 4,
-    insightTitle: "Passo 4: Divisão Inteira (bloco_div = 24 // bloco_par)",
-    insightDesc: "Regra 4: Divisão inteira (//) entre 24 e 6 (resultado do parêntese). Quociente inteiro exato é 4 (0x7FA14).",
-    stack: [
-      { name: "bloco_par", type: "int", addr: "0x7FA11" },
-      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
-      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
-      { name: "bloco_div", type: "int", addr: "0x7FA14" }
-    ],
-    heap: [
-      { addr: "0x7FA11", val: "6", type: "int" },
-      { addr: "0x7FA12", val: "16", type: "int" },
-      { addr: "0x7FA13", val: "48", type: "int" },
-      { addr: "0x7FA14", val: "4", type: "int" }
-    ],
-    stdout: "> (Calculando divisão inteira: 24 // 6 = 4)"
-  },
-  {
-    step: 5,
-    line: 5,
-    insightTitle: "Passo 5: Adições e Subtrações da Esquerda para a Direita",
-    insightDesc: "Regra 5: Com multiplicativos e potências resolvidos, avaliamos 100 - 48 + 4 da esquerda para a direita: (100 - 48 = 52) + 4 = 56 (0x7FA15).",
-    stack: [
-      { name: "bloco_par", type: "int", addr: "0x7FA11" },
-      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
-      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
-      { name: "bloco_div", type: "int", addr: "0x7FA14" },
-      { name: "resultado", type: "int", addr: "0x7FA15" }
-    ],
-    heap: [
-      { addr: "0x7FA11", val: "6", type: "int" },
-      { addr: "0x7FA12", val: "16", type: "int" },
-      { addr: "0x7FA13", val: "48", type: "int" },
-      { addr: "0x7FA14", val: "4", type: "int" },
-      { addr: "0x7FA15", val: "56", type: "int" }
-    ],
-    stdout: "> (Expressão resolvida: resultado = 56)"
-  },
-  {
-    step: 6,
-    line: 6,
-    insightTitle: "Passo 6: Saída Formatada no Console",
-    insightDesc: "Instrução print exibe a mensagem final 'Resultado final: 56' no terminal STDOUT.",
-    stack: [
-      { name: "bloco_par", type: "int", addr: "0x7FA11" },
-      { name: "bloco_pot", type: "int", addr: "0x7FA12" },
-      { name: "bloco_mult", type: "int", addr: "0x7FA13" },
-      { name: "bloco_div", type: "int", addr: "0x7FA14" },
-      { name: "resultado", type: "int", addr: "0x7FA15" }
-    ],
-    heap: [
-      { addr: "0x7FA11", val: "6", type: "int" },
-      { addr: "0x7FA12", val: "16", type: "int" },
-      { addr: "0x7FA13", val: "48", type: "int" },
-      { addr: "0x7FA14", val: "4", type: "int" },
-      { addr: "0x7FA15", val: "56", type: "int" }
-    ],
-    stdout: "> Resultado final: 56"
+  // 2. Se a aula ainda estiver apenas no template correspondente
+  if (idAula) {
+    const tmpl = document.getElementById('template-' + idAula.replace(/_/g, '-'));
+    if (tmpl) {
+      const el = tmpl.content ? tmpl.content.querySelector('.simulation-steps-data') : tmpl.querySelector('.simulation-steps-data');
+      if (el && el.textContent.trim()) {
+        try {
+          return JSON.parse(el.textContent);
+        } catch (e) {
+          console.error('Erro ao ler passos de simulação do template:', e);
+        }
+      }
+    }
   }
-];
+  return [];
+}
 
-const SIMULATION_STEPS_AULA1_4 = [
-  {
-    step: 0,
-    line: null,
-    insightTitle: "Passo 0: Preparação da Call Stack (Aula 1.4)",
-    insightDesc: "Inicie o simulador para acompanhar o fluxo de execução condicional (if-else) e a avaliação booleana no CPython.",
-    stack: [],
-    heap: [],
-    stdout: "> (Aguardando início...)"
-  },
-  {
-    step: 1,
-    line: 1,
-    insightTitle: "Passo 1: Atribuição de renda (float)",
-    insightDesc: "O literal float 1800.0 é alocado no Heap em 0x7FB01 e vinculado à variável local 'renda'.",
-    stack: [
-      { name: "renda", type: "float", addr: "0x7FB01" }
-    ],
-    heap: [
-      { addr: "0x7FB01", val: "1800.0", type: "float" }
-    ],
-    stdout: ""
-  },
-  {
-    step: 2,
-    line: 2,
-    insightTitle: "Passo 2: Atribuição de parcela (float)",
-    insightDesc: "O literal 400.0 é alocado no Heap em 0x7FB02 e vinculado à variável local 'parcela'.",
-    stack: [
-      { name: "renda", type: "float", addr: "0x7FB01" },
-      { name: "parcela", type: "float", addr: "0x7FB02" }
-    ],
-    heap: [
-      { addr: "0x7FB01", val: "1800.0", type: "float" },
-      { addr: "0x7FB02", val: "400.0", type: "float" }
-    ],
-    stdout: ""
-  },
-  {
-    step: 3,
-    line: 3,
-    insightTitle: "Passo 3: Cálculo da Margem Consignável (30%)",
-    insightDesc: "CPython multiplica renda (1800.0) por 0.30, resultando em 540.0 alocado no Heap em 0x7FB03 e vinculado a 'limite_margem'.",
-    stack: [
-      { name: "renda", type: "float", addr: "0x7FB01" },
-      { name: "parcela", type: "float", addr: "0x7FB02" },
-      { name: "limite_margem", type: "float", addr: "0x7FB03" }
-    ],
-    heap: [
-      { addr: "0x7FB01", val: "1800.0", type: "float" },
-      { addr: "0x7FB02", val: "400.0", type: "float" },
-      { addr: "0x7FB03", val: "540.0", type: "float" }
-    ],
-    stdout: ""
-  },
-  {
-    step: 4,
-    line: 4,
-    insightTitle: "Passo 4: Avaliação do Desvio Condicional (if)",
-    insightDesc: "A CPU compara se parcela (400.0) <= limite_margem (540.0). A expressão booleana é TRUE! O fluxo entra no bloco indentado do if.",
-    stack: [
-      { name: "renda", type: "float", addr: "0x7FB01" },
-      { name: "parcela", type: "float", addr: "0x7FB02" },
-      { name: "limite_margem", type: "float", addr: "0x7FB03" }
-    ],
-    heap: [
-      { addr: "0x7FB01", val: "1800.0", type: "float" },
-      { addr: "0x7FB02", val: "400.0", type: "float" },
-      { addr: "0x7FB03", val: "540.0", type: "float" }
-    ],
-    stdout: "> Condição 400.0 <= 540.0 é True. Desviando para bloco if..."
-  },
-  {
-    step: 5,
-    line: 5,
-    insightTitle: "Passo 5: Execução do Bloco if (status = 'Aprovado')",
-    insightDesc: "A string 'Aprovado' é alocada no Heap em 0x7FB04. O bloco 'else' (linhas 6-7) é completamente ignorado pelo interpretador.",
-    stack: [
-      { name: "renda", type: "float", addr: "0x7FB01" },
-      { name: "parcela", type: "float", addr: "0x7FB02" },
-      { name: "limite_margem", type: "float", addr: "0x7FB03" },
-      { name: "status", type: "str", addr: "0x7FB04" }
-    ],
-    heap: [
-      { addr: "0x7FB01", val: "1800.0", type: "float" },
-      { addr: "0x7FB02", val: "400.0", type: "float" },
-      { addr: "0x7FB03", val: "540.0", type: "float" },
-      { addr: "0x7FB04", val: '"Aprovado"', type: "str" }
-    ],
-    stdout: "> Condição 400.0 <= 540.0 é True. Desviando para bloco if...\\n> status definido como 'Aprovado'"
-  },
-  {
-    step: 6,
-    line: 8,
-    insightTitle: "Passo 6: Saída Formatada após Convergência de Fluxo",
-    insightDesc: "Ambos os ramos convergem na Linha 8 (não indentada). print exibe 'Resultado da Linha: Aprovado' no STDOUT.",
-    stack: [
-      { name: "renda", type: "float", addr: "0x7FB01" },
-      { name: "parcela", type: "float", addr: "0x7FB02" },
-      { name: "limite_margem", type: "float", addr: "0x7FB03" },
-      { name: "status", type: "str", addr: "0x7FB04" }
-    ],
-    heap: [
-      { addr: "0x7FB01", val: "1800.0", type: "float" },
-      { addr: "0x7FB02", val: "400.0", type: "float" },
-      { addr: "0x7FB03", val: "540.0", type: "float" },
-      { addr: "0x7FB04", val: '"Aprovado"', type: "str" }
-    ],
-    stdout: "> Resultado da Linha: Aprovado"
-  }
-];
-
-// Inicialização do documento
-document.addEventListener('DOMContentLoaded', function() {
-  initSimulation(DEFAULT_SIMULATION_STEPS);
-  loadUserSession();
-  loadCatalog();
-});
+// A inicialização principal (inicializarPythonLab) é executada no rodapé do Script.html,
+// assegurando que todas as constantes (COURSES_DATA), classes e funções estejam declaradas em memória.
 
 /**
  * ============================================================================
@@ -384,51 +92,94 @@ function loadUserSession() {
     // Modo de Desenvolvimento Local / Preview
     console.info('Executando fora do ambiente Google Apps Script. Ativando mock local.');
     const emailMock = savedEmail || 'neylor@gmail.com';
-    onUserSessionSuccess({
-      autenticado: true,
-      email: emailMock,
-      nome: emailMock.split('@')[0],
-      perfil: emailMock.includes('prof') ? 'professor' : 'aluno',
-      xpTotal: 480,
-      progressoIds: ['aula_1_1'],
-      duvidasPendentes: [
-        {
+    const emailLower = emailMock.toLowerCase();
+    const isTeacher = emailLower.includes('neylor') || emailLower.includes('prof') || emailLower.includes('admin');
+
+    if (isTeacher) {
+      onUserSessionSuccess({
+        autenticado: true,
+        email: emailMock,
+        nome: 'Professor Neylor FM',
+        perfil: 'professor',
+        xpTotal: 2500,
+        progressoIds: ['aula_1_1', 'aula_1_2', 'aula_1_3', 'aula_1_4', 'aula_1_5', 'aula_2_1'],
+        exerciciosConcluidos: ['aula_1_2:bloco_a_atv_2', 'aula_1_2:bloco_a_atv_3'],
+        ultimoPontoParada: {
           idAula: 'aula_1_2',
-          idTopico: 'Variáveis e Memória',
-          duvida: 'Não entendi por que y continua apontando para 10 no Heap depois que fiz x += 5.',
+          idExercicio: 'bloco_a_atv_3',
+          titulo: 'Bloco A: Atividade 3',
+          proximoTitulo: 'Bloco A: Atividade 4',
           data: new Date().toISOString()
-        }
-      ],
-      ultimaAulaAcessada: 'aula_1_2',
-      podeGravar: true,
-      isProfessor: emailMock.includes('prof')
-    });
+        },
+        duvidasPendentes: [],
+        ultimaAulaAcessada: 'aula_1_2',
+        podeGravar: true,
+        isProfessor: true
+      });
+    } else {
+      const mockData = (typeof mockObterDadosSorteioProfessor === 'function') ? mockObterDadosSorteioProfessor() : { alunos: [] };
+      const studentFound = (mockData.alunos || []).find(a => a.email.toLowerCase() === emailLower);
+      const nomeAluno = studentFound ? studentFound.nome : (emailMock.split('@')[0].charAt(0).toUpperCase() + emailMock.split('@')[0].slice(1));
+      const xpAluno = studentFound ? studentFound.xpTotal : 480;
+
+      onUserSessionSuccess({
+        autenticado: true,
+        email: emailMock,
+        nome: nomeAluno,
+        perfil: 'aluno',
+        xpTotal: xpAluno,
+        progressoIds: ['aula_1_1'],
+        exerciciosConcluidos: ['aula_1_2:bloco_a_atv_2', 'aula_1_2:bloco_a_atv_3'],
+        ultimoPontoParada: {
+          idAula: 'aula_1_2',
+          idExercicio: 'bloco_a_atv_3',
+          titulo: 'Bloco A: Atividade 3',
+          proximoTitulo: 'Bloco A: Atividade 4',
+          data: new Date().toISOString()
+        },
+        duvidasPendentes: [
+          {
+            idAula: 'aula_1_2',
+            idTopico: 'Variáveis e Memória',
+            duvida: 'Não entendi por que y continua apontando para 10 no Heap depois que fiz x += 5.',
+            data: new Date().toISOString()
+          }
+        ],
+        ultimaAulaAcessada: 'aula_1_2',
+        podeGravar: true,
+        isProfessor: false
+      });
+    }
   }
 }
 
 function onUserSessionSuccess(userData) {
   AppState.user = userData;
+  if (!AppState.user.exerciciosConcluidos) {
+    AppState.user.exerciciosConcluidos = [];
+  }
   if (userData && userData.autenticado && userData.email) {
     localStorage.setItem('pythonlab_user_email', userData.email);
   }
   renderHeaderUser();
   renderVisitorModalContent();
   renderizarDuvidasDashboard();
+  renderizarOndePareiDashboard();
   
-  if (userData.ultimaAulaAcessada) {
-    const labelEl = document.getElementById('dash-onde-parei-titulo');
-    if (labelEl) labelEl.textContent = `Aula: ${userData.ultimaAulaAcessada}`;
-  }
-  
-  // Se for professor, exibe atalho no menu
-  const teacherTab = document.getElementById('nav-teacher');
-  if (teacherTab) {
-    teacherTab.style.display = userData.isProfessor ? 'inline-flex' : 'none';
-  }
+  // Se for professor, exibe atalho no menu (desktop e mobile)
+  const teacherTabs = document.querySelectorAll('#nav-teacher, #nav-teacher-mobile');
+  teacherTabs.forEach(tab => {
+    tab.style.display = userData.isProfessor ? (tab.id === 'nav-teacher-mobile' ? 'flex' : 'inline-flex') : 'none';
+  });
 
-  // Atualiza modo de visualização e imagens didáticas da aula ativa
+
+  // Atualiza modo de visualização, imagens didáticas e checks da aula ativa
   aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
   carregarImagensAula(AppState.currentLessonId || 'aula_1_2');
+  renderizarChecksExercicios(AppState.currentLessonId || 'aula_1_2');
+  if (typeof atualizarLabelsNavegacaoAulas === 'function') {
+    atualizarLabelsNavegacaoAulas(AppState.currentLessonId || 'aula_1_2');
+  }
 }
 
 function onUserSessionError(error) {
@@ -437,61 +188,367 @@ function onUserSessionError(error) {
   renderVisitorModalContent();
 }
 
+// Dados Canônicos dos Dois Cursos Ofertados pela Plataforma
+const COURSES_DATA = {
+  curso_logica_python: {
+    id: 'curso_logica_python',
+    nome: 'Introdução à Lógica de Programação em Python',
+    turma: 'EMTI/26C30T2',
+    icone: '🐍',
+    descricao: 'Formação essencial em CPython: algoritmos, operadores, desvios condicionais, repetições, coleções dinâmicas e modularização.',
+    totalModulos: 3,
+    aulas: [
+      // Módulo 1 (Aulas 1.1 a 1.5)
+      {
+        id_aula: 'aula_1_1',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        ordem: 1,
+        numero: '1.1',
+        titulo: 'Python, Anaconda e Jupyter',
+        arquivo_html: 'Aula1_1',
+        descricao: 'Configuração do ambiente CPython, Anaconda, Jupyter Notebook, execução de scripts e primeiros comandos interativos.',
+        tempo_estimado: '40 min',
+        xp_base: 150,
+        status: 'publicado'
+      },
+      {
+        id_aula: 'aula_1_2',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        ordem: 2,
+        numero: '1.2',
+        titulo: 'Atribuindo valores a variáveis corretamente (Variáveis, Tipos de Dados e Entrada/Saída)',
+        arquivo_html: 'Aula1_2',
+        descricao: 'Ciclo elementar entrada/processamento/saída, tipos primitivos, Stack vs Heap, teste de mesa e Totem de Bilhetagem.',
+        tempo_estimado: '45 min',
+        xp_base: 150,
+        status: 'publicado'
+      },
+      {
+        id_aula: 'aula_1_3',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        ordem: 3,
+        numero: '1.3',
+        titulo: 'Fazendo operações com variáveis (Planejamento de Algoritmos, Operadores Aritméticos e Precedência)',
+        arquivo_html: 'Aula1_3',
+        descricao: 'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.',
+        tempo_estimado: '50 min',
+        xp_base: 180,
+        status: 'publicado'
+      },
+      {
+        id_aula: 'aula_1_4',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        ordem: 4,
+        numero: '1.4',
+        titulo: 'Desviando o curso do programa (Estruturas Condicionais, Indentação PEP 8 e Operadores Lógicos)',
+        arquivo_html: 'Aula1_4',
+        descricao: 'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.',
+        tempo_estimado: '55 min',
+        xp_base: 200,
+        status: 'publicado'
+      },
+      {
+        id_aula: 'aula_1_5',
+        modulo: 'Módulo 1: Fundamentos de CPython',
+        ordem_modulo: 1,
+        ordem: 5,
+        numero: '1.5',
+        titulo: 'Laços de repetição (While, For, Sequências e Controle de Fluxo)',
+        arquivo_html: 'Aula1_5',
+        descricao: 'Laços while e for, gerador range(), modificadores break, continue e else, rastreio de pilha e Heap e Totem do Refeitório.',
+        tempo_estimado: '65 min',
+        xp_base: 220,
+        status: 'publicado'
+      },
+
+      // Módulo 2 (Aulas 2.1 a 2.5)
+      {
+        id_aula: 'aula_2_1',
+        modulo: 'Módulo 2: Estruturas de Dados e Coleções',
+        ordem_modulo: 2,
+        ordem: 1,
+        numero: '2.1',
+        titulo: 'Introdução a Coleções, Tuplas e Funções Embutidas',
+        arquivo_html: 'Aula2_1',
+        descricao: 'Coleções de dados, estrutura de tuplas imutáveis, indexação e desempacotamento, funções nativas (len, sum, max, min, abs) e auditoria de hardware.',
+        tempo_estimado: '65 min',
+        xp_base: 250,
+        status: 'publicado'
+      },
+      {
+        id_aula: 'aula_2_2',
+        modulo: 'Módulo 2: Coleções, Listas e Estruturas de Dados',
+        ordem_modulo: 2,
+        ordem: 2,
+        numero: '2.2',
+        titulo: 'Listas para tudo',
+        descricao: 'Listas dinâmicas mutáveis, indexação positiva e negativa, fatiamento (slicing) e métodos append, pop, sort.',
+        tempo_estimado: '55 min',
+        xp_base: 210,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_2_3',
+        modulo: 'Módulo 2: Coleções, Listas e Estruturas de Dados',
+        ordem_modulo: 2,
+        ordem: 3,
+        numero: '2.3',
+        titulo: 'Manipulando strings',
+        descricao: 'Imutabilidade de strings, formatação f-strings, métodos split, join, strip, replace e buscas de padrões.',
+        tempo_estimado: '50 min',
+        xp_base: 200,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_2_4',
+        modulo: 'Módulo 2: Coleções, Listas e Estruturas de Dados',
+        ordem_modulo: 2,
+        ordem: 4,
+        numero: '2.4',
+        titulo: 'Conjuntos e suas utilizações',
+        descricao: 'Sets em Python, unicidade de elementos, operações de união, interseção e diferença simétrica com alta performance.',
+        tempo_estimado: '45 min',
+        xp_base: 190,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_2_5',
+        modulo: 'Módulo 2: Coleções, Listas e Estruturas de Dados',
+        ordem_modulo: 2,
+        ordem: 5,
+        numero: '2.5',
+        titulo: 'Dicionário e sua flexibilidade',
+        descricao: 'Mapeamentos chave-valor, tabelas hash em Python, métodos keys, values, items e estruturas aninhadas.',
+        tempo_estimado: '60 min',
+        xp_base: 230,
+        status: 'rascunho'
+      },
+
+      // Módulo 3 (Aulas 3.1 a 3.3)
+      {
+        id_aula: 'aula_3_1',
+        modulo: 'Módulo 3: Funções e Modularização de Código',
+        ordem_modulo: 3,
+        ordem: 1,
+        numero: '3.1',
+        titulo: 'Dividindo e reutilizando o código',
+        descricao: 'Declaração de funções def, parâmetros posicionais e nomeados, retorno return, escopo local vs global na Call Stack.',
+        tempo_estimado: '55 min',
+        xp_base: 220,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_3_2',
+        modulo: 'Módulo 3: Funções e Modularização de Código',
+        ordem_modulo: 3,
+        ordem: 2,
+        numero: '3.2',
+        titulo: 'Introdução a programação orientada a objetos',
+        descricao: 'Classes, objetos, atributos de instância (__init__), métodos, encapsulamento e representação de entidades do mundo real.',
+        tempo_estimado: '65 min',
+        xp_base: 250,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_3_3',
+        modulo: 'Módulo 3: Funções e Modularização de Código',
+        ordem_modulo: 3,
+        ordem: 3,
+        numero: '3.3',
+        titulo: 'Reutilizando código',
+        descricao: 'Importação de módulos nativos (math, random, datetime), criação de pacotes próprios e boas práticas de arquitetura.',
+        tempo_estimado: '50 min',
+        xp_base: 210,
+        status: 'rascunho'
+      }
+    ]
+  },
+
+  curso_visualizacao_dados: {
+    id: 'curso_visualizacao_dados',
+    nome: 'Visualização de Dados',
+    turma: 'EMTI/26C24T2',
+    icone: '📊',
+    descricao: 'Análise exploratória, gráficos categóricos, distribuições, séries temporais, dashboards interativos, mapas e nuvem de palavras.',
+    totalModulos: 1,
+    aulas: [
+      {
+        id_aula: 'aula_vd_1_1',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 1,
+        numero: '1.1',
+        titulo: 'Explorando conjuntos de dados',
+        descricao: 'Carregamento de datasets, inspeção dimensional, limpeza de dados faltantes e estatísticas descritivas básicas.',
+        tempo_estimado: '45 min',
+        xp_base: 150,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_1_2',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 2,
+        numero: '1.2',
+        titulo: 'Fundamentos de visualização de dados',
+        descricao: 'Gramática dos gráficos, bibliotecas Matplotlib e Seaborn, sistemas de coordenadas e escolha de paletas adequadas.',
+        tempo_estimado: '50 min',
+        xp_base: 160,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_2_1',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 3,
+        numero: '2.1',
+        titulo: 'Visualizando dados categóricos: quantidades',
+        descricao: 'Gráficos de barras verticais e horizontais, contagens de frequência e ordenação intuitiva de categorias.',
+        tempo_estimado: '50 min',
+        xp_base: 170,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_2_2',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 4,
+        numero: '2.2',
+        titulo: 'Visualizando dados categóricos: proporções',
+        descricao: 'Gráficos de rosca, barras empilhadas 100%, treemaps e cuidados com distorções perceptivas em gráficos de pizza.',
+        tempo_estimado: '50 min',
+        xp_base: 170,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_3_1',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 5,
+        numero: '3.1',
+        titulo: 'Visualizando distribuições de uma variável',
+        descricao: 'Histogramas, curvas de densidade (KDE), boxplots e identificação de assimetrias e outliers nos dados.',
+        tempo_estimado: '55 min',
+        xp_base: 180,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_3_2',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 6,
+        numero: '3.2',
+        titulo: 'Visualizando relações entre dados quantitativos',
+        descricao: 'Gráficos de dispersão (scatter plots), linhas de tendência, correlação de Pearson e matrizes de calor (heatmaps).',
+        tempo_estimado: '55 min',
+        xp_base: 190,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_3_3',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 7,
+        numero: '3.3',
+        titulo: 'Visualizando séries temporais',
+        descricao: 'Gráficos de linhas cronológicos, sazonalidade, médias móveis, agregações mensais/anuais e janelas temporais.',
+        tempo_estimado: '60 min',
+        xp_base: 200,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_4_1',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 8,
+        numero: '4.1',
+        titulo: 'Visualizando distribuições entre categorias',
+        descricao: 'Violin plots, boxplots facetados e gráficos de faixas (strip plots) para comparação entre grupos.',
+        tempo_estimado: '55 min',
+        xp_base: 190,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_4_2',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 9,
+        numero: '4.2',
+        titulo: 'Visualizando relações par-a-par em conjuntos de dados',
+        descricao: 'Pairplots multivariados, correlogramas e análise rápida de interdependência entre múltiplas variáveis numéricas.',
+        tempo_estimado: '60 min',
+        xp_base: 210,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_5',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 10,
+        numero: '5',
+        titulo: 'Construindo dashboards',
+        descricao: 'Layouts de painel com múltiplos subplots, gridspec, anotações de destaque e exportação para relatórios executivos.',
+        tempo_estimado: '70 min',
+        xp_base: 250,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_6',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 11,
+        numero: '6',
+        titulo: 'Mapas',
+        descricao: 'Visualização geoespacial com Folium e Geopandas, mapas cloropléticos, marcadores e coordenadas geográficas.',
+        tempo_estimado: '60 min',
+        xp_base: 220,
+        status: 'rascunho'
+      },
+      {
+        id_aula: 'aula_vd_7',
+        modulo: 'Módulo de Visualização de Dados (EMTI/26C24T2)',
+        ordem_modulo: 1,
+        ordem: 12,
+        numero: '7',
+        titulo: 'Nuvem de palavras',
+        descricao: 'Mineração básica de texto, remoção de stopwords com WordCloud e representação visual de frequências léxicas.',
+        tempo_estimado: '50 min',
+        xp_base: 190,
+        status: 'rascunho'
+      }
+    ]
+  }
+};
+
 function loadCatalog() {
   const currentEmail = (AppState.user && AppState.user.email) ? AppState.user.email : (localStorage.getItem('pythonlab_user_email') || '');
   if (typeof google !== 'undefined' && google.script && google.script.run) {
     google.script.run
       .withSuccessHandler(onCatalogSuccess)
       .withFailureHandler(function(err) {
-        console.error('Erro ao carregar catálogo:', err);
+        console.warn('Catálogo da planilha indisponível ou em carregamento, utilizando catálogo padrão:', err);
+        if (!AppState.catalog || AppState.catalog.length === 0) {
+          onCatalogSuccess(COURSES_DATA[AppState.currentCourseId].aulas);
+        }
       })
       .getCatalogoAulas(currentEmail);
   } else {
-    // Mock local do catálogo: aulas desenvolvidas no projeto (Aula 1.2 e Aula 1.3)
-    onCatalogSuccess([
-      {
-        id_aula: 'aula_1_2',
-        modulo: 'Módulo 1: Fundamentos de CPython',
-        ordem_modulo: 1,
-        titulo: 'Variáveis, Tipos de Dados e Entrada/Saída',
-        arquivo_html: 'Aula1_2',
-        ordem: 2,
-        status: 'publicado',
-        xp_base: 150,
-        tempo_estimado: '45 min',
-        descricao: 'Ciclo elementar entrada/processamento/saída, tipos primitivos, Stack vs Heap, teste de mesa e Totem de Bilhetagem.'
-      },
-      {
-        id_aula: 'aula_1_3',
-        modulo: 'Módulo 1: Fundamentos de CPython',
-        ordem_modulo: 1,
-        titulo: 'Planejamento de Algoritmos, Operadores Aritméticos e Precedência',
-        arquivo_html: 'Aula1_3',
-        ordem: 3,
-        status: 'publicado',
-        xp_base: 180,
-        tempo_estimado: '50 min',
-        descricao: 'Decomposição de algoritmos, operadores aritméticos (//, %, **), atribuição composta, hierarquia de precedência e simulador orçamentário.'
-      },
-      {
-        id_aula: 'aula_1_4',
-        modulo: 'Módulo 1: Fundamentos de CPython',
-        ordem_modulo: 1,
-        titulo: 'Estruturas Condicionais, Indentação e Operadores Lógicos',
-        arquivo_html: 'Aula1_4',
-        ordem: 4,
-        status: 'publicado',
-        xp_base: 200,
-        tempo_estimado: '55 min',
-        descricao: 'Desvios if-elif-else, indentação PEP 8, avaliação de curto-circuito, operadores and, or, not e Sistema de Seleção de Monitoria.'
-      }
-    ]);
+    onCatalogSuccess(COURSES_DATA[AppState.currentCourseId].aulas);
   }
 }
 
 function onCatalogSuccess(catalog) {
-  AppState.catalog = catalog;
-  renderCatalogDashboard(catalog);
+  if (Array.isArray(catalog) && catalog.length > 0) {
+    AppState.catalog = catalog;
+  } else if (!AppState.catalog || AppState.catalog.length === 0) {
+    AppState.catalog = (typeof COURSES_DATA !== 'undefined' && COURSES_DATA[AppState.currentCourseId]) ? COURSES_DATA[AppState.currentCourseId].aulas : [];
+  }
+  renderCatalogDashboard(AppState.catalog);
+  renderizarOndePareiDashboard();
 }
 
 /**
@@ -501,10 +558,10 @@ function onCatalogSuccess(catalog) {
  */
 
 function navigateTo(viewId) {
-  // Atualiza classes ativas nos links de navegação
+  // Atualiza classes ativas nos links de navegação (desktop e mobile)
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  const activeBtn = document.querySelector(`.nav-item[data-view="${viewId}"]`);
-  if (activeBtn) activeBtn.classList.add('active');
+  const activeBtns = document.querySelectorAll(`.nav-item[data-view="${viewId}"]`);
+  activeBtns.forEach(btn => btn.classList.add('active'));
 
   // Alterna as seções de visualização
   document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
@@ -514,10 +571,110 @@ function navigateTo(viewId) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // Gerencia visibilidade e monitor de inatividade da barra flutuante
+  const floatBar = document.getElementById('floating-lesson-bar');
+  if (floatBar) {
+    if (viewId === 'view-aula') {
+      floatBar.style.display = 'flex';
+      floatBar.classList.remove('idle-hidden');
+      registrarInteracaoUsuario();
+    } else {
+      floatBar.style.display = 'none';
+      if (_floatingBarIdleTimer) {
+        clearTimeout(_floatingBarIdleTimer);
+        _floatingBarIdleTimer = null;
+      }
+    }
+  }
+
+  if (viewId === 'view-aula') {
+    renderizarChecksExercicios(AppState.currentLessonId || 'aula_1_2');
+  } else if (viewId === 'view-dashboard') {
+    renderizarOndePareiDashboard();
+  }
+
   // Se a rota for o painel do professor, carrega o relatório consolidado
   if (viewId === 'view-professor') {
     carregarRelatorioProfessor();
   }
+}
+
+/**
+ * ============================================================================
+ * CONTROLE DE AUTO-OCULTAÇÃO DA BARRA FLUTUANTE POR INATIVIDADE (3.5s)
+ * ============================================================================
+ */
+let _floatingBarIdleTimer = null;
+let _floatingBarIsHovered = false;
+let _monitorInatividadeIniciado = false;
+const FLOATING_BAR_IDLE_DELAY = 3500; // 3.5 segundos sem interação
+
+function registrarInteracaoUsuario() {
+  const bar = document.getElementById('floating-lesson-bar');
+  if (!bar) return;
+
+  const viewAula = document.getElementById('view-aula');
+  if (!viewAula || !viewAula.classList.contains('active')) return;
+
+  // Garante que a barra esteja visível durante a interação
+  bar.classList.remove('idle-hidden');
+
+  if (_floatingBarIdleTimer) {
+    clearTimeout(_floatingBarIdleTimer);
+    _floatingBarIdleTimer = null;
+  }
+
+  // Se o mouse estiver sobre a barra ou se o modal de navegação estiver aberto, não oculta
+  const modalQuickNav = document.getElementById('modal-quick-nav');
+  if (_floatingBarIsHovered || (modalQuickNav && modalQuickNav.classList.contains('active'))) {
+    return;
+  }
+
+  // Oculta suavemente após 3.5s sem interação
+  _floatingBarIdleTimer = setTimeout(() => {
+    const isModalOpen = modalQuickNav && modalQuickNav.classList.contains('active');
+    if (!_floatingBarIsHovered && !isModalOpen) {
+      bar.classList.add('idle-hidden');
+    }
+  }, FLOATING_BAR_IDLE_DELAY);
+}
+
+function inicializarMonitorInatividadeBarra() {
+  if (_monitorInatividadeIniciado) return;
+  _monitorInatividadeIniciado = true;
+
+  const bar = document.getElementById('floating-lesson-bar');
+  if (bar) {
+    bar.addEventListener('mouseenter', () => {
+      _floatingBarIsHovered = true;
+      bar.classList.remove('idle-hidden');
+      if (_floatingBarIdleTimer) {
+        clearTimeout(_floatingBarIdleTimer);
+        _floatingBarIdleTimer = null;
+      }
+    });
+
+    bar.addEventListener('mouseleave', () => {
+      _floatingBarIsHovered = false;
+      registrarInteracaoUsuario();
+    });
+  }
+
+  // Monitora movimentos do mouse, rolagem, teclado, cliques e toques no celular
+  const eventosAtividade = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
+  eventosAtividade.forEach(evt => {
+    window.addEventListener(evt, () => {
+      registrarInteracaoUsuario();
+    }, { passive: true });
+  });
+
+  // Se a tela já for a aula, inicia o ciclo
+  registrarInteracaoUsuario();
+}
+
+// Inicia imediatamente se o DOM já estiver pronto
+if (document.readyState !== 'loading') {
+  inicializarMonitorInatividadeBarra();
 }
 
 function renderHeaderUser() {
@@ -542,6 +699,582 @@ function renderHeaderUser() {
   }
 }
 
+
+/**
+ * ============================================================================
+ * GERENCIAMENTO DE CURSOS E MODAL DE NAVEGAÇÃO RÁPIDA (1 MÓDULO POR VEZ)
+ * ============================================================================
+ */
+
+function selecionarCurso(courseId) {
+  if (!COURSES_DATA[courseId]) return;
+  AppState.currentCourseId = courseId;
+  AppState.quickNavSelectedModule = null; // Reseta para o 1º módulo do curso selecionado
+  
+  // Atualiza as abas no Dashboard
+  const btnLogica = document.getElementById('btn-course-logica');
+  const btnVis = document.getElementById('btn-course-vis');
+  if (btnLogica) btnLogica.classList.toggle('active', courseId === 'curso_logica_python');
+  if (btnVis) btnVis.classList.toggle('active', courseId === 'curso_visualizacao_dados');
+
+  // Atualiza as abas no Drawer
+  const drawerTabLogica = document.getElementById('drawer-tab-logica');
+  const drawerTabVis = document.getElementById('drawer-tab-vis');
+  if (drawerTabLogica) drawerTabLogica.classList.toggle('active', courseId === 'curso_logica_python');
+  if (drawerTabVis) drawerTabVis.classList.toggle('active', courseId === 'curso_visualizacao_dados');
+
+  // Atualiza o catálogo ativo e re-renderiza o painel
+  AppState.catalog = COURSES_DATA[courseId].aulas;
+  renderCatalogDashboard(AppState.catalog);
+  renderQuickNavDrawer();
+  
+  const syncLabel = document.getElementById('course-sync-label');
+  if (syncLabel) {
+    syncLabel.textContent = `Turma ${COURSES_DATA[courseId].turma} • Sincronizado`;
+  }
+}
+
+function selecionarCursoNoDrawer(courseId) {
+  selecionarCurso(courseId);
+}
+
+function selecionarModuloNoDrawer(modTitle) {
+  AppState.quickNavSelectedModule = modTitle;
+  renderQuickNavDrawer();
+}
+
+function navegarModuloNoDrawer(delta) {
+  const currentCourse = COURSES_DATA[AppState.currentCourseId] || COURSES_DATA['curso_logica_python'];
+  const modules = [...new Set(currentCourse.aulas.map(a => a.modulo))];
+  const curIdx = modules.indexOf(AppState.quickNavSelectedModule);
+  const nextIdx = (curIdx === -1 ? 0 : curIdx) + delta;
+  if (nextIdx >= 0 && nextIdx < modules.length) {
+    AppState.quickNavSelectedModule = modules[nextIdx];
+    renderQuickNavDrawer();
+  }
+}
+
+function abrirMenuNavegacaoRapida() {
+  const overlay = document.getElementById('modal-quick-nav');
+  if (!overlay) return;
+
+  // Localiza automaticamente o módulo da aula atual para abrir focado nele
+  const currentCourse = COURSES_DATA[AppState.currentCourseId] || COURSES_DATA['curso_logica_python'];
+  if (AppState.currentLessonId) {
+    for (const cId in COURSES_DATA) {
+      const aulaAchada = COURSES_DATA[cId].aulas.find(a => a.id_aula === AppState.currentLessonId);
+      if (aulaAchada) {
+        AppState.currentCourseId = cId;
+        AppState.quickNavSelectedModule = aulaAchada.modulo;
+        break;
+      }
+    }
+  }
+
+  renderQuickNavDrawer();
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharMenuNavegacaoRapida() {
+  const overlay = document.getElementById('modal-quick-nav');
+  if (!overlay) return;
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  // Restaura o ciclo de atividade da barra flutuante
+  registrarInteracaoUsuario();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    fecharMenuNavegacaoRapida();
+  }
+});
+
+/**
+ * Retorna dinamicamente a lista ordenada de seções e blocos de exercícios da aula
+ * @param {string} idAula - ID canônico da aula (ex: 'aula_1_2')
+ * @returns {Array<{id: string, tipo: string, titulo: string, icone: string, bloco?: string, modo?: string}>}
+ */
+function obterSecoesAula(idAula) {
+  if (!idAula) idAula = AppState.currentLessonId || 'aula_1_2';
+
+  // 1. A primeira seção pedagógica é sempre Explicações & Fundamentos
+  const secoes = [
+    { id: 'explicacoes', tipo: 'modo', modo: 'explicacoes', titulo: '1. Explicações & Fundamentos', icone: '📖' }
+  ];
+
+  // 2. Busca o container da aula (ativo no DOM ou template inert correspondente)
+  let container = null;
+  if (AppState.currentLessonId === idAula) {
+    container = document.getElementById('dynamic-lesson-content');
+  }
+  if (!container || !container.querySelector('.treinamento-tab-btn')) {
+    const tmpl = document.getElementById('template-' + idAula.replace(/_/g, '-'));
+    if (tmpl) {
+      container = tmpl.content || tmpl;
+    }
+  }
+
+  if (container) {
+    const tabBtns = container.querySelectorAll('.treinamento-tab-btn');
+    if (tabBtns && tabBtns.length > 0) {
+      tabBtns.forEach(btn => {
+        const idAttr = btn.id ? btn.id.replace(/^btn-tab-/, '') : '';
+        const onclickAttr = btn.getAttribute('onclick') || '';
+        const onclickMatch = onclickAttr.match(/switchOficinaBloco\(['"]([^'"]+)['"]\)/);
+        const blocoId = (onclickMatch && onclickMatch[1]) ? onclickMatch[1] : idAttr;
+        if (blocoId) {
+          const rawText = btn.textContent.trim().replace(/\s+/g, ' ');
+          const isDesafio = blocoId.includes('desafio') || rawText.toLowerCase().includes('desafio');
+          secoes.push({
+            id: blocoId,
+            tipo: 'bloco',
+            bloco: blocoId,
+            titulo: rawText,
+            icone: isDesafio ? '🏆' : '🎯'
+          });
+        }
+      });
+    } else {
+      // Caso a aula não utilize sub-abas horizontais (ex.: Aula 1.1)
+      const blocoPratica = container.querySelector('#bloco-aula-pratica');
+      if (blocoPratica) {
+        secoes.push({
+          id: 'pratica',
+          tipo: 'modo',
+          modo: 'pratica',
+          titulo: '2. Exercícios & Desafio Mestre',
+          icone: '🛠️'
+        });
+      }
+    }
+  }
+
+  // Fallback canônico robusto para resiliência total antes da renderização do DOM
+  if (secoes.length === 1) {
+    if (idAula === 'aula_1_2') {
+      secoes.push(
+        { id: 'bloco-a', tipo: 'bloco', bloco: 'bloco-a', titulo: 'Bloco A: print()', icone: '🎯' },
+        { id: 'bloco-b', tipo: 'bloco', bloco: 'bloco-b', titulo: 'Bloco B: input()', icone: '🎯' },
+        { id: 'bloco-c', tipo: 'bloco', bloco: 'bloco-c', titulo: 'Bloco C: Casting & type()', icone: '🎯' },
+        { id: 'desafios', tipo: 'bloco', bloco: 'desafios', titulo: '🏆 Desafios & Desafio Mestre', icone: '🏆' }
+      );
+    } else if (idAula === 'aula_1_1') {
+      secoes.push({ id: 'pratica', tipo: 'modo', modo: 'pratica', titulo: '2. Exercícios & Desafio Mestre', icone: '🛠️' });
+    } else if (idAula === 'aula_1_3') {
+      secoes.push(
+        { id: 'secao-1', tipo: 'bloco', bloco: 'secao-1', titulo: 'Seção 1: Algoritmos', icone: '🎯' },
+        { id: 'secao-2', tipo: 'bloco', bloco: 'secao-2', titulo: 'Seção 2: Divisão & Resto', icone: '🎯' },
+        { id: 'secao-3', tipo: 'bloco', bloco: 'secao-3', titulo: 'Seção 3: Atribuição +=', icone: '🎯' },
+        { id: 'secao-4', tipo: 'bloco', bloco: 'secao-4', titulo: 'Seção 4: Precedência', icone: '🎯' },
+        { id: 'secao-5', tipo: 'bloco', bloco: 'secao-5', titulo: 'Seção 5: Strings', icone: '🎯' },
+        { id: 'desafios', tipo: 'bloco', bloco: 'desafios', titulo: '🏆 Desafios & Desafio Mestre', icone: '🏆' }
+      );
+    } else if (idAula === 'aula_1_4') {
+      secoes.push(
+        { id: 'secao-1', tipo: 'bloco', bloco: 'secao-1', titulo: '1. Simples e Composto', icone: '🎯' },
+        { id: 'secao-2', tipo: 'bloco', bloco: 'secao-2', titulo: '2. Indentação & PEP 8', icone: '🎯' },
+        { id: 'secao-3', tipo: 'bloco', bloco: 'secao-3', titulo: '3. Encadeados & Aninhados', icone: '🎯' },
+        { id: 'secao-4', tipo: 'bloco', bloco: 'secao-4', titulo: '4. Operadores and, or, not', icone: '🎯' },
+        { id: 'desafios', tipo: 'bloco', bloco: 'desafios', titulo: '🏆 Desafios & Desafio Mestre', icone: '🏆' }
+      );
+    } else if (idAula === 'aula_1_5') {
+      secoes.push(
+        { id: 'secao-1', tipo: 'bloco', bloco: 'secao-1', titulo: 'Grupo 1: while', icone: '🎯' },
+        { id: 'secao-2', tipo: 'bloco', bloco: 'secao-2', titulo: 'Grupo 2: for', icone: '🎯' },
+        { id: 'secao-3', tipo: 'bloco', bloco: 'secao-3', titulo: 'Grupo 3: range()', icone: '🎯' },
+        { id: 'secao-4', tipo: 'bloco', bloco: 'secao-4', titulo: 'Grupo 4: Modificadores', icone: '🎯' },
+        { id: 'secao-5', tipo: 'bloco', bloco: 'secao-5', titulo: 'Grupo 5: Combinadas', icone: '🎯' },
+        { id: 'desafios', tipo: 'bloco', bloco: 'desafios', titulo: '🏆 Desafios & Desafio Mestre', icone: '🏆' }
+      );
+    } else if (idAula === 'aula_2_1') {
+      secoes.push(
+        { id: 'secao-1', tipo: 'bloco', bloco: 'secao-1', titulo: 'Tópico 1: Tuplas', icone: '🎯' },
+        { id: 'secao-2', tipo: 'bloco', bloco: 'secao-2', titulo: 'Tópico 2: Indexação & Unpacking', icone: '🎯' },
+        { id: 'secao-3', tipo: 'bloco', bloco: 'secao-3', titulo: 'Tópico 3: Funções & abs()', icone: '🎯' },
+        { id: 'secao-4', tipo: 'bloco', bloco: 'secao-4', titulo: 'Tópico 4: Tuplas com Laços', icone: '🎯' },
+        { id: 'secao-5', tipo: 'bloco', bloco: 'secao-5', titulo: 'Tópico 5: Funções Embutidas', icone: '🎯' },
+        { id: 'desafios', tipo: 'bloco', bloco: 'desafios', titulo: '🏆 Desafios & Desafio Mestre', icone: '🏆' }
+      );
+    }
+  }
+
+  return secoes;
+}
+
+/**
+ * Abre diretamente uma seção específica de uma aula (Explicações, Bloco ou Desafios)
+ * @param {string} idAula - ID da aula
+ * @param {string} secaoId - ID da seção/bloco
+ * @param {string} [secaoTipo='bloco'] - 'modo' ou 'bloco'
+ */
+function abrirSecaoAula(idAula, secaoId, secaoTipo = 'bloco') {
+  if (AppState.currentLessonId !== idAula) {
+    const secaoAlvo = {
+      id: secaoId,
+      tipo: secaoTipo,
+      bloco: secaoId,
+      modo: secaoId === 'explicacoes' ? 'explicacoes' : 'pratica'
+    };
+    abrirAula(idAula, null, secaoAlvo);
+  } else {
+    if (secaoId === 'explicacoes') {
+      setModoVisualizacaoAula('explicacoes');
+      AppState.secaoAtiva = 'explicacoes';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (secaoTipo === 'bloco') {
+      setModoVisualizacaoAula('pratica');
+      switchOficinaBloco(secaoId);
+      AppState.secaoAtiva = secaoId;
+    } else {
+      setModoVisualizacaoAula('pratica');
+      AppState.secaoAtiva = secaoId;
+      const blocoPra = document.getElementById('bloco-aula-pratica');
+      if (blocoPra) blocoPra.scrollIntoView({ behavior: 'smooth' });
+    }
+    atualizarLabelsNavegacaoAulas(idAula);
+  }
+}
+
+/**
+ * Renderiza o Drawer / Modal de Navegação Rápida com abas de cursos, módulos,
+ * aulas e todas as seções e blocos de exercícios diretamente clicáveis.
+ */
+function renderQuickNavDrawer() {
+  const body = document.getElementById('quick-nav-drawer-body');
+  if (!body) return;
+
+  const currentCourse = COURSES_DATA[AppState.currentCourseId] || COURSES_DATA['curso_logica_python'];
+  const aulas = currentCourse.aulas;
+
+  // 1. Atualiza as abas de curso no topo do drawer
+  const drawerTabLogica = document.getElementById('drawer-tab-logica');
+  const drawerTabVis = document.getElementById('drawer-tab-vis');
+  if (drawerTabLogica) drawerTabLogica.classList.toggle('active', AppState.currentCourseId === 'curso_logica_python');
+  if (drawerTabVis) drawerTabVis.classList.toggle('active', AppState.currentCourseId === 'curso_visualizacao_dados');
+
+  // 2. Agrupa aulas do curso ativo por módulo
+  const modulesMap = {};
+  aulas.forEach(item => {
+    if (!modulesMap[item.modulo]) modulesMap[item.modulo] = [];
+    modulesMap[item.modulo].push(item);
+  });
+
+  const moduleNames = Object.keys(modulesMap);
+  if (moduleNames.length === 0) {
+    body.innerHTML = '<p style="text-align: center; color: var(--color-outline); padding: 1.5rem;">Nenhum módulo encontrado.</p>';
+    return;
+  }
+
+  // 3. Define o módulo ativo (1 módulo por vez para garantir todas as aulas 100% visíveis)
+  if (!AppState.quickNavSelectedModule || !modulesMap[AppState.quickNavSelectedModule]) {
+    const aulaAtiva = aulas.find(a => a.id_aula === AppState.currentLessonId);
+    AppState.quickNavSelectedModule = aulaAtiva ? aulaAtiva.modulo : moduleNames[0];
+  }
+
+  const activeModTitle = AppState.quickNavSelectedModule;
+  const activeModIndex = moduleNames.indexOf(activeModTitle);
+  const currentModLessons = modulesMap[activeModTitle] || [];
+
+  // 4. Constrói a Barra de Abas de Módulos
+  let tabsHtml = '<div class="quick-nav-modules-tabs-bar" role="tablist">';
+  moduleNames.forEach((modName) => {
+    const isActive = modName === activeModTitle;
+    let label = modName;
+    if (modName.includes(':')) {
+      label = modName.split(':')[0].trim();
+    } else if (modName.startsWith('Módulo de')) {
+      label = 'Módulo Único';
+    }
+    const count = modulesMap[modName].length;
+    tabsHtml += `
+      <button class="quick-nav-mod-tab-btn ${isActive ? 'active' : ''}" 
+              onclick="selecionarModuloNoDrawer('${modName.replace(/'/g, "\\'")}')" 
+              title="${modName}">
+        <span>📦 ${label}</span>
+        <span style="opacity: 0.85; font-size: 0.7rem;">(${count})</span>
+      </button>
+    `;
+  });
+  tabsHtml += '</div>';
+
+  // 5. Cabeçalho do Módulo Selecionado com Navegação Rápida
+  const hasPrev = activeModIndex > 0;
+  const hasNext = activeModIndex < moduleNames.length - 1;
+  const headerHtml = `
+    <div class="quick-nav-active-module-header">
+      <div class="quick-nav-mod-info">
+        <span class="quick-nav-mod-title" title="${activeModTitle}">📦 ${activeModTitle}</span>
+        <span class="quick-nav-mod-count">${currentModLessons.length} aulas</span>
+      </div>
+      <div class="quick-nav-mod-actions">
+        <button class="quick-nav-mod-nav-btn" onclick="navegarModuloNoDrawer(-1)" ${!hasPrev ? 'disabled' : ''} title="Módulo Anterior">◀</button>
+        <span class="quick-nav-mod-nav-indicator">${activeModIndex + 1} / ${moduleNames.length}</span>
+        <button class="quick-nav-mod-nav-btn" onclick="navegarModuloNoDrawer(1)" ${!hasNext ? 'disabled' : ''} title="Próximo Módulo">▶</button>
+      </div>
+    </div>
+  `;
+
+  // 6. Lista de Aulas e suas Seções (Todas as seções visíveis e acessíveis diretamente)
+  let listHtml = '<div class="quick-nav-lessons-container">';
+  currentModLessons.forEach(lesson => {
+    const isCurrent = lesson.id_aula === AppState.currentLessonId;
+    const isConcluded = AppState.user.progressoIds && AppState.user.progressoIds.includes(lesson.id_aula);
+
+    let statusPill = '';
+    if (isCurrent) {
+      statusPill = '<span class="quick-nav-lesson-pill" style="background: #dbeafe; color: #1e40af;">▶ Em Estudo</span>';
+    } else if (isConcluded) {
+      statusPill = '<span class="quick-nav-lesson-pill" style="background: #dcfce7; color: #166534;">✔ Concluído</span>';
+    } else if (lesson.status === 'rascunho') {
+      statusPill = '<span class="quick-nav-lesson-pill" style="background: #f1f5f9; color: #64748b;">Rascunho</span>';
+    } else {
+      statusPill = '<span class="quick-nav-lesson-pill" style="background: #e0f2fe; color: #0284c7;">Disponível</span>';
+    }
+
+    // Seções pedagógicas e blocos de exercícios da aula
+    const secoes = obterSecoesAula(lesson.id_aula);
+    let secoesHtml = '';
+    if (secoes && secoes.length > 0) {
+      secoesHtml = '<div class="quick-nav-sections-grid">';
+      secoes.forEach(sec => {
+        const isSecActive = isCurrent && (
+          (sec.tipo === 'modo' && (AppState.secaoAtiva === sec.id || (!AppState.secaoAtiva && AppState.modoVisualizacaoAula === sec.modo))) ||
+          (sec.tipo === 'bloco' && AppState.secaoAtiva === sec.bloco)
+        );
+        let secLabel = sec.titulo;
+        if (secLabel.startsWith('1. Explicações')) secLabel = '1. Explicações';
+        else if (secLabel.startsWith('2. Exercícios')) secLabel = '2. Exercícios';
+
+        secoesHtml += `
+          <button class="quick-nav-sec-chip ${isSecActive ? 'active-sec' : ''}" 
+                  onclick="event.stopPropagation(); abrirSecaoAula('${lesson.id_aula}', '${sec.id}', '${sec.tipo}'); fecharMenuNavegacaoRapida();"
+                  title="Ir para ${sec.titulo} da Aula ${lesson.numero}">
+            <span>${sec.icone} ${secLabel}</span>
+            ${isSecActive ? '<span class="quick-nav-sec-active-dot">●</span>' : ''}
+          </button>
+        `;
+      });
+      secoesHtml += '</div>';
+    }
+
+    listHtml += `
+      <div class="quick-nav-lesson-card ${isCurrent ? 'current-lesson-card' : ''}">
+        <div class="quick-nav-lesson-row ${isCurrent ? 'current-lesson' : ''}" 
+             onclick="abrirAula('${lesson.id_aula}'); fecharMenuNavegacaoRapida();"
+             title="Abrir Aula ${lesson.numero}: ${lesson.titulo}">
+          <div class="quick-nav-row-main">
+            <span class="quick-nav-row-num">Aula ${lesson.numero || ''}</span>
+            <span class="quick-nav-row-title">${lesson.titulo}</span>
+          </div>
+          <div class="quick-nav-row-badge">
+            ${statusPill}
+          </div>
+        </div>
+        ${secoesHtml}
+      </div>
+    `;
+  });
+  listHtml += '</div>';
+
+  // 7. Rodapé Stepper de Navegação entre Seções dentro da Modal
+  const secoesAtuais = obterSecoesAula(AppState.currentLessonId);
+  let curSecIdx = secoesAtuais.findIndex(s => s.id === AppState.secaoAtiva || s.bloco === AppState.secaoAtiva);
+  if (curSecIdx === -1) {
+    curSecIdx = (AppState.modoVisualizacaoAula === 'pratica' && secoesAtuais.length > 1) ? 1 : 0;
+  }
+  const secAtualObj = secoesAtuais[curSecIdx] || secoesAtuais[0];
+  const aulaAtualObj = aulas.find(a => a.id_aula === AppState.currentLessonId) || aulas[0];
+  const secLabel = secAtualObj ? (secAtualObj.id === 'explicacoes' ? 'Teoria' : secAtualObj.titulo.replace(/^[🏆🎯]\s*/, '')) : 'Seção';
+  const stepperBadge = `Aula ${aulaAtualObj ? aulaAtualObj.numero : '1.2'} • ${secLabel}`;
+
+  const currentAulaIdx = aulas.findIndex(a => a.id_aula === AppState.currentLessonId);
+  const isFirstEver = currentAulaIdx <= 0 && curSecIdx <= 0;
+  const isLastEver = currentAulaIdx >= aulas.length - 1 && curSecIdx >= secoesAtuais.length - 1;
+
+  const stepperHtml = `
+    <div class="quick-nav-stepper-bar">
+      <button class="quick-nav-step-btn" onclick="navegarSecaoRelativa(-1);" ${isFirstEver ? 'disabled' : ''} title="${isFirstEver ? 'Início do Curso' : 'Ir para a seção anterior'}">
+        <span>◀ Anterior</span>
+      </button>
+      <div class="quick-nav-step-info">
+        <span class="quick-nav-step-sub">Seção Selecionada</span>
+        <span class="quick-nav-step-current" title="${stepperBadge}">${stepperBadge}</span>
+      </div>
+      <button class="quick-nav-step-btn primary" onclick="navegarSecaoRelativa(1);" ${isLastEver ? 'disabled' : ''} title="${isLastEver ? 'Fim do Curso' : 'Ir para a próxima seção'}">
+        <span>Próxima ▶</span>
+      </button>
+    </div>
+  `;
+
+  body.innerHTML = tabsHtml + headerHtml + listHtml + stepperHtml;
+}
+
+/**
+ * Navega passo a passo entre as seções da aula (Explicações -> Bloco A -> Bloco B -> Bloco C -> Desafios).
+ * Ao chegar no Desafio, avançar muda para a próxima aula.
+ * Ao estar em Explicações, retroceder volta para a aula anterior.
+ * @param {number} delta - (-1 para Anterior, +1 para Próxima)
+ */
+function navegarSecaoRelativa(delta) {
+  const currentCourse = COURSES_DATA[AppState.currentCourseId] || COURSES_DATA['curso_logica_python'];
+  const aulas = currentCourse.aulas;
+  const currentAulaIdx = aulas.findIndex(a => a.id_aula === AppState.currentLessonId);
+  if (currentAulaIdx === -1) return;
+
+  const secoes = obterSecoesAula(AppState.currentLessonId);
+  let curSecIdx = secoes.findIndex(s => s.id === AppState.secaoAtiva || s.bloco === AppState.secaoAtiva);
+  if (curSecIdx === -1) {
+    curSecIdx = (AppState.modoVisualizacaoAula === 'pratica' && secoes.length > 1) ? 1 : 0;
+  }
+
+  const targetSecIdx = curSecIdx + delta;
+
+  // CASO 1: Navegação dentro da mesma aula
+  if (targetSecIdx >= 0 && targetSecIdx < secoes.length) {
+    const targetSec = secoes[targetSecIdx];
+    AppState.secaoAtiva = targetSec.id;
+
+    if (targetSec.tipo === 'modo' && targetSec.modo === 'explicacoes') {
+      setModoVisualizacaoAula('explicacoes');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (targetSec.tipo === 'bloco') {
+      setModoVisualizacaoAula('pratica');
+      switchOficinaBloco(targetSec.bloco);
+    } else if (targetSec.tipo === 'modo' && targetSec.modo === 'pratica') {
+      setModoVisualizacaoAula('pratica');
+      const blocoPratica = document.getElementById('bloco-aula-pratica');
+      if (blocoPratica) {
+        blocoPratica.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    atualizarLabelsNavegacaoAulas(AppState.currentLessonId);
+    showToast(`📍 ${targetSec.titulo}`, 'info');
+    if (document.getElementById('modal-quick-nav')?.classList.contains('active')) {
+      renderQuickNavDrawer();
+    }
+    return;
+  }
+
+  // CASO 2: Anterior ultrapassou o início da aula -> volta para a aula anterior (na sua última seção)
+  if (targetSecIdx < 0) {
+    const prevAulaIdx = currentAulaIdx - 1;
+    if (prevAulaIdx >= 0) {
+      const prevAula = aulas[prevAulaIdx];
+      const prevSecoes = obterSecoesAula(prevAula.id_aula);
+      const lastSec = (prevSecoes && prevSecoes.length > 0) ? prevSecoes[prevSecoes.length - 1] : null;
+      abrirAula(prevAula.id_aula, null, lastSec);
+      showToast(`⏮️ Aula ${prevAula.numero}: ${lastSec ? lastSec.titulo : 'Conclusão'}`, 'info');
+    } else {
+      showToast('Você já está na primeira seção da primeira aula deste curso.', 'info');
+    }
+    return;
+  }
+
+  // CASO 3: Próximo ultrapassou o final da aula -> avança para a próxima aula (na primeira seção: Explicações)
+  if (targetSecIdx >= secoes.length) {
+    const nextAulaIdx = currentAulaIdx + 1;
+    if (nextAulaIdx < aulas.length) {
+      const nextAula = aulas[nextAulaIdx];
+      const nextSecoes = obterSecoesAula(nextAula.id_aula);
+      const firstSec = (nextSecoes && nextSecoes.length > 0) ? nextSecoes[0] : null;
+      abrirAula(nextAula.id_aula, null, firstSec);
+      showToast(`⏭️ Aula ${nextAula.numero}: 1. Explicações & Fundamentos`, 'success');
+    } else {
+      showToast('Parabéns! Você alcançou o final do curso. 🎉', 'success');
+    }
+    return;
+  }
+}
+
+// Mantido como alias de navegarSecaoRelativa para compatibilidade total
+function navegarAulaRelativa(delta) {
+  navegarSecaoRelativa(delta);
+}
+
+/**
+ * Atualiza os rótulos de navegação no cabeçalho fixo, na barra flutuante e no drawer
+ * @param {string} idAula - ID da aula ativa
+ */
+function atualizarLabelsNavegacaoAulas(idAula) {
+  if (!idAula) idAula = AppState.currentLessonId || 'aula_1_2';
+  const currentCourse = COURSES_DATA[AppState.currentCourseId] || COURSES_DATA['curso_logica_python'];
+  const aulas = currentCourse.aulas;
+  const currentIndex = aulas.findIndex(a => a.id_aula === idAula);
+  const aulaAtual = currentIndex !== -1 ? aulas[currentIndex] : null;
+  if (!aulaAtual) return;
+
+  const secoes = obterSecoesAula(idAula);
+  let curSecIdx = secoes.findIndex(s => s.id === AppState.secaoAtiva || s.bloco === AppState.secaoAtiva);
+  if (curSecIdx === -1) {
+    curSecIdx = (AppState.modoVisualizacaoAula === 'pratica' && secoes.length > 1) ? 1 : 0;
+    AppState.secaoAtiva = secoes[curSecIdx].id;
+  }
+  const secAtual = secoes[curSecIdx] || secoes[0];
+
+  // 1. Rótulo no cabeçalho fixo do topo
+  const headerLabel = document.getElementById('header-quick-nav-label');
+  if (headerLabel) {
+    const secShort = secAtual.id === 'explicacoes' ? 'Teoria' : secAtual.titulo.replace(/^[🏆🎯]\s*/, '').split(':')[0].trim();
+    headerLabel.textContent = `Aula ${aulaAtual.numero} • ${secShort}`;
+  }
+
+  // 2. Badge na barra flutuante
+  const floatingBadge = document.getElementById('floating-lesson-badge');
+  if (floatingBadge) {
+    let badgeText = `Aula ${aulaAtual.numero}`;
+    if (secAtual.id === 'explicacoes') {
+      badgeText += ` • Teoria`;
+    } else {
+      const nomeSec = secAtual.titulo.replace(/^[🏆🎯]\s*/, '').trim();
+      badgeText += ` • ${nomeSec}`;
+    }
+    floatingBadge.textContent = badgeText;
+  }
+
+  // 3. Botões de Anterior / Próxima na barra flutuante
+  const btnPrev = document.getElementById('btn-floating-prev');
+  const btnNext = document.getElementById('btn-floating-next');
+
+  if (btnPrev) {
+    if (curSecIdx > 0) {
+      const prevSec = secoes[curSecIdx - 1];
+      btnPrev.disabled = false;
+      btnPrev.style.opacity = '1';
+      btnPrev.title = `Voltar para: ${prevSec.titulo}`;
+    } else if (currentIndex > 0) {
+      const prevAula = aulas[currentIndex - 1];
+      btnPrev.disabled = false;
+      btnPrev.style.opacity = '1';
+      btnPrev.title = `Voltar para Aula ${prevAula.numero} (Desafio Mestre)`;
+    } else {
+      btnPrev.disabled = true;
+      btnPrev.style.opacity = '0.4';
+      btnPrev.title = 'Início do Curso';
+    }
+  }
+
+  if (btnNext) {
+    if (curSecIdx < secoes.length - 1) {
+      const nextSec = secoes[curSecIdx + 1];
+      btnNext.disabled = false;
+      btnNext.style.opacity = '1';
+      btnNext.title = `Avançar para: ${nextSec.titulo}`;
+    } else if (currentIndex < aulas.length - 1) {
+      const nextAula = aulas[currentIndex + 1];
+      btnNext.disabled = false;
+      btnNext.style.opacity = '1';
+      btnNext.title = `Avançar para Aula ${nextAula.numero} (1. Explicações & Fundamentos)`;
+    } else {
+      btnNext.disabled = true;
+      btnNext.style.opacity = '0.4';
+      btnNext.title = 'Fim do Curso';
+    }
+  }
+}
+
 function renderCatalogDashboard(catalog) {
   const container = document.getElementById('catalog-modules-container');
   if (!container) return;
@@ -555,20 +1288,49 @@ function renderCatalogDashboard(catalog) {
     modulesMap[item.modulo].push(item);
   });
 
+  // Estado de expansão: por padrão, expande apenas o primeiro módulo (Módulo 1)
+  if (!AppState.modulosExpandidos) {
+    AppState.modulosExpandidos = {};
+    const chaves = Object.keys(modulesMap);
+    if (chaves.length > 0) {
+      AppState.modulosExpandidos[chaves[0]] = true;
+    }
+  }
+
   let html = '';
+  let modIdx = 0;
+
   for (const modTitle in modulesMap) {
+    modIdx++;
     const lessons = modulesMap[modTitle];
+    const isExpanded = !!AppState.modulosExpandidos[modTitle];
+    const safeModId = 'modulo_' + modIdx;
+
+    // Métricas de conclusão no módulo
+    const concluidas = lessons.filter(l => AppState.user.progressoIds && AppState.user.progressoIds.includes(l.id_aula)).length;
+    const progressBadge = concluidas > 0
+      ? `<span class="module-progress-chip">${concluidas}/${lessons.length} concluídas</span>`
+      : '';
+
     html += `
-      <div class="card" style="margin-bottom: 1.5rem;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
-          <h3 style="font-family: var(--font-headline); font-size: 1.1rem; color: var(--color-primary); font-weight: 700;">
-            ${modTitle}
-          </h3>
-          <span style="font-size: 0.8rem; color: var(--color-outline); font-family: var(--font-headline); font-weight: 600;">
-            ${lessons.length} aulas
-          </span>
+      <div class="module-accordion-card ${isExpanded ? 'expanded' : 'collapsed'}" id="card-${safeModId}">
+        <!-- Header de Linha Única: Permite Expandir e Contrair -->
+        <div class="module-accordion-header" onclick="toggleModuloAccordion('${modTitle.replace(/'/g, "\\'")}', '${safeModId}')" role="button" tabindex="0" title="Clique para expandir ou contrair este módulo">
+          <div class="module-header-left">
+            <span class="module-accordion-icon">📦</span>
+            <h3 class="module-accordion-title">${modTitle}</h3>
+            <span class="module-accordion-count">${lessons.length} aulas</span>
+            ${progressBadge}
+          </div>
+          <div class="module-header-right">
+            <span class="module-toggle-hint" id="hint-${safeModId}">${isExpanded ? 'Recolher' : 'Expandir'}</span>
+            <span class="module-chevron ${isExpanded ? 'rotated' : ''}" id="chevron-${safeModId}">▼</span>
+          </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem;">
+
+        <!-- Conteúdo Expansível com Grid de Aulas (Recolhido em 1 linha quando collapsed) -->
+        <div class="module-accordion-body" id="body-${safeModId}" style="${isExpanded ? '' : 'display: none;'}">
+          <div class="catalog-lessons-grid">
     `;
 
     lessons.forEach(lesson => {
@@ -618,12 +1380,41 @@ function renderCatalogDashboard(catalog) {
     });
 
     html += `
+          </div>
         </div>
       </div>
     `;
   }
 
   container.innerHTML = html;
+}
+
+/**
+ * Alterna expansão e contração de um módulo da trilha (ocupando 1 linha quando contraído)
+ */
+function toggleModuloAccordion(modTitle, safeModId) {
+  if (!AppState.modulosExpandidos) AppState.modulosExpandidos = {};
+  AppState.modulosExpandidos[modTitle] = !AppState.modulosExpandidos[modTitle];
+  const isOpen = !!AppState.modulosExpandidos[modTitle];
+
+  const card = document.getElementById('card-' + safeModId);
+  const body = document.getElementById('body-' + safeModId);
+  const chevron = document.getElementById('chevron-' + safeModId);
+  const hint = document.getElementById('hint-' + safeModId);
+
+  if (card) {
+    card.classList.toggle('expanded', isOpen);
+    card.classList.toggle('collapsed', !isOpen);
+  }
+  if (body) {
+    body.style.display = isOpen ? 'block' : 'none';
+  }
+  if (chevron) {
+    chevron.classList.toggle('rotated', isOpen);
+  }
+  if (hint) {
+    hint.textContent = isOpen ? 'Recolher' : 'Expandir';
+  }
 }
 
 /**
@@ -676,6 +1467,9 @@ function goToStep(index) {
     activePill.style.backgroundColor = 'var(--color-primary)';
     activePill.style.color = '#ffffff';
     activePill.style.borderColor = 'var(--color-primary)';
+    try {
+      activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    } catch (e) {}
   }
 
   // 2. Destaque da linha de código ativa
@@ -790,27 +1584,107 @@ function switchTriadTab(tabId) {
  */
 
 /**
- * Alternância de abas do Caderno de Oficinas (Blocos A, B e C ou Seções 1, 2, 3 e 4)
+ * Alternância de abas do Caderno de Oficinas (Blocos A, B e C ou Seções 1 a 5 e Desafios)
+ * Permite navegação instantânea mantendo a barra sticky sempre visível e acessível
  */
 function switchOficinaBloco(blocoId) {
-  const todasAbas = ['bloco-a', 'bloco-b', 'bloco-c', 'secao-1', 'secao-2', 'secao-3', 'secao-4', 'desafios'];
+  AppState.secaoAtiva = blocoId;
+  AppState.modoVisualizacaoAula = 'pratica';
+  if (typeof aplicarModoVisualizacaoAula === 'function') {
+    aplicarModoVisualizacaoAula('pratica', false);
+  }
+  const todasAbas = ['bloco-a', 'bloco-b', 'bloco-c', 'secao-1', 'secao-2', 'secao-3', 'secao-4', 'secao-5', 'desafios'];
   todasAbas.forEach(id => {
-    const btn = document.getElementById(`btn-tab-${id}`);
+    const btns = document.querySelectorAll(`[id="btn-tab-${id}"]`);
     const panel = document.getElementById(`panel-${id}`);
-    if (btn) {
+    btns.forEach(btn => {
       if (id === blocoId) {
         btn.classList.remove('btn-outline');
-        btn.classList.add('btn-primary');
-        btn.classList.add('active');
+        btn.classList.add('btn-primary', 'active');
+        // Assegura que o botão fique visível no scroll horizontal
+        if (btn.scrollIntoViewIfNeeded) {
+          btn.scrollIntoViewIfNeeded();
+        }
       } else {
-        btn.classList.remove('btn-primary');
-        btn.classList.remove('active');
+        btn.classList.remove('btn-primary', 'active');
         btn.classList.add('btn-outline');
       }
-    }
+    });
     if (panel) {
       panel.style.display = (id === blocoId) ? 'block' : 'none';
     }
+  });
+
+  // Atualiza indicadores da barra flutuante e do drawer
+  atualizarLabelsNavegacaoAulas(AppState.currentLessonId);
+  const modalQuickNav = document.getElementById('modal-quick-nav');
+  if (modalQuickNav && modalQuickNav.classList.contains('active')) {
+    renderQuickNavDrawer();
+  }
+
+  // Rolagem suave para o topo do painel de exercícios mantendo o menu sticky perfeitamente visível
+  const stickyBar = document.getElementById('treinamento-gradual-sticky') || document.querySelector('.treinamento-sticky-bar');
+  if (stickyBar) {
+    const isMobile = window.innerWidth <= 768;
+    const headerHeight = isMobile ? 56 : 104;
+    const targetOffset = stickyBar.getBoundingClientRect().top + window.scrollY - headerHeight - 8;
+    if (window.scrollY > targetOffset) {
+      window.scrollTo({ top: Math.max(0, targetOffset), behavior: 'smooth' });
+    }
+  }
+}
+
+/**
+ * Alterna expansão/recolhimento dos detalhes da barra Treinamento Gradual (mantendo-a em 1 linha por padrão)
+ */
+function toggleTreinamentoDetalhes() {
+  const body = document.getElementById('treinamento-detalhes-body');
+  const icon = document.getElementById('icon-treinamento-detalhes');
+  const text = document.getElementById('text-treinamento-detalhes');
+  if (!body) return;
+  const isHidden = body.style.display === 'none' || !body.style.display;
+  body.style.display = isHidden ? 'block' : 'none';
+  if (icon) icon.textContent = isHidden ? '▴' : '▾';
+  if (text) text.textContent = isHidden ? 'Recolher' : 'Detalhes';
+}
+
+/**
+ * Atalhos Diretos da Barra de Navegação Móvel e Teclas de Acesso (Image 4 match)
+ */
+function abrirModoAulaTeoria() {
+  navigateTo('view-aula');
+  setModoVisualizacaoAula('explicacoes');
+  atualizarMobileNavActive('mob-nav-aula');
+}
+
+function abrirModoAulaOficina() {
+  navigateTo('view-aula');
+  setModoVisualizacaoAula('pratica');
+  atualizarMobileNavActive('mob-nav-oficina');
+  // Rola diretamente para o Treinamento Gradual
+  const stickyBar = document.getElementById('treinamento-gradual-sticky') || document.getElementById('bloco-aula-pratica');
+  if (stickyBar) {
+    const isMobile = window.innerWidth <= 768;
+    const offset = stickyBar.getBoundingClientRect().top + window.scrollY - (isMobile ? 60 : 110);
+    window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+  }
+}
+
+function abrirModoAulaSimulador() {
+  navigateTo('view-aula');
+  setModoVisualizacaoAula('explicacoes');
+  atualizarMobileNavActive('mob-nav-simulador');
+  const sim = document.getElementById('step-simulator-card') || document.querySelector('.step-simulator-card');
+  if (sim) {
+    const isMobile = window.innerWidth <= 768;
+    const offset = sim.getBoundingClientRect().top + window.scrollY - (isMobile ? 60 : 110);
+    window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+  }
+}
+
+function atualizarMobileNavActive(activeBtnId) {
+  document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.id === activeBtnId);
   });
 }
 
@@ -851,6 +1725,27 @@ function toggleGabarito(bodyId = 'gabarito-body', iconId = null) {
   const icon = iconId ? document.getElementById(iconId) : document.getElementById(bodyId.replace(/-body$/, '') + '-icon');
   if (icon) {
     icon.textContent = isHidden ? '▲' : '▼';
+  }
+}
+
+/**
+ * Alterna a visibilidade de instruções ou detalhes de solução de atividades
+ * @param {string} id - ID do container da solução/instruções
+ * @param {HTMLElement|string} [btnRef] - Referência opcional do botão disparador
+ */
+function toggleSolucao(id, btnRef) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isHidden = (el.style.display === 'none' || el.style.display === '' || getComputedStyle(el).display === 'none');
+  el.style.display = isHidden ? 'block' : 'none';
+
+  const btn = (typeof btnRef === 'string') ? document.getElementById(btnRef) : (btnRef || (window.event ? (window.event.currentTarget || window.event.target) : null));
+  if (btn) {
+    btn.classList.toggle('active', isHidden);
+    const arrow = btn.querySelector('.toggle-arrow') || btn.querySelector('.arrow-indicator');
+    if (arrow) {
+      arrow.textContent = isHidden ? '▲' : '▼';
+    }
   }
 }
 
@@ -933,6 +1828,11 @@ function toggleGabaritoMonitoria() { toggleGabarito('gabarito-monitoria-body'); 
 function atualizarChecklistMonitoria() { atualizarChecklist('monitoria', 4, 'btn-concluir-monitoria'); }
 function validarEConcluirMonitoria(xp) { validarEConcluirDesafioMestre('desafio_mestre_monitoria', 'Desafio Mestre de Monitoria', xp || 60); }
 
+function copiarTemplatePythonLab() { copiarCodigo('codigo-gabarito-pythonlab', 'Template da Auditoria de Hardware copiado!'); }
+function toggleGabaritoPythonLab() { toggleGabarito('gab-aula21-mestre'); }
+function atualizarChecklistPythonLab() { atualizarChecklist('pythonlab', 4, 'btn-concluir-pythonlab'); }
+function validarEConcluirPythonLab(xp) { validarEConcluirDesafioMestre('desafio_mestre_pythonlab', 'Auditoria de Rede PythonLab', xp || 100); }
+
 function atualizarBotaoConclusao() {
   const checkbox = document.getElementById('check-notebook-validado');
   const btn = document.getElementById('btn-salvar-tarefa');
@@ -956,9 +1856,16 @@ function validarEConcluirTarefa(tipo, xp) {
 let duvidaContexto = { idAula: 'aula_1_2', topico: 'Geral' };
 
 function marcarComoOndeParei(idAula, titulo) {
+  if (!idAula) idAula = AppState.currentLessonId || 'aula_1_2';
   AppState.user.ultimaAulaAcessada = idAula;
-  const labelEl = document.getElementById('dash-onde-parei-titulo');
-  if (labelEl) labelEl.textContent = titulo || idAula;
+  AppState.user.ultimoPontoParada = {
+    idAula: idAula,
+    idExercicio: null,
+    titulo: titulo || idAula,
+    data: new Date().toISOString()
+  };
+
+  renderizarOndePareiDashboard();
 
   if (typeof google !== 'undefined' && google.script && google.script.run && AppState.user.autenticado) {
     google.script.run.salvarProgresso(idAula, 'ponto_parada', 'em_andamento', false, false, false, 0, '', AppState.user.email || '');
@@ -967,8 +1874,314 @@ function marcarComoOndeParei(idAula, titulo) {
 }
 
 function retomarOndeParei() {
-  const alvo = AppState.user.ultimaAulaAcessada || 'aula_1_2';
-  abrirAula(alvo);
+  const ponto = AppState.user ? AppState.user.ultimoPontoParada : null;
+  const alvo = (ponto && ponto.idAula) ? ponto.idAula : ((AppState.user && AppState.user.ultimaAulaAcessada) ? AppState.user.ultimaAulaAcessada : 'aula_1_2');
+  let idExercicio = ponto ? ponto.idExercicio : null;
+  if (!idExercicio && typeof obterExercicioMaisAdiantado === 'function') {
+    const mais = obterExercicioMaisAdiantado(alvo);
+    if (mais) idExercicio = mais.idExercicio;
+  }
+  abrirAula(alvo, idExercicio);
+}
+
+function renderizarOndePareiDashboard() {
+  const labelTitulo = document.getElementById('dash-onde-parei-titulo');
+  const labelSubtitulo = document.getElementById('dash-onde-parei-subtitulo');
+
+  const ponto = AppState.user ? AppState.user.ultimoPontoParada : null;
+  const ultimaAula = (ponto && ponto.idAula) ? ponto.idAula : ((AppState.user && AppState.user.ultimaAulaAcessada) ? AppState.user.ultimaAulaAcessada : 'aula_1_2');
+
+  const mapaAulas = {
+    'aula_1_1': 'Aula 1.1: Python, Anaconda e Jupyter',
+    'aula_1_2': 'Aula 1.2: Variáveis, Tipos de Dados e Entrada/Saída',
+    'aula_1_3': 'Aula 1.3: Planejamento, Operadores e Precedência',
+    'aula_1_4': 'Aula 1.4: Condicionais (if/elif/else) e Operadores Lógicos',
+    'aula_1_5': 'Aula 1.5: Estruturas de Repetição (While, For), Sequências e Controle de Fluxo',
+    'aula_2_1': 'Aula 2.1: Introdução a Coleções, Tuplas e Funções Embutidas'
+  };
+
+  let tituloAula = mapaAulas[ultimaAula] || ultimaAula;
+  if (AppState.catalog && AppState.catalog.length > 0) {
+    const item = AppState.catalog.find(function(a) { return a.id_aula === ultimaAula; });
+    if (item && item.titulo) {
+      tituloAula = `${item.id_aula.replace('aula_', 'Aula ').replace('_', '.')}: ${item.titulo}`;
+    }
+  }
+
+  if (labelTitulo) {
+    labelTitulo.textContent = tituloAula;
+  }
+
+  if (labelSubtitulo) {
+    if (!AppState.user || AppState.user.perfil === 'visitante' || !AppState.user.autenticado) {
+      labelSubtitulo.textContent = 'Modo visitante (Acesse como aluno para salvar o exercício exato)';
+    } else if (ponto && ponto.idExercicio) {
+      const nomeEx = ponto.titulo || ponto.idExercicio;
+      labelSubtitulo.textContent = `Ponto marcado: ${nomeEx}`;
+    } else {
+      const mais = (typeof obterExercicioMaisAdiantado === 'function') ? obterExercicioMaisAdiantado(ultimaAula) : null;
+      if (mais) {
+        labelSubtitulo.textContent = `Último concluído: ${mais.titulo}`;
+      } else {
+        labelSubtitulo.textContent = 'Início da aula (nenhum exercício marcado ainda)';
+      }
+    }
+  }
+}
+
+function renderizarChecksExercicios(idAula) {
+  if (!idAula) idAula = AppState.currentLessonId || 'aula_1_2';
+
+  const slots = document.querySelectorAll(
+    '.exercicio-resolvido-slot[data-aula="' + idAula + '"], .questao-imagem-slot[data-aula="' + idAula + '"],' +
+    '.exercicio-resolvido-slot[data-img-aula="' + idAula + '"], .questao-imagem-slot[data-img-aula="' + idAula + '"]'
+  );
+
+  const concluidos = (AppState.user && AppState.user.exerciciosConcluidos) ? AppState.user.exerciciosConcluidos : [];
+  const pontoManual = (AppState.user && AppState.user.ultimoPontoParada) ? AppState.user.ultimoPontoParada : null;
+  const pontoManualId = (pontoManual && pontoManual.idAula === idAula) ? pontoManual.idExercicio : null;
+  const isVisitante = (!AppState.user || AppState.user.perfil === 'visitante' || !AppState.user.autenticado);
+
+  slots.forEach(function(slot) {
+    const idEx = slot.getAttribute('data-exercicio') || slot.getAttribute('data-img-exercicio');
+    if (!idEx) return;
+
+    const tituloEx = slot.getAttribute('data-titulo') || 'Atividade';
+    const isResolvido = slot.classList.contains('exercicio-resolvido-slot') || idEx.includes('resolvido');
+    const xpValor = isResolvido ? 20 : (idEx.includes('desafio') ? 50 : 35);
+    const chave = idAula + ':' + idEx;
+    const estaConcluido = concluidos.indexOf(chave) !== -1;
+    // REGRA FUNDAMENTAL: Só é ponto de parada ativo se for exatamente o exercício selecionado manualmente
+    const isPontoParada = Boolean(pontoManualId && pontoManualId === idEx);
+
+    let footer = document.getElementById('footer-ex-' + idEx);
+    if (!footer) {
+      footer = document.createElement('div');
+      footer.id = 'footer-ex-' + idEx;
+      footer.className = 'exercicio-footer-bar';
+
+      if (slot.nextSibling) {
+        slot.parentNode.insertBefore(footer, slot.nextSibling);
+      } else {
+        slot.parentNode.appendChild(footer);
+      }
+    }
+
+    // Destaca a questão específica a que pertence (slot.parentElement)
+    const cardQuestao = slot.parentElement;
+    if (cardQuestao) {
+      if (estaConcluido) {
+        cardQuestao.classList.add('exercicio-card-concluido');
+      } else {
+        cardQuestao.classList.remove('exercicio-card-concluido');
+      }
+      
+      let banner = cardQuestao.querySelector('.banner-ponto-retomada');
+      if (isPontoParada) {
+        cardQuestao.classList.add('exercicio-card-ponto-parada');
+        if (!banner) {
+          banner = document.createElement('div');
+          banner.className = 'banner-ponto-retomada';
+          banner.innerHTML = '<span>📌</span><span><strong>Ponto de Retomada Ativo</strong> (Você parou aqui)</span>';
+          footer.parentNode.insertBefore(banner, footer);
+        }
+      } else {
+        cardQuestao.classList.remove('exercicio-card-ponto-parada');
+        if (banner) banner.remove();
+      }
+    }
+
+    const lockTitle = isVisitante ? '🔒 Apenas alunos cadastrados salvam o progresso e acumulam XP' : 'Marcar atividade como realizada';
+
+    footer.innerHTML = `
+      <label class="check-atomic-label" title="${lockTitle}">
+        <input type="checkbox" class="check-atomic-input" id="chk-ex-${idEx}" ${estaConcluido ? 'checked' : ''} onchange="alternarConclusaoExercicio('${idAula}', '${idEx}', '${encodeURIComponent(tituloEx)}', ${xpValor}, this)">
+        <span class="check-atomic-custom" aria-hidden="true" style="width:22px;height:22px;min-width:22px;max-width:22px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg class="check-atomic-icon" width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:13px;height:13px;min-width:13px;max-width:13px;display:block;flex-shrink:0;">
+            <path d="M3.5 8.2L6.5 11.2L12.5 4.8" stroke="#0284c7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="check-atomic-text" id="chk-text-${idEx}">
+          ${estaConcluido ? '✓ Atividade Concluída' : 'Concluir a atividade'}
+          <span class="badge-xp-atomic ${estaConcluido ? 'badge-xp-registrado' : 'badge-xp-pendente'}">+${xpValor} XP</span>
+        </span>
+      </label>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <button class="btn-parar-aqui ${isPontoParada ? 'is-active-stop' : ''}" id="btn-stop-${idEx}" onclick="definirPontoParadaManual('${idAula}', '${idEx}', '${encodeURIComponent(tituloEx)}')" title="${isPontoParada ? 'Você parou aqui (clique para alternar)' : 'Marcar este exercício como onde você parou'}">
+          ${isPontoParada ? `
+            <span class="btn-parar-icon-ativo">📌</span>
+            <span class="btn-parar-label">Parou aqui</span>
+          ` : `
+            <svg class="btn-parar-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:block;">
+              <line x1="12" y1="17" x2="12" y2="22"></line>
+              <path d="M5 17h14v-2l-2-3V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7l-2 3v2z"></path>
+            </svg>
+            <span class="btn-parar-label">Parar Aqui</span>
+          `}
+        </button>
+      </div>
+    `;
+  });
+}
+
+function alternarConclusaoExercicio(idAula, idExercicio, tituloEnc, xp, checkboxEl) {
+  const user = AppState.user;
+  const titulo = decodeURIComponent(tituloEnc || 'Atividade');
+
+  // Regra de Negócio: Visitante não grava na planilha
+  if (!user || user.perfil === 'visitante' || !user.autenticado) {
+    if (checkboxEl) checkboxEl.checked = false;
+    openVisitorModal();
+    showToast('🔒 Faça login ou cadastre-se para marcar exercícios concluídos e salvar seu progresso!', 'info');
+    return;
+  }
+
+  if (!AppState.user.exerciciosConcluidos) {
+    AppState.user.exerciciosConcluidos = [];
+  }
+
+  const chave = idAula + ':' + idExercicio;
+  const isMarcando = checkboxEl ? checkboxEl.checked : (AppState.user.exerciciosConcluidos.indexOf(chave) === -1);
+  const xpDelta = isMarcando ? Number(xp) : -Number(xp);
+
+  if (isMarcando) {
+    if (AppState.user.exerciciosConcluidos.indexOf(chave) === -1) {
+      AppState.user.exerciciosConcluidos.push(chave);
+    }
+    AppState.user.xpTotal += Number(xp);
+    showToast(`✓ Atividade "${titulo}" concluída! +${xp} XP`, 'success');
+  } else {
+    AppState.user.exerciciosConcluidos = AppState.user.exerciciosConcluidos.filter(function(c) { return c !== chave; });
+    AppState.user.xpTotal = Math.max(0, AppState.user.xpTotal - Number(xp));
+    showToast(`Atividade desmarcada (-${xp} XP)`, 'info');
+  }
+
+  renderHeaderUser();
+  renderizarChecksExercicios(idAula);
+    atualizarLabelsNavegacaoAulas(idAula);
+  renderizarOndePareiDashboard();
+
+  const novoStatus = isMarcando ? 'concluido' : 'em_andamento';
+  if (typeof google !== 'undefined' && google.script && google.script.run && user.email) {
+    google.script.run
+      .withSuccessHandler(function(resp) {
+        if (!resp || !resp.sucesso) {
+          showToast(resp ? resp.mensagem : 'Erro ao sincronizar progresso.', 'info');
+        }
+      })
+      .withFailureHandler(function(err) {
+        showToast('Erro ao salvar no Sheets: ' + err.message, 'error');
+      })
+      .salvarProgresso(idAula, idExercicio, novoStatus, false, true, false, xpDelta, titulo, user.email);
+  }
+}
+
+function obterExercicioMaisAdiantado(idAula) {
+  if (!idAula) idAula = AppState.currentLessonId || 'aula_1_2';
+  const concluidos = (AppState.user && AppState.user.exerciciosConcluidos) ? AppState.user.exerciciosConcluidos : [];
+
+  const slots = Array.from(document.querySelectorAll(
+    '.exercicio-resolvido-slot[data-aula="' + idAula + '"], .questao-imagem-slot[data-aula="' + idAula + '"],' +
+    '.exercicio-resolvido-slot[data-img-aula="' + idAula + '"], .questao-imagem-slot[data-img-aula="' + idAula + '"]'
+  ));
+
+  let maisAdiantadoSlot = null;
+  let proximoSlot = null;
+
+  for (let i = 0; i < slots.length; i++) {
+    const s = slots[i];
+    const idEx = s.getAttribute('data-exercicio') || s.getAttribute('data-img-exercicio');
+    if (concluidos.indexOf(idAula + ':' + idEx) !== -1) {
+      maisAdiantadoSlot = s;
+      proximoSlot = slots[i + 1] || null;
+    }
+  }
+
+  if (maisAdiantadoSlot) {
+    const idEx = maisAdiantadoSlot.getAttribute('data-exercicio') || maisAdiantadoSlot.getAttribute('data-img-exercicio');
+    return {
+      idAula: idAula,
+      idExercicio: idEx,
+      titulo: maisAdiantadoSlot.getAttribute('data-titulo') || idEx,
+      proximoTitulo: proximoSlot ? (proximoSlot.getAttribute('data-titulo') || proximoSlot.getAttribute('data-exercicio')) : null
+    };
+  }
+  return null;
+}
+
+function definirPontoParadaManual(idAula, idExercicio, tituloEnc) {
+  const user = AppState.user;
+  const titulo = decodeURIComponent(tituloEnc || idExercicio);
+
+  if (!user || user.perfil === 'visitante' || !user.autenticado) {
+    openVisitorModal();
+    showToast('🔒 Faça login ou cadastre-se para salvar seu ponto de parada!', 'info');
+    return;
+  }
+
+  const pontoAtual = AppState.user.ultimoPontoParada;
+  const jaEraPonto = pontoAtual && pontoAtual.idAula === idAula && pontoAtual.idExercicio === idExercicio;
+
+  if (jaEraPonto) {
+    // Alterna para desmarcar: exatamente 0 botões com estado 'Parou aqui'
+    AppState.user.ultimoPontoParada = null;
+    showToast(`📍 Ponto de parada desmarcado.`, 'info');
+  } else {
+    // Define como o ÚNICO ponto de parada ativo no sistema
+    AppState.user.ultimoPontoParada = {
+      idAula: idAula,
+      idExercicio: idExercicio,
+      titulo: titulo,
+      data: new Date().toISOString()
+    };
+    AppState.user.ultimaAulaAcessada = idAula;
+    showToast(`📍 Você parou aqui: "${titulo}"!`, 'success');
+  }
+
+  // Atualiza imediatamente todos os botões e cards na página - garantindo rigorosamente apenas 1 ativo
+  renderizarChecksExercicios(idAula);
+    atualizarLabelsNavegacaoAulas(idAula);
+  renderizarOndePareiDashboard();
+
+  if (typeof google !== 'undefined' && google.script && google.script.run && user.email) {
+    const idParaSalvar = jaEraPonto ? '' : idExercicio;
+    google.script.run.salvarProgresso(idAula, 'ponto_parada', 'em_andamento', false, false, false, 0, idParaSalvar, user.email);
+  }
+}
+
+function rolarParaExercicio(idExercicio) {
+  if (!idExercicio) return;
+
+  setTimeout(function() {
+    const el = document.getElementById('slot-img-' + idExercicio) ||
+               document.getElementById('footer-ex-' + idExercicio) ||
+               document.querySelector('[data-exercicio="' + idExercicio + '"]');
+    if (!el) {
+      console.warn('Exercício não encontrado no DOM:', idExercicio);
+      return;
+    }
+
+    const blocoPra = document.getElementById('bloco-aula-pratica');
+    if (blocoPra && (blocoPra.style.display === 'none' || getComputedStyle(blocoPra).display === 'none')) {
+      aplicarModoVisualizacaoAula('pratica', false);
+    }
+
+    const panel = el.closest('.oficina-panel');
+    if (panel && panel.id) {
+      const tabId = panel.id.replace(/^panel-/, '');
+      if (typeof switchOficinaBloco === 'function') {
+        switchOficinaBloco(tabId);
+      }
+    }
+
+    const cardAlvo = el.closest('.card') || el.parentElement || el;
+    cardAlvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    cardAlvo.classList.add('ponto-parada-destaque');
+    setTimeout(function() {
+      cardAlvo.classList.remove('ponto-parada-destaque');
+    }, 3600);
+  }, 220);
 }
 
 function abrirModalDuvida(idAula, topico) {
@@ -1117,34 +2330,76 @@ function concluirEtapaAtual() {
   }
 }
 
-function abrirAula(idAula) {
+function abrirAula(idAula, idExercicioParaRolar, secaoInicial) {
   if (!idAula) idAula = 'aula_1_2';
   AppState.currentLessonId = idAula;
 
-  let stepsAlvo = DEFAULT_SIMULATION_STEPS;
-  if (idAula === 'aula_1_4' && typeof SIMULATION_STEPS_AULA1_4 !== 'undefined') {
-    stepsAlvo = SIMULATION_STEPS_AULA1_4;
-  } else if (idAula === 'aula_1_3' && typeof SIMULATION_STEPS_AULA1_3 !== 'undefined') {
-    stepsAlvo = SIMULATION_STEPS_AULA1_3;
+  const currentCourse = COURSES_DATA[AppState.currentCourseId] || COURSES_DATA['curso_logica_python'];
+  const aulaObj = currentCourse.aulas.find(a => a.id_aula === idAula);
+  if (aulaObj) {
+    AppState.quickNavSelectedModule = aulaObj.modulo;
   }
+
   const tmplId = 'template-' + idAula.replace(/_/g, '-');
   const tmpl = document.getElementById(tmplId);
   const aulaContainer = document.getElementById('dynamic-lesson-content');
 
-  // Troca instantânea SPA em 0ms caso o template esteja no HTML (seja em produção no Apps Script ou no preview local)
-  if (tmpl && aulaContainer) {
-    aulaContainer.innerHTML = tmpl.innerHTML;
+  const finalizarAbertura = function() {
     navigateTo('view-aula');
     const aulaAtual = document.getElementById('view-aula');
     if (aulaAtual) {
       aulaAtual.classList.add('active');
     }
+    const stepsAlvo = obterPassosSimulacao(idAula);
     if (typeof initSimulation === 'function') {
       initSimulation(stepsAlvo);
     }
-    aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+
+    if (secaoInicial) {
+      if (secaoInicial.tipo === 'modo' && secaoInicial.modo === 'explicacoes') {
+        AppState.secaoAtiva = 'explicacoes';
+        AppState.modoVisualizacaoAula = 'explicacoes';
+        aplicarModoVisualizacaoAula('explicacoes', false);
+      } else if (secaoInicial.tipo === 'bloco') {
+        AppState.secaoAtiva = secaoInicial.bloco;
+        AppState.modoVisualizacaoAula = 'pratica';
+        aplicarModoVisualizacaoAula('pratica', false);
+        switchOficinaBloco(secaoInicial.bloco);
+      } else if (secaoInicial.tipo === 'modo' && secaoInicial.modo === 'pratica') {
+        AppState.secaoAtiva = 'pratica';
+        AppState.modoVisualizacaoAula = 'pratica';
+        aplicarModoVisualizacaoAula('pratica', false);
+      }
+    } else {
+      AppState.secaoAtiva = 'explicacoes';
+      aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
+    }
+
     carregarImagensAula(idAula);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderizarChecksExercicios(idAula);
+    atualizarLabelsNavegacaoAulas(idAula);
+
+    if (document.getElementById('modal-quick-nav')?.classList.contains('active')) {
+      renderQuickNavDrawer();
+    }
+
+    if (idExercicioParaRolar) {
+      rolarParaExercicio(idExercicioParaRolar);
+    } else if (secaoInicial && secaoInicial.tipo === 'bloco') {
+      const stickyBar = document.getElementById('treinamento-gradual-sticky') || document.querySelector('.treinamento-sticky-bar');
+      if (stickyBar) {
+        const offset = stickyBar.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Troca instantânea SPA em 0ms caso o template esteja no HTML (seja em produção no Apps Script ou no preview local)
+  if (tmpl && aulaContainer) {
+    aulaContainer.innerHTML = tmpl.innerHTML;
+    finalizarAbertura();
     return;
   }
 
@@ -1156,17 +2411,7 @@ function abrirAula(idAula) {
         if (res && res.sucesso && res.html) {
           if (aulaContainer) {
             aulaContainer.innerHTML = res.html;
-            navigateTo('view-aula');
-            const novaSec = document.getElementById('view-aula');
-            if (novaSec) {
-              novaSec.classList.add('active');
-            }
-            if (typeof initSimulation === 'function') {
-              initSimulation(stepsAlvo);
-            }
-            aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
-            carregarImagensAula(idAula);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            finalizarAbertura();
           }
         } else {
           showToast(res ? res.mensagem : 'O arquivo HTML desta aula ainda não foi criado no projeto.', 'info');
@@ -1228,17 +2473,22 @@ function renderRelatorioProfessor(data) {
   let html = '';
 
   data.alunos.forEach(aluno => {
-    const pct = Math.round((aluno.aulasConcluidas / totalAulas) * 100);
+    // Garante que o número de aulas concluídas nunca exceda o total de aulas catalogadas
+    const aulas = Math.min(totalAulas, Math.max(0, aluno.aulasConcluidas || 0));
+    const pct = Math.min(100, Math.round((aulas / totalAulas) * 100));
+    const labelAtividades = aluno.totalAtividades ? `<span style="font-size: 0.72rem; color: var(--color-outline); margin-left: 0.25rem;">(${aluno.totalAtividades} ativ.)</span>` : '';
+
     html += `
       <tr>
         <td style="font-weight: 600; color: var(--color-primary);">${aluno.nome}</td>
         <td style="font-family: var(--font-code); font-size: 0.8rem; color: var(--color-outline);">${aluno.email}</td>
         <td>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
             <div style="flex: 1; height: 6px; background: var(--color-surface-container); border-radius: var(--radius-full); overflow: hidden; min-width: 80px;">
               <div style="width: ${pct}%; height: 100%; background: var(--color-secondary); border-radius: var(--radius-full);"></div>
             </div>
-            <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-secondary);">${pct}% (${aluno.aulasConcluidas}/${totalAulas})</span>
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-secondary);">${pct}% (${aulas}/${totalAulas} aulas)</span>
+            ${labelAtividades}
           </div>
         </td>
         <td style="font-weight: 700; color: var(--color-tertiary-dark);">${aluno.xpTotal} XP</td>
@@ -1250,6 +2500,7 @@ function renderRelatorioProfessor(data) {
   container.innerHTML = html;
 }
 
+
 /**
  * ============================================================================
  * MODAIS E IDENTIFICAÇÃO DE USUÁRIO (PERFIL / LOGIN POR E-MAIL)
@@ -1259,7 +2510,10 @@ function renderRelatorioProfessor(data) {
 function openVisitorModal() {
   renderVisitorModalContent();
   const modal = document.getElementById('visitor-modal');
-  if (modal) modal.classList.add('active');
+  if (modal) {
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+  }
   const input = document.getElementById('login-email-input');
   if (input) {
     setTimeout(() => input.focus(), 150);
@@ -1268,7 +2522,18 @@ function openVisitorModal() {
 
 function closeVisitorModal() {
   const modal = document.getElementById('visitor-modal');
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+}
+
+function preencherELogar(email) {
+  const input = document.getElementById('login-email-input');
+  if (input) {
+    input.value = email;
+  }
+  loginComEmail(email);
 }
 
 function renderVisitorModalContent() {
@@ -1277,56 +2542,92 @@ function renderVisitorModalContent() {
   const user = AppState.user;
 
   if (user && user.autenticado) {
+    const isTeacher = user.isProfessor || user.perfil === 'professor';
     card.innerHTML = `
-      <div class="modal-icon-circle" style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); font-size: 1.5rem; font-weight: 700;">
-        ${user.nome ? user.nome.charAt(0).toUpperCase() : '👤'}
+      <button type="button" onclick="closeVisitorModal()" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; font-size: 1.35rem; cursor: pointer; color: var(--color-outline); line-height: 1; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);" title="Fechar">✕</button>
+      
+      <div class="modal-icon-circle" style="background: ${isTeacher ? 'linear-gradient(135deg, #1e3a8a, #2563eb)' : 'var(--color-primary-fixed)'}; color: #ffffff; font-size: 1.6rem; font-weight: 700; box-shadow: 0 4px 12px rgba(37,99,235,0.25); margin: 0 auto 0.75rem auto;">
+        ${isTeacher ? '👨‍🏫' : (user.nome ? user.nome.charAt(0).toUpperCase() : '👤')}
       </div>
+      
       <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.25rem;">
-        ${user.nome || 'Estudante Conectado'}
+        ${user.nome || (isTeacher ? 'Professor Neylor FM' : 'Estudante Conectado')}
       </h3>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.25rem;">
+      
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
         <span style="font-family: var(--font-code); font-size: 0.85rem; color: var(--color-on-surface-variant);">${user.email}</span>
-        <span class="role-tag role-${user.perfil}">${user.perfil}</span>
+        <span class="role-tag role-${user.perfil}" style="font-weight: 700; text-transform: uppercase;">${isTeacher ? '🎓 DOCENTE' : user.perfil}</span>
       </div>
       
       <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
         <div style="display: flex; justify-content: space-around; align-items: center;">
           <div>
-            <span style="font-size: 0.75rem; color: var(--color-outline); display: block;">Pontuação</span>
-            <span style="font-size: 1.15rem; font-weight: 700; color: var(--color-primary);">${user.xpTotal || 0} XP</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline); display: block;">Pontuação XP</span>
+            <span style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary);">${user.xpTotal || 0} XP</span>
           </div>
           <div style="width: 1px; height: 32px; background: var(--color-outline-variant);"></div>
           <div>
-            <span style="font-size: 0.75rem; color: var(--color-outline); display: block;">Status</span>
+            <span style="font-size: 0.75rem; color: var(--color-outline); display: block;">Status do Perfil</span>
             <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-success);">● Sincronizado</span>
           </div>
         </div>
       </div>
       
       <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <button class="btn btn-primary" onclick="closeVisitorModal()">
-          Continuar Estudando
+        ${isTeacher ? `
+          <button class="btn btn-primary" onclick="closeVisitorModal(); navigateTo('view-professor');" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: linear-gradient(135deg, #1e40af, #2563eb); border: none; font-weight: 700; box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+            <span>📊</span> Acessar Painel da Turma (Gestão & Avaliações)
+          </button>
+        ` : `
+          <button class="btn btn-primary" onclick="closeVisitorModal(); carregarAula(AppState.currentLessonId || 'aula_1_2');">
+            🚀 Continuar Estudando
+          </button>
+        `}
+        <button class="btn btn-outline" onclick="closeVisitorModal()">
+          Permanecer nesta Tela
         </button>
-        <button class="btn btn-outline" style="color: #b91c1c; border-color: #fca5a5;" onclick="logoutUsuario()">
+        <button class="btn btn-outline" style="color: #b91c1c; border-color: #fca5a5; background: rgba(239,68,68,0.05);" onclick="logoutUsuario()">
           🚪 Desconectar / Trocar de Conta
         </button>
       </div>
     `;
   } else {
     card.innerHTML = `
-      <div class="modal-icon-circle">🔐</div>
-      <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+      <button type="button" onclick="closeVisitorModal()" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; font-size: 1.35rem; cursor: pointer; color: var(--color-outline); line-height: 1; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);" title="Fechar">✕</button>
+
+      <div class="modal-icon-circle" style="margin: 0 auto 0.75rem auto;">🔐</div>
+      
+      <h3 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">
         Identificação de Estudante & Professor
       </h3>
-      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1.25rem;">
-        Informe seu e-mail cadastrado na planilha (ex.: <code>neylor@gmail.com</code>) para conectar seu perfil, registrar suas conquistas e sincronizar seu XP.
+      
+      <p style="font-size: 0.88rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1.25rem;">
+        Informe seu e-mail cadastrado na planilha para conectar seu perfil, sincronizar progresso e liberar as ferramentas da turma.
       </p>
+
+      <!-- Chips de Troca Rápida de Perfil -->
+      <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-high); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1.25rem; text-align: left;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.35rem;">
+          <span>⚡</span> Perfis para Demonstração / Troca Rápida:
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.45rem;">
+          <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 0.45rem 0.65rem; border-color: #2563eb; background: rgba(37,99,235,0.08); font-size: 0.82rem; font-weight: 600; color: #1e40af; border-radius: var(--radius-sm);" onclick="preencherELogar('neylor@gmail.com')">
+            <span>👨‍🏫</span> <strong>Professor Neylor FM</strong> <span style="font-size: 0.72rem; color: var(--color-outline); margin-left: auto;">(neylor@gmail.com)</span>
+          </button>
+          <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 0.45rem 0.65rem; font-size: 0.82rem; border-radius: var(--radius-sm);" onclick="preencherELogar('ana.silva@cjovem.ce.gov.br')">
+            <span>👩‍🎓</span> <strong>Ana Carolina Silva (Aluna)</strong> <span style="font-size: 0.72rem; color: var(--color-outline); margin-left: auto;">(ana.silva@...)</span>
+          </button>
+          <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 0.45rem 0.65rem; font-size: 0.82rem; border-radius: var(--radius-sm);" onclick="preencherELogar('carlos.lima@cjovem.ce.gov.br')">
+            <span>👨‍🎓</span> <strong>Carlos Eduardo Lima (Aluno)</strong> <span style="font-size: 0.72rem; color: var(--color-outline); margin-left: auto;">(carlos.lima@...)</span>
+          </button>
+        </div>
+      </div>
 
       <div style="margin-bottom: 1.25rem; text-align: left;">
         <label for="login-email-input" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--color-on-surface-variant); margin-bottom: 0.4rem;">
-          E-mail cadastrado na planilha:
+          Ou digite qualquer outro e-mail:
         </label>
-        <input type="email" id="login-email-input" placeholder="exemplo@gmail.com" style="width: 100%; box-sizing: border-box; padding: 0.75rem 1rem; border: 1.5px solid var(--color-outline-variant); border-radius: var(--radius-md); font-size: 0.95rem; font-family: var(--font-body); outline: none;" onkeydown="if(event.key==='Enter') loginComEmail()">
+        <input type="email" id="login-email-input" placeholder="exemplo: neylor@gmail.com ou aluno@escola.br" style="width: 100%; box-sizing: border-box; padding: 0.75rem 1rem; border: 1.5px solid var(--color-outline-variant); border-radius: var(--radius-md); font-size: 0.95rem; font-family: var(--font-body); outline: none;" onkeydown="if(event.key==='Enter') loginComEmail()">
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 0.75rem;">
@@ -1341,10 +2642,14 @@ function renderVisitorModalContent() {
   }
 }
 
-function loginComEmail() {
-  const emailInput = document.getElementById('login-email-input');
-  if (!emailInput) return;
-  const email = emailInput.value.trim();
+function loginComEmail(emailOpcional) {
+  let email = (typeof emailOpcional === 'string' && emailOpcional) ? emailOpcional : '';
+  if (!email) {
+    const emailInput = document.getElementById('login-email-input');
+    if (!emailInput) return;
+    email = emailInput.value.trim();
+  }
+  email = email.trim();
 
   if (!email || !email.includes('@') || !email.includes('.')) {
     showToast('Por favor, digite um e-mail válido (ex.: neylor@gmail.com).', 'error');
@@ -1356,6 +2661,9 @@ function loginComEmail() {
     btn.disabled = true;
     btn.textContent = 'Conectando à planilha...';
   }
+
+  const emailLower = email.toLowerCase();
+  const isTeacher = emailLower.includes('neylor') || emailLower.includes('prof') || emailLower.includes('admin');
 
   if (typeof google !== 'undefined' && google.script && google.script.run) {
     google.script.run
@@ -1383,22 +2691,52 @@ function loginComEmail() {
       })
       .getUserSessionData(email);
   } else {
-    // Simulação local
+    // Simulação local / Offline
     localStorage.setItem('pythonlab_user_email', email);
-    onUserSessionSuccess({
-      autenticado: true,
-      email: email,
-      nome: email.split('@')[0],
-      perfil: email.includes('prof') ? 'professor' : 'aluno',
-      xpTotal: 0,
-      progressoIds: ['aula_1_1'],
-      duvidasPendentes: [],
-      ultimaAulaAcessada: 'aula_1_2',
-      podeGravar: true,
-      isProfessor: email.includes('prof')
-    });
+    if (isTeacher) {
+      onUserSessionSuccess({
+        autenticado: true,
+        email: email,
+        nome: 'Professor Neylor FM',
+        perfil: 'professor',
+        xpTotal: 2500,
+        progressoIds: ['aula_1_1', 'aula_1_2', 'aula_1_3', 'aula_1_4', 'aula_1_5', 'aula_2_1'],
+        exerciciosConcluidos: ['aula_1_2:bloco_a_atv_2', 'aula_1_2:bloco_a_atv_3'],
+        ultimoPontoParada: {
+          idAula: 'aula_1_2',
+          idExercicio: 'bloco_a_atv_3',
+          titulo: 'Bloco A: Atividade 3',
+          proximoTitulo: 'Bloco A: Atividade 4',
+          data: new Date().toISOString()
+        },
+        duvidasPendentes: [],
+        ultimaAulaAcessada: 'aula_1_2',
+        podeGravar: true,
+        isProfessor: true
+      });
+    } else {
+      const mockData = (typeof mockObterDadosSorteioProfessor === 'function') ? mockObterDadosSorteioProfessor() : { alunos: [] };
+      const studentFound = (mockData.alunos || []).find(a => a.email.toLowerCase() === emailLower);
+      const rawNome = email.split('@')[0].replace(/[._]/g, ' ');
+      const nomeAluno = studentFound ? studentFound.nome : (rawNome.charAt(0).toUpperCase() + rawNome.slice(1));
+      const xpAluno = studentFound ? studentFound.xpTotal : 480;
+
+      onUserSessionSuccess({
+        autenticado: true,
+        email: email,
+        nome: nomeAluno,
+        perfil: 'aluno',
+        xpTotal: xpAluno,
+        progressoIds: ['aula_1_1'],
+        exerciciosConcluidos: ['aula_1_2:bloco_a_atv_2'],
+        duvidasPendentes: [],
+        ultimaAulaAcessada: 'aula_1_2',
+        podeGravar: true,
+        isProfessor: false
+      });
+    }
     closeVisitorModal();
-    showToast(`Modo Mock: Perfil conectado como ${email}`, 'success');
+    showToast(`Perfil conectado com sucesso como ${isTeacher ? 'Professor' : 'Estudante'}!`, 'success');
   }
 }
 
@@ -1411,18 +2749,21 @@ function logoutUsuario() {
     perfil: 'visitante',
     xpTotal: 0,
     progressoIds: [],
+    exerciciosConcluidos: [],
     duvidasPendentes: [],
     ultimaAulaAcessada: 'aula_1_2',
+    ultimoPontoParada: null,
     podeGravar: false,
     isProfessor: false
   };
   renderHeaderUser();
-  renderVisitorModalContent();
-  const teacherTab = document.getElementById('nav-teacher');
-  if (teacherTab) teacherTab.style.display = 'none';
+  renderizarOndePareiDashboard();
+  renderizarChecksExercicios(AppState.currentLessonId || 'aula_1_2');
+  const teacherTabs = document.querySelectorAll('#nav-teacher, #nav-teacher-mobile');
+  teacherTabs.forEach(tab => { tab.style.display = 'none'; });
   navigateTo('view-dashboard');
-  closeVisitorModal();
-  showToast('Desconectado com sucesso. Modo visitante ativo.', 'info');
+  renderVisitorModalContent();
+  showToast('Desconectado. Você pode selecionar ou digitar uma nova conta abaixo.', 'info');
 }
 
 function showToast(message, type = 'info') {
@@ -1467,7 +2808,27 @@ function setModoVisualizacaoAula(modo) {
   try {
     localStorage.setItem('pythonlab_modo_aula', modo);
   } catch (e) {}
+
+  if (modo === 'explicacoes') {
+    AppState.secaoAtiva = 'explicacoes';
+  } else if (modo === 'pratica') {
+    if (!AppState.secaoAtiva || AppState.secaoAtiva === 'explicacoes') {
+      const secoes = (typeof obterSecoesAula === 'function') ? obterSecoesAula(AppState.currentLessonId) : [];
+      if (secoes.length > 1 && secoes[1].tipo === 'bloco') {
+        AppState.secaoAtiva = secoes[1].bloco;
+        if (typeof switchOficinaBloco === 'function') {
+          switchOficinaBloco(secoes[1].bloco);
+        }
+      } else {
+        AppState.secaoAtiva = 'pratica';
+      }
+    }
+  }
+
   aplicarModoVisualizacaoAula(modo, true);
+  if (typeof atualizarLabelsNavegacaoAulas === 'function') {
+    atualizarLabelsNavegacaoAulas(AppState.currentLessonId);
+  }
 }
 
 function aplicarModoVisualizacaoAula(modo, scrollar) {
@@ -1541,14 +2902,22 @@ function carregarImagensAula(idAula) {
 
 function renderizarSlotsImagens(idAula) {
   if (!idAula) idAula = AppState.currentLessonId || 'aula_1_2';
-  const slots = document.querySelectorAll('.exercicio-resolvido-slot[data-aula="' + idAula + '"], .questao-imagem-slot[data-aula="' + idAula + '"]');
+  const slots = document.querySelectorAll(
+    '.exercicio-resolvido-slot[data-aula="' + idAula + '"], .questao-imagem-slot[data-aula="' + idAula + '"],' +
+    '.exercicio-resolvido-slot[data-img-aula="' + idAula + '"], .questao-imagem-slot[data-img-aula="' + idAula + '"]'
+  );
   const mapaImgs = AppState.imagensAula[idAula] || {};
   const isProf = AppState.user && (AppState.user.isProfessor || AppState.user.perfil === 'professor');
 
   slots.forEach(slot => {
-    const idEx = slot.getAttribute('data-exercicio');
+    const idEx = slot.getAttribute('data-exercicio') || slot.getAttribute('data-img-exercicio');
     const tituloEx = slot.getAttribute('data-titulo') || 'Questão / Exercício';
-    const imgData = mapaImgs[idEx];
+    
+    // Busca direta pelo id, ou com/sem o prefixo canônico da aula (ex: aula_X_Y_)
+    const prefixo = idAula + '_';
+    const idExSemPrefixo = (idEx && idEx.startsWith(prefixo)) ? idEx.slice(prefixo.length) : idEx;
+    const idExComPrefixo = (idEx && idEx.startsWith(prefixo)) ? idEx : (prefixo + idEx);
+    const imgData = mapaImgs[idEx] || mapaImgs[idExSemPrefixo] || mapaImgs[idExComPrefixo];
 
     if (imgData && imgData.urlVisualizacao) {
       // Exibe a imagem anexada
@@ -1829,5 +3198,54 @@ window.addEventListener('keydown', function(e) {
     fecharLightboxImagem();
   }
 });
+
+/**
+ * ============================================================================
+ * INICIALIZAÇÃO RESILIENTE E UNIFICADA DA APLICAÇÃO (PYTHONLAB SPA)
+ * ============================================================================
+ * Executa após todas as constantes (COURSES_DATA), modelos e funções estarem prontas.
+ * Dispara de imediato se o DOM já estiver pronto (iframe GAS) ou no DOMContentLoaded.
+ */
+function inicializarPythonLab() {
+  try {
+    // 1. Renderização Instantânea do Catálogo (Zero Latência / Elimina "Carregando módulos...")
+    if (typeof COURSES_DATA !== 'undefined' && COURSES_DATA[AppState.currentCourseId]) {
+      AppState.catalog = COURSES_DATA[AppState.currentCourseId].aulas;
+      renderCatalogDashboard(AppState.catalog);
+    }
+
+    // 2. Inicialização dos Passos do Simulador da Aula
+    const stepsIniciais = (typeof obterPassosSimulacao === 'function') ? obterPassosSimulacao(AppState.currentLessonId || 'aula_1_2') : [];
+    if (typeof initSimulation === 'function') {
+      initSimulation(stepsIniciais);
+    }
+
+    // 3. Renderização Visual Inicial (Cabeçalho e Retomada)
+    if (typeof renderHeaderUser === 'function') renderHeaderUser();
+    if (typeof renderizarOndePareiDashboard === 'function') renderizarOndePareiDashboard();
+
+    // 4. Carregamento de Sessão e Sincronização Assíncrona com Backend
+    if (typeof loadUserSession === 'function') loadUserSession();
+    if (typeof loadCatalog === 'function') loadCatalog();
+
+    // 5. Monitores Auxiliares
+    if (typeof atualizarLabelsNavegacaoAulas === 'function') {
+      atualizarLabelsNavegacaoAulas(AppState.currentLessonId || 'aula_1_2');
+    }
+    if (typeof inicializarMonitorInatividadeBarra === 'function') {
+      inicializarMonitorInatividadeBarra();
+    }
+  } catch (err) {
+    console.error('Erro na inicialização resiliente do PythonLab:', err);
+  }
+}
+
+// Disparo garantido em qualquer ambiente
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', inicializarPythonLab);
+} else {
+  // O DOM já está pronto (caso frequente em iframes do Google Apps Script)
+  inicializarPythonLab();
+}
 </script>
 

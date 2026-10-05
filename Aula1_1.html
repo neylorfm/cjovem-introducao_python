@@ -1,0 +1,782 @@
+<!-- ============================================================================
+     PYTHONLAB — AULA 1.1: CONFIGURAÇÃO DO AMBIENTE: ANACONDA, JUPYTER NOTEBOOK E GOOGLE COLAB (Aula1_1.html)
+     Alinhada integralmente às diretrizes pedagógicas de aulas/aula1_1.md
+     ============================================================================ -->
+
+<div class="view-section" id="view-aula">
+  <!-- Dados de Passos (Vazio pois Aula 1.1 foca na configuração e execução prática direta) -->
+  <script type="application/json" class="simulation-steps-data">
+[]
+  </script>
+
+  <!-- ========================================================================
+       CABEÇALHO DA LIÇÃO & AÇÕES DE AUTONOMIA E GESTÃO DO ESTUDO
+       ======================================================================== -->
+  <div class="lesson-header-card" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem; margin-bottom: 2rem; background: var(--color-surface-lowest); border: 1px solid var(--color-surface-high); border-radius: var(--radius-xl); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+    <div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-bottom: 0.4rem;">
+        <span style="font-family: var(--font-headline); font-weight: 700; color: var(--color-secondary);">Módulo 1: Fundamentos de CPython</span>
+        <span style="color: var(--color-outline);">›</span>
+        <span style="font-weight: 600; color: var(--color-on-surface-variant);">Aula 1.1</span>
+        <span style="background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          Iniciante • 40 min
+        </span>
+        <span style="background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--radius-full);">
+          +150 XP
+        </span>
+      </div>
+      <h1 class="lesson-main-title" style="font-family: var(--font-headline); font-size: 1.75rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.02em; line-height: 1.2;">
+        Configuração do Ambiente: Anaconda, Jupyter Notebook e Google Colab
+      </h1>
+      <p style="font-size: 0.85rem; color: var(--color-outline); margin-top: 0.35rem;">
+        Ambientes de Prática: <strong>Terminal Linux / Jupyter Notebook</strong> (PC) e <strong>Google Colab</strong> (Tablet/Navegador).
+      </p>
+    </div>
+
+    <!-- 3 Ações de Gestão pelo Próprio Aluno -->
+    <div class="lesson-header-actions" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" title="Registrar que você interrompeu os estudos aqui para continuar depois" onclick="marcarComoOndeParei('aula_1_1', 'Aula 1.1: Configuração do Ambiente (Anaconda, Jupyter e Colab)')">
+        📌 Onde Parei
+      </button>
+      <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.5rem 0.9rem; color: #b91c1c; border-color: #fca5a5;" title="Registrar uma pergunta sobre este tópico para tirar com o professor" onclick="abrirModalDuvida('aula_1_1', 'Configuração do Ambiente')">
+        ❓ Tenho Dúvidas
+      </button>
+      <button class="btn btn-success btn-concluir-action" id="btn-concluir-aula" style="font-size: 0.8rem; padding: 0.5rem 0.9rem;" onclick="concluirEtapaAtual()">
+        ✓ Compreendi e Concluí (+150 XP)
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       DIVISOR DIDÁTICO NO TOPO: ESCOLHA DA TRILHA DE ESTUDO
+       ======================================================================== -->
+  <div class="lesson-mode-bifurcator" id="lesson-mode-bifurcator">
+    <div class="bifurcator-header">
+      <div>
+        <div style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary);">
+          🧭 Como você deseja estudar esta aula hoje?
+        </div>
+        <div style="font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.2rem;">
+          Decida se prefere seguir os passos conceituais de instalação ou ir direto para a prática e testes de execução.
+        </div>
+      </div>
+      <span style="font-size: 0.75rem; font-family: var(--font-code); background: var(--color-surface-container); color: var(--color-secondary); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 600;">
+        Passo a Passo ou Execução Prática
+      </span>
+    </div>
+    <div class="bifurcator-nav">
+      <button class="bifurcator-btn active" id="btn-mode-explicacoes" onclick="setModoVisualizacaoAula('explicacoes')">
+        <span class="btn-mode-icon">📖</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">1. Explicações & Fundamentos</span>
+          <span class="btn-mode-subtitle">Anaconda3 • Terminal Linux • Jupyter Notebook • Células Code vs Markdown • Google Colab</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-pratica" onclick="setModoVisualizacaoAula('pratica')">
+        <span class="btn-mode-icon">🛠️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">2. Exercícios Propostos & Prática</span>
+          <span class="btn-mode-subtitle">Atividades 1.1 a 1.3 com Código Pronto para Copiar • Desafio Mestre • Guia de Solução</span>
+        </div>
+      </button>
+      <button class="bifurcator-btn" id="btn-mode-tudo" onclick="setModoVisualizacaoAula('tudo')">
+        <span class="btn-mode-icon">👁️</span>
+        <div class="btn-mode-text">
+          <span class="btn-mode-title">Visualização Completa</span>
+          <span class="btn-mode-subtitle">Exibir todo o conteúdo em sequência linear contínua</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTAINER TRILHA 1: EXPLICAÇÕES & FUNDAMENTOS -->
+  <div id="bloco-aula-explicacoes">
+
+    <!-- ========================================================================
+         1. INSTALAÇÃO DO ANACONDA3 NO COMPUTADOR (LINUX)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Ambiente Computacional Local
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            1. Instalação do Anaconda3 no Computador (Linux)
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          Linux / Ubuntu • Distribuição Científica
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        O <strong>Anaconda</strong> é uma distribuição completa para computação científica e programação, trazendo nativamente o interpretador Python oficial, os gerenciadores de pacotes (<code>conda</code> e <code>pip</code>), bibliotecas fundamentais e o ecossistema de cadernos interativos <strong>Jupyter Notebook</strong>.
+      </p>
+
+      <!-- PASSO 1: DOWNLOAD -->
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Passo 1: Download do Instalador
+          </h3>
+          <span style="font-size: 0.72rem; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.55rem; border-radius: var(--radius-full); font-weight: 700;">
+            Script Shell (.sh)
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+          Acesse a página oficial de download no navegador do computador:
+        </p>
+        <div style="margin-bottom: 0.85rem;">
+          <a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; padding: 0.45rem 0.9rem; text-decoration: none;">
+            <span>🔗</span> <strong>Download Oficial do Anaconda (Linux x86_64)</strong>
+          </a>
+        </div>
+        <ul style="font-size: 0.82rem; color: var(--color-on-surface); line-height: 1.5; padding-left: 1.2rem; margin: 0;">
+          <li>O arquivo baixado para a pasta <code>~/Downloads</code> possui a extensão shell script (exemplo: <code>Anaconda3-2024.xx-Linux-x86_64.sh</code>).</li>
+          <li>Certifique-se de que o download foi concluído antes de iniciar a instalação no terminal.</li>
+        </ul>
+
+        <!-- Espaço para Imagem do Professor (Captura de Ecrã 1) -->
+        <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_captura_download" data-titulo="Captura de Ecrã: Download do Instalador Anaconda"></div>
+      </div>
+
+      <!-- PASSO 2: INSTALAÇÃO VIA TERMINAL -->
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.75rem;">
+          Passo 2: Instalação via Terminal
+        </h3>
+        <ol style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.25rem; margin-bottom: 1rem;">
+          <li>Abra o terminal do sistema pressionando o atalho <kbd style="background: var(--color-surface-container); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: var(--font-code);">Ctrl + Alt + T</kbd>.</li>
+          <li style="margin-top: 0.5rem;">
+            Navegue até a pasta de transferências:
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #0f172a; border-radius: var(--radius-md); padding: 0.5rem 0.85rem; margin: 0.35rem 0;">
+              <code id="cmd-cd-downloads" style="color: #38bdf8; font-family: var(--font-code); font-size: 0.85rem;">cd ~/Downloads</code>
+              <button class="btn btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; color: #94a3b8; border-color: #334155;" onclick="copiarCodigo('cmd-cd-downloads', 'Comando cd ~/Downloads copiado!')" title="Copiar comando">
+                📋 Copiar
+              </button>
+            </div>
+          </li>
+          <li style="margin-top: 0.5rem;">
+            Inicie o instalador executando o script com o interpretador <code>bash</code>:
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #0f172a; border-radius: var(--radius-md); padding: 0.5rem 0.85rem; margin: 0.35rem 0;">
+              <code id="cmd-bash-installer" style="color: #38bdf8; font-family: var(--font-code); font-size: 0.85rem;">bash Anaconda3-*.sh</code>
+              <button class="btn btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; color: #94a3b8; border-color: #334155;" onclick="copiarCodigo('cmd-bash-installer', 'Comando bash Anaconda3-*.sh copiado!')" title="Copiar comando">
+                📋 Copiar
+              </button>
+            </div>
+          </li>
+          <li style="margin-top: 0.5rem;"><strong>Instruções durante a execução:</strong>
+            <ul style="margin-top: 0.35rem; padding-left: 1.1rem;">
+              <li>Pressione <kbd>Enter</kbd> para rolar os termos de licença e, ao final, digite <strong style="color: var(--color-primary);">yes</strong> para aceitar.</li>
+              <li>Confirme o diretório padrão de instalação pressionando <kbd>Enter</kbd>.</li>
+              <li>Quando o instalador perguntar se deseja inicializar o Anaconda no terminal (<code>initialize Anaconda3</code>), digite <strong style="color: var(--color-primary);">yes</strong>.</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+
+      <!-- PASSO 3: ATIVAÇÃO DO AMBIENTE -->
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+          Passo 3: Ativação do Ambiente Base
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.6rem;">
+          Após a instalação, ative o ambiente base do Anaconda através do caminho do usuário:
+        </p>
+        <div style="display: flex; align-items: center; justify-content: space-between; background: #0f172a; border-radius: var(--radius-md); padding: 0.5rem 0.85rem; margin-bottom: 0.75rem;">
+          <code id="cmd-activate-conda" style="color: #4ade80; font-family: var(--font-code); font-size: 0.85rem;">source /home/cjovem/anaconda3/bin/activate</code>
+          <button class="btn btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; color: #94a3b8; border-color: #334155;" onclick="copiarCodigo('cmd-activate-conda', 'Comando de ativação copiado!')" title="Copiar comando">
+            📋 Copiar
+          </button>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--color-outline); margin-bottom: 0.75rem;">
+          <em>Nota:</em> Caso o caminho tenha sido personalizado em outro diretório de usuário, ajuste para o seu caminho correspondente (exemplo: <code>source ~/anaconda3/bin/activate</code>).
+        </p>
+        <div style="background: var(--color-surface-lowest); border-left: 4px solid var(--color-secondary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.82rem; line-height: 1.5;">
+          <strong>Indicador de Sucesso:</strong> Ao ativar, o terminal exibirá o prefixo <code style="color: var(--color-primary); font-weight: 700;">(base)</code> no início da linha de comandos:
+          <div style="font-family: var(--font-code); color: #0284c7; margin-top: 0.25rem;">(base) cjovem@lab-ti:~$</div>
+        </div>
+
+        <!-- Espaço para Imagem do Professor (Captura de Ecrã 2) -->
+        <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_captura_terminal_ativacao" data-titulo="Captura de Ecrã: Terminal de Instalação e Ativação"></div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         2. INICIALIZAÇÃO E UTILIZAÇÃO DO JUPYTER NOTEBOOK
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-primary-fixed); color: var(--color-on-primary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Ambiente de Cadernos Interativos
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            2. Inicialização e Utilização do Jupyter Notebook
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          Localhost:8888 • IPyKernel
+        </span>
+      </div>
+
+      <!-- INICIALIZANDO O JUPYTER -->
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.4rem;">
+          Como Inicializar o Jupyter
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.6rem;">
+          Com o ambiente ativado no terminal, execute o comando:
+        </p>
+        <div style="display: flex; align-items: center; justify-content: space-between; background: #0f172a; border-radius: var(--radius-md); padding: 0.5rem 0.85rem; margin-bottom: 0.75rem;">
+          <code id="cmd-jupyter-notebook" style="color: #38bdf8; font-family: var(--font-code); font-size: 0.85rem;">jupyter notebook</code>
+          <button class="btn btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; color: #94a3b8; border-color: #334155;" onclick="copiarCodigo('cmd-jupyter-notebook', 'Comando jupyter notebook copiado!')" title="Copiar comando">
+            📋 Copiar
+          </button>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.5;">
+          O comando iniciará um servidor local e abrirá automaticamente o navegador padrão exibindo o <strong>Jupyter Dashboard</strong>.
+        </p>
+      </div>
+
+      <!-- NAVEGAÇÃO E CRIAÇÃO -->
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.65rem;">
+          Navegação e Criação de Cadernos
+        </h3>
+        <ul style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.6; padding-left: 1.2rem; margin: 0;">
+          <li><strong>1. Criar novo caderno:</strong> No canto superior direito, clique em <strong style="color: var(--color-primary);">New → Python 3 (ipykernel)</strong>.</li>
+          <li><strong>2. Renomear o caderno:</strong> Clique sobre o título <em>"Untitled"</em> no topo da página e atribua um nome ao projeto (ex.: <code>Minha_Aula_1</code>).</li>
+          <li><strong>3. Guardar o trabalho:</strong> Clique no ícone de disquete ou pressione o atalho <kbd>Ctrl + S</kbd> para gravar as alterações no arquivo <code>.ipynb</code>.</li>
+        </ul>
+
+        <!-- Espaço para Imagem do Professor (Captura de Ecrã 3) -->
+        <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_captura_novo_notebook" data-titulo="Captura de Ecrã: Criação de Caderno no Jupyter"></div>
+      </div>
+
+      <!-- TIPOS DE CÉLULAS -->
+      <div style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <h3 style="font-family: var(--font-headline); font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.6rem;">
+          Tipos de Células: Código (Code) vs Documentação (Markdown)
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1rem;">
+          O Jupyter Notebook permite mesclar instruções executáveis com documentação estruturada através da alternância do tipo de célula:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+          <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.4rem; color: var(--color-primary); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.35rem;">
+              <span>💻</span> Célula de Código (Code)
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+              Destinada a instruções Python executáveis. Ao rodar (<kbd>Shift + Enter</kbd>), o interpretador processa o código e renderiza a saída computacional logo abaixo.
+            </p>
+          </div>
+          <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.4rem; color: var(--color-secondary); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.35rem;">
+              <span>📝</span> Célula de Texto (Markdown)
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+              Destinada a títulos (#, ##), listas (*), anotações teóricas e explicações. Ao executar, formata o texto elegante para leitura.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tabela de Atalhos do Jupyter -->
+        <h4 style="font-family: var(--font-headline); font-size: 0.88rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+          ⚡ Principais Atalhos de Teclado (Modo de Comando - Pressione Esc antes)
+        </h4>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+            <thead>
+              <tr style="background: var(--color-surface-low); border-bottom: 1.5px solid var(--color-surface-container);">
+                <th style="padding: 0.5rem 0.75rem; color: var(--color-primary);">Atalho</th>
+                <th style="padding: 0.5rem 0.75rem; color: var(--color-primary);">Ação Executada no Caderno</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--color-surface-container);">
+                <td style="padding: 0.45rem 0.75rem;"><kbd style="background: var(--color-surface-container); padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700;">M</kbd></td>
+                <td style="padding: 0.45rem 0.75rem;">Transforma a célula atual em <strong>Markdown</strong> (Texto).</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-surface-container);">
+                <td style="padding: 0.45rem 0.75rem;"><kbd style="background: var(--color-surface-container); padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700;">Y</kbd></td>
+                <td style="padding: 0.45rem 0.75rem;">Transforma a célula atual em <strong>Código Python</strong>.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-surface-container);">
+                <td style="padding: 0.45rem 0.75rem;"><kbd style="background: var(--color-surface-container); padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700;">A</kbd></td>
+                <td style="padding: 0.45rem 0.75rem;">Insere uma nova célula <strong>acima</strong> (Above) da atual.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-surface-container);">
+                <td style="padding: 0.45rem 0.75rem;"><kbd style="background: var(--color-surface-container); padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700;">B</kbd></td>
+                <td style="padding: 0.45rem 0.75rem;">Insere uma nova célula <strong>abaixo</strong> (Below) da atual.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--color-surface-container);">
+                <td style="padding: 0.45rem 0.75rem;"><kbd style="background: var(--color-surface-container); padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700;">D + D</kbd></td>
+                <td style="padding: 0.45rem 0.75rem;">Pressionar <kbd>D</kbd> duas vezes <strong>apaga</strong> a célula selecionada.</td>
+              </tr>
+              <tr>
+                <td style="padding: 0.45rem 0.75rem;"><kbd style="background: var(--color-surface-container); padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700;">Shift + Enter</kbd></td>
+                <td style="padding: 0.45rem 0.75rem;"><strong>Executa</strong> a célula atual e avança para a próxima célula.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Espaço para Imagem do Professor (Captura de Ecrã 4) -->
+        <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_captura_alternancia_celulas" data-titulo="Captura de Ecrã: Alternância de Células e Execução"></div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         3. PRÁTICA SEM INSTALAÇÃO: GOOGLE COLAB (TABLETS E NAVEGADOR)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Ambiente em Nuvem
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 700; color: var(--color-primary); margin-top: 0.35rem;">
+            3. Prática sem Instalação: Google Colab (Tablets e Navegador)
+          </h2>
+        </div>
+        <span style="font-family: var(--font-code); font-size: 0.75rem; color: var(--color-outline);">
+          Google Research • Cloud Hosted
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--color-on-surface-variant); line-height: 1.6; margin-bottom: 1.25rem;">
+        Para os estudantes que utilizam tablets ou computadores sem instalação local do Anaconda, o <strong>Google Colaboratory (Colab)</strong> oferece um ambiente Jupyter hospedado na nuvem, acessível diretamente pelo navegador web com a conta Google institucional.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+            🌐 Acesso e Criação
+          </h3>
+          <ol style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.55; padding-left: 1.15rem; margin: 0;">
+            <li>Acesse o endereço: <a href="https://colab.research.google.com" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); font-weight: 700;">colab.research.google.com</a></li>
+            <li>Inicie sessão com sua conta Google educacional.</li>
+            <li>No painel inicial que se abre, clique em <strong>Novo notebook</strong>.</li>
+          </ol>
+        </div>
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.5rem;">
+            📱 Operação no Ecrã Tátil (Tablets)
+          </h3>
+          <ul style="font-size: 0.82rem; color: var(--color-on-surface-variant); line-height: 1.55; padding-left: 1.15rem; margin: 0;">
+            <li><strong>Adicionar células:</strong> Toque nos botões <code>+ Código</code> ou <code>+ Texto</code> no topo da página.</li>
+            <li><strong>Executar código:</strong> Toque no ícone circular de Play (▶️) posicionado à esquerda de cada bloco.</li>
+            <li><strong>Entrada com input():</strong> Digite o valor na caixa que surge abaixo e confirme no teclado virtual.</li>
+            <li><strong>Gravação automática:</strong> Salvo direto no Google Drive na pasta <em>Colab Notebooks</em>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Espaço para Imagem do Professor (Captura de Ecrã 5) -->
+      <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_captura_google_colab" data-titulo="Captura de Ecrã: Interface do Google Colab no Tablet"></div>
+    </div>
+  </div>
+
+  <!-- CONTAINER TRILHA 2: EXERCÍCIOS PROPOSTOS & PRÁTICA -->
+  <div id="bloco-aula-pratica">
+
+    <!-- ========================================================================
+         4. CADERNO DE ATIVIDADES PRÁTICAS DE CONFIGURAÇÃO (CÓDIGOS PRONTOS PARA EXECUTAR)
+         ======================================================================== -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1px solid var(--color-surface-high); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-family: var(--font-headline); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--color-tertiary-fixed); color: var(--color-tertiary-dark); padding: 0.2rem 0.6rem; border-radius: var(--radius-full);">
+            Oficina Prática de Homologação
+          </span>
+          <h2 style="font-family: var(--font-headline); font-size: 1.35rem; font-weight: 800; color: var(--color-primary); margin-top: 0.35rem;">
+            4. Caderno de Atividades Práticas de Configuração
+          </h2>
+          <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); margin-top: 0.25rem;">
+            Neste momento inicial, <strong>apenas copie e execute</strong> os códigos nas células do seu Jupyter Notebook ou Google Colab para validar o interpretador.
+          </p>
+        </div>
+        <span style="font-size: 0.78rem; color: var(--color-secondary); font-weight: 700;">
+          3 Atividades + 1 Desafio Mestre
+        </span>
+      </div>
+
+      <!-- ATIVIDADE 1.1 -->
+      <div class="exercise-interactive-card" id="card-ex-aula_1_1_atv_1" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Atividade 1.1: Validação do Ambiente e Versão do Interpretador
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 700;">
+            +35 XP
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+          <strong>Objetivo:</strong> Verificar se o Anaconda foi ativado corretamente e inspecionar a versão do interpretador Python local.
+        </p>
+
+        <!-- Teste 1: Terminal -->
+        <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1rem;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.35rem;">
+            Opção A: No Terminal do Computador (Linux)
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: #0f172a; border-radius: var(--radius-md); padding: 0.45rem 0.75rem;">
+            <code id="cmd-python-version" style="color: #4ade80; font-family: var(--font-code); font-size: 0.85rem;">python --version</code>
+            <button class="btn btn-outline" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; color: #94a3b8; border-color: #334155;" onclick="copiarCodigo('cmd-python-version', 'Comando python --version copiado!')" title="Copiar comando do terminal">
+              📋 Copiar
+            </button>
+          </div>
+        </div>
+
+        <!-- Teste 2: Célula Jupyter/Colab (CÓDIGO MOSTRADO DIRETAMENTE COM BOTÃO DE COPIAR) -->
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-primary-fixed); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--color-primary); display: flex; align-items: center; gap: 0.35rem;">
+              <span>💻</span> Célula de Código no Jupyter ou Google Colab:
+            </div>
+            <button class="btn btn-primary" onclick="copiarCodigo('codigo-atv-1-1', 'Código copiado com sucesso! Cole na célula do seu Jupyter ou Colab.')" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; font-size: 0.78rem;" title="Copiar código Python">
+              <span>📋</span> <strong>Copiar Código Python</strong>
+            </button>
+          </div>
+
+          <pre id="codigo-atv-1-1" style="background: #0f172a; color: #f8fafc; padding: 0.85rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; line-height: 1.5; margin: 0; overflow-x: auto;">import sys
+print("Interpretador em execução:", sys.executable)
+print("Versão do Python:", sys.version)</pre>
+
+          <div style="margin-top: 0.6rem; font-size: 0.78rem; color: var(--color-on-surface-variant); background: var(--color-surface-lowest); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid #10b981;">
+            💡 <strong>Execução Prática:</strong> Neste momento inicial, basta clicar em <strong>Copiar Código Python</strong>, colar em uma célula de código do seu Jupyter Notebook ou Google Colab e executar (<kbd>Shift + Enter</kbd> ou clicar no Play ▶️).
+          </div>
+        </div>
+
+        <!-- Saída esperada -->
+        <div style="background: #020617; color: #a3e635; font-family: var(--font-code); font-size: 0.78rem; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;">
+          🟢 <strong>Saída Esperada:</strong> Confirmação de execução indicando Python 3.10 ou superior dentro do diretório do Anaconda ou ambiente Colab.
+        </div>
+
+        <!-- Botão Ver Instruções / Solução Modelo -->
+        <div style="margin-bottom: 0.5rem;">
+          <button class="btn btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; display: inline-flex; align-items: center; gap: 0.4rem;" onclick="toggleSolucao('solucao-atv-1-1', this)">
+            <span>👁️</span> <strong>Ver Instruções / Solução Modelo</strong> <span class="toggle-arrow" style="font-size: 0.7rem;">▼</span>
+          </button>
+        </div>
+
+        <!-- Container Expansível com as Instruções / Solução Modelo -->
+        <div id="solucao-atv-1-1" style="display: none; background: #0f172a; color: #f8fafc; padding: 1rem; border-radius: var(--radius-md); font-size: 0.82rem; line-height: 1.5; margin-bottom: 0.85rem; border-left: 3px solid var(--color-primary-fixed);">
+          <div style="font-weight: 700; color: #38bdf8; margin-bottom: 0.4rem;">
+            📖 Instruções e Guia Pedagógico da Atividade 1.1:
+          </div>
+          <p style="color: #cbd5e1; margin-bottom: 0.4rem;">
+            1. No terminal do Linux com o prefixo <code>(base)</code>, execute <code>python --version</code> para confirmar a versão do interpretador gerenciado pelo Anaconda.
+          </p>
+          <p style="color: #cbd5e1; margin-bottom: 0.4rem;">
+            2. No Jupyter Notebook ou Google Colab, o módulo embutido <code>sys</code> permite inspecionar o caminho físico do binário do interpretador (<code>sys.executable</code>) e a versão com informações de compilação (<code>sys.version</code>).
+          </p>
+          <div style="background: #1e293b; padding: 0.6rem 0.85rem; border-radius: 4px; font-family: var(--font-code); color: #a3e635; margin-top: 0.4rem;">
+            # Exemplo de saída gerada no terminal:<br>
+            Interpretador em execução: /home/cjovem/anaconda3/bin/python<br>
+            Versão do Python: 3.12.2 (main, Feb 20 2024, 15:00:00)
+          </div>
+        </div>
+
+        <!-- Slot de Imagem do Professor -->
+        <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_atv_1" data-titulo="Atividade 1.1: Validação do Ambiente"></div>
+      </div>
+
+      <!-- ATIVIDADE 1.2 -->
+      <div class="exercise-interactive-card" id="card-ex-aula_1_1_atv_2" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Atividade 1.2: Criação de Documentação em Markdown e Código no Jupyter
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 700;">
+            +35 XP
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+          <strong>Objetivo:</strong> Praticar a alternância entre células de texto explicativo (Markdown) e células de execução computacional num caderno <code>.ipynb</code>.
+        </p>
+
+        <!-- 1. Célula Markdown -->
+        <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); display: flex; align-items: center; gap: 0.35rem;">
+              <span>📝</span> Passo 1: Célula de Texto (Markdown - atalho Esc + M)
+            </div>
+            <button class="btn btn-outline" onclick="copiarCodigo('codigo-atv-1-2-md', 'Texto Markdown copiado! Cole na célula Markdown e aperte Shift + Enter.')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" title="Copiar texto Markdown">
+              📋 Copiar Texto Markdown
+            </button>
+          </div>
+          <pre id="codigo-atv-1-2-md" style="background: #0f172a; color: #f8fafc; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; line-height: 1.5; margin: 0; overflow-x: auto;"># Laboratório de Informática
+## Aluno: [Seu Nome Completo]
+Este caderno contém o primeiro teste de execução em Python.</pre>
+        </div>
+
+        <!-- 2. Célula de Código Python -->
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-primary-fixed); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--color-primary); display: flex; align-items: center; gap: 0.35rem;">
+              <span>💻</span> Passo 2: Célula de Código Python (Apenas copiar e executar)
+            </div>
+            <button class="btn btn-primary" onclick="copiarCodigo('codigo-atv-1-2-py', 'Código Python copiado com sucesso! Cole na célula e execute.')" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; font-size: 0.78rem;" title="Copiar código Python">
+              <span>📋</span> <strong>Copiar Código Python</strong>
+            </button>
+          </div>
+          <pre id="codigo-atv-1-2-py" style="background: #0f172a; color: #f8fafc; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; line-height: 1.5; margin: 0; overflow-x: auto;">mensagem = "Ambiente configurado com sucesso!"
+print(mensagem)</pre>
+
+          <div style="margin-top: 0.5rem; font-size: 0.78rem; color: var(--color-on-surface-variant); background: var(--color-surface-lowest); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid #10b981;">
+            💡 <strong>Execução Prática:</strong> Cole o código acima na célula de código, pressione <kbd>Shift + Enter</kbd> e verifique a impressão imediata da mensagem.
+          </div>
+        </div>
+
+        <!-- Saída esperada -->
+        <div style="background: #020617; color: #a3e635; font-family: var(--font-code); font-size: 0.78rem; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;">
+          🟢 <strong>Saída Esperada:</strong> <code>Ambiente configurado com sucesso!</code>
+        </div>
+
+        <!-- Botão Ver Instruções / Solução Modelo -->
+        <div style="margin-bottom: 0.5rem;">
+          <button class="btn btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; display: inline-flex; align-items: center; gap: 0.4rem;" onclick="toggleSolucao('solucao-atv-1-2', this)">
+            <span>👁️</span> <strong>Ver Instruções / Solução Modelo</strong> <span class="toggle-arrow" style="font-size: 0.7rem;">▼</span>
+          </button>
+        </div>
+
+        <!-- Container Expansível com as Instruções / Solução Modelo -->
+        <div id="solucao-atv-1-2" style="display: none; background: #0f172a; color: #f8fafc; padding: 1rem; border-radius: var(--radius-md); font-size: 0.82rem; line-height: 1.5; margin-bottom: 0.85rem; border-left: 3px solid var(--color-secondary-fixed);">
+          <div style="font-weight: 700; color: #38bdf8; margin-bottom: 0.4rem;">
+            📖 Instruções e Guia Pedagógico da Atividade 1.2:
+          </div>
+          <p style="color: #cbd5e1; margin-bottom: 0.4rem;"><strong>1. Célula Markdown formatada:</strong></p>
+          <pre style="background: #1e293b; color: #f8fafc; padding: 0.6rem 0.85rem; border-radius: 4px; font-family: var(--font-code); margin: 0 0 0.6rem 0;"># Laboratório de Informática
+## Aluno: Neylor Magalhães
+Este caderno contém o primeiro teste de execução em Python.</pre>
+          <p style="color: #cbd5e1; margin-bottom: 0.4rem;"><strong>2. Célula de Código executável:</strong></p>
+          <pre style="background: #1e293b; color: #f8fafc; padding: 0.6rem 0.85rem; border-radius: 4px; font-family: var(--font-code); margin: 0 0 0.6rem 0;">mensagem = "Ambiente configurado com sucesso!"
+print(mensagem)</pre>
+          <p style="color: #94a3b8; font-size: 0.78rem; margin: 0;">
+            A alternância correta entre células é essencial para produzir relatórios técnicos e cadernos reprodutíveis na ciência de dados.
+          </p>
+        </div>
+
+        <!-- Slot de Imagem do Professor -->
+        <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_atv_2" data-titulo="Atividade 1.2: Markdown e Código no Jupyter"></div>
+      </div>
+
+      <!-- ATIVIDADE 1.3 -->
+      <div class="exercise-interactive-card" id="card-ex-aula_1_1_atv_3" style="background: var(--color-surface-lowest); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 style="font-family: var(--font-headline); font-size: 1.05rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            Atividade 1.3: Replicação e Partilha no Google Colab
+          </h3>
+          <span style="font-size: 0.75rem; background: var(--color-secondary-fixed); color: var(--color-on-secondary-fixed); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-weight: 700;">
+            +35 XP
+          </span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 0.75rem;">
+          <strong>Objetivo:</strong> Executar o mesmo fluxo de trabalho na nuvem através do Google Colab para garantir mobilidade nos estudos pelo tablet ou celular.
+        </p>
+
+        <!-- 1. Célula Texto no Colab -->
+        <div style="background: var(--color-surface-low); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-secondary); display: flex; align-items: center; gap: 0.35rem;">
+              <span>📝</span> No Google Colab: Botão (+ Texto)
+            </div>
+            <button class="btn btn-outline" onclick="copiarCodigo('codigo-atv-1-3-md', 'Título copiado!')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" title="Copiar texto do título">
+              📋 Copiar Título
+            </button>
+          </div>
+          <pre id="codigo-atv-1-3-md" style="background: #0f172a; color: #f8fafc; padding: 0.6rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; margin: 0;"># Teste de Execução na Nuvem</pre>
+        </div>
+
+        <!-- 2. Célula de Código no Colab -->
+        <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-primary-fixed); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--color-primary); display: flex; align-items: center; gap: 0.35rem;">
+              <span>💻</span> No Google Colab: Botão (+ Código) — Apenas copiar e executar
+            </div>
+            <button class="btn btn-primary" onclick="copiarCodigo('codigo-atv-1-3-py', 'Código copiado! Cole no Google Colab e aperte o botão Play ▶️.')" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; font-size: 0.78rem;" title="Copiar código Python">
+              <span>📋</span> <strong>Copiar Código Python</strong>
+            </button>
+          </div>
+          <pre id="codigo-atv-1-3-py" style="background: #0f172a; color: #f8fafc; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; line-height: 1.5; margin: 0; overflow-x: auto;">ano_atual = 2026
+ano_inicio = 2024
+print("Anos de experiência com programação:", ano_atual - ano_inicio)</pre>
+
+          <div style="margin-top: 0.5rem; font-size: 0.78rem; color: var(--color-on-surface-variant); background: var(--color-surface-lowest); padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border-left: 3px solid #10b981;">
+            💡 <strong>Execução no Tablet/Navegador:</strong> Cole o código e toque no botão circular de Play (▶️) posicionado à esquerda da célula.
+          </div>
+        </div>
+
+        <!-- Saída esperada -->
+        <div style="background: #020617; color: #a3e635; font-family: var(--font-code); font-size: 0.78rem; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;">
+          🟢 <strong>Saída Esperada:</strong> <code>Anos de experiência com programação: 2</code>
+        </div>
+
+        <!-- Botão Ver Instruções / Solução Modelo -->
+        <div style="margin-bottom: 0.5rem;">
+          <button class="btn btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; display: inline-flex; align-items: center; gap: 0.4rem;" onclick="toggleSolucao('solucao-atv-1-3', this)">
+            <span>👁️</span> <strong>Ver Instruções / Solução Modelo</strong> <span class="toggle-arrow" style="font-size: 0.7rem;">▼</span>
+          </button>
+        </div>
+
+        <!-- Container Expansível com as Instruções / Solução Modelo -->
+        <div id="solucao-atv-1-3" style="display: none; background: #0f172a; color: #f8fafc; padding: 1rem; border-radius: var(--radius-md); font-size: 0.82rem; line-height: 1.5; margin-bottom: 0.85rem; border-left: 3px solid var(--color-primary-fixed);">
+          <div style="font-weight: 700; color: #38bdf8; margin-bottom: 0.4rem;">
+            📖 Instruções e Guia Pedagógico da Atividade 1.3:
+          </div>
+          <p style="color: #cbd5e1; margin-bottom: 0.4rem;">
+            O Google Colab disponibiliza hardware gratuito com interpretador CPython hospedado na infraestrutura Google Cloud.
+          </p>
+          <div style="background: #1e293b; padding: 0.6rem 0.85rem; border-radius: 4px; font-family: var(--font-code); color: #a3e635;">
+            ano_atual = 2026<br>
+            ano_inicio = 2024<br>
+            print("Anos de experiência com programação:", ano_atual - ano_inicio)<br>
+            # Saída computada: Anos de experiência com programação: 2
+          </div>
+        </div>
+
+        <!-- Slot de Imagem do Professor -->
+        <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_atv_3" data-titulo="Atividade 1.3: Google Colab"></div>
+      </div>
+
+      <!-- DESAFIO MESTRE -->
+      <div class="exercise-interactive-card" id="card-ex-aula_1_1_desafio_mestre" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.08) 100%); border: 2px solid #f59e0b; border-radius: var(--radius-xl); padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.5rem;">🏆</span>
+            <div>
+              <span style="font-size: 0.72rem; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 0.05em;">
+                Problema Integrador da Aula 1.1 — Homologação do Laboratório
+              </span>
+              <h3 style="font-family: var(--font-headline); font-size: 1.2rem; font-weight: 800; color: var(--color-primary); margin: 0;">
+                5. Desafio Mestre: O Cartão de Boas-Vindas do Programador
+              </h3>
+            </div>
+          </div>
+          <span style="background: #fef3c7; color: #b45309; font-weight: 800; font-size: 0.85rem; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); border: 1px solid #fde68a;">
+            +45 XP
+          </span>
+        </div>
+
+        <p style="font-size: 0.88rem; color: var(--color-on-surface-variant); line-height: 1.5; margin-bottom: 1rem;">
+          <strong>Contexto:</strong> Para concluir a homologação dos ambientes do laboratório, cada estudante deve construir um caderno de apresentação pessoal estruturado, combinando formatação de texto em Markdown com execução de código Python e persistência do arquivo <code>apresentacao_ambiente.ipynb</code>.
+        </p>
+
+        <!-- 1. Cabeçalho Markdown -->
+        <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--color-secondary); display: flex; align-items: center; gap: 0.35rem;">
+              <span>📝</span> 1. Célula de Cabeçalho (Markdown):
+            </div>
+            <button class="btn btn-outline" onclick="copiarCodigo('codigo-desafio-md', 'Cabeçalho Markdown do Desafio Mestre copiado!')" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" title="Copiar cabeçalho Markdown">
+              📋 Copiar Cabeçalho Markdown
+            </button>
+          </div>
+          <pre id="codigo-desafio-md" style="background: #0f172a; color: #f8fafc; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; line-height: 1.5; margin: 0; overflow-x: auto;"># Curso de Introdução à Programação em Python
+## Estudante: Maria Silva | EEMTI Antonieta Siqueira
+
+Ambientes homologados e prontos para desenvolvimento:
+* Jupyter Notebook (Anaconda local)
+* Google Colab (Ambiente em Nuvem)</pre>
+        </div>
+
+        <!-- 2. Código Python Pronto para Executar -->
+        <div style="background: var(--color-surface-lowest); border: 1.5px solid #f59e0b; border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div style="font-size: 0.85rem; font-weight: 800; color: var(--color-primary); display: flex; align-items: center; gap: 0.35rem;">
+              <span>💻</span> 2. Célula de Código Python (Apenas copiar e executar):
+            </div>
+            <button class="btn btn-primary" onclick="copiarCodigo('codigo-desafio-py', 'Código do Desafio Mestre copiado com sucesso! Cole na célula e execute.')" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.85rem; font-size: 0.82rem;" title="Copiar código Python completo">
+              <span>📋</span> <strong>Copiar Código Python Completo</strong>
+            </button>
+          </div>
+          <pre id="codigo-desafio-py" style="background: #0f172a; color: #f8fafc; padding: 0.85rem 1rem; border-radius: var(--radius-md); font-family: var(--font-code); font-size: 0.82rem; line-height: 1.55; margin: 0; overflow-x: auto;"># Célula de Código de Apresentação
+nome_aluno = "Maria Silva"
+computador_lab = "Máquina LAB-07"
+horas_semanais = 4
+
+print(f"Desenvolvedor(a): {nome_aluno}")
+print(f"Estação de Trabalho: {computador_lab}")
+
+horas_mes = horas_semanais * 4
+print(f"Meta de dedicação mensal: {horas_mes} horas de prática.")</pre>
+
+          <div style="margin-top: 0.75rem; font-size: 0.8rem; color: #92400e; background: #fef3c7; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm);">
+            💾 <strong>Finalização:</strong> Neste momento inicial, apenas copie o código, cole na célula de código e execute. Pressione <kbd>Ctrl + S</kbd> para salvar o arquivo com o nome <code>apresentacao_ambiente.ipynb</code>.
+          </div>
+        </div>
+
+        <!-- Botão Ver Solução Modelo -->
+        <div style="margin-bottom: 0.5rem;">
+          <button class="btn btn-outline" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; display: inline-flex; align-items: center; gap: 0.4rem;" onclick="toggleSolucao('solucao-desafio-mestre-1-1', this)">
+            <span>👁️</span> <strong>Ver Solução Modelo</strong> <span class="toggle-arrow" style="font-size: 0.7rem;">▼</span>
+          </button>
+        </div>
+
+        <!-- Container Expansível com a Solução Modelo -->
+        <div id="solucao-desafio-mestre-1-1" style="display: none; background: #0f172a; color: #f8fafc; padding: 1rem; border-radius: var(--radius-md); font-size: 0.82rem; line-height: 1.5; margin-bottom: 0.85rem; border-left: 3px solid #f59e0b;">
+          <div style="font-weight: 700; color: #fbbf24; margin-bottom: 0.4rem;">
+            📖 Solução Modelo Comentada do Desafio Mestre:
+          </div>
+          <p style="color: #cbd5e1; margin-bottom: 0.5rem;">
+            Esta estrutura consolida a documentação em Markdown com f-strings de interpolação textual e operações de multiplicação em Python:
+          </p>
+          <div style="background: #1e293b; padding: 0.75rem; border-radius: 4px; font-family: var(--font-code); color: #a3e635; font-size: 0.8rem;">
+            Desenvolvedor(a): Maria Silva<br>
+            Estação de Trabalho: Máquina LAB-07<br>
+            Meta de dedicação mensal: 16 horas de prática.
+          </div>
+        </div>
+
+        <!-- Slot de Imagem do Professor -->
+        <div class="questao-imagem-slot" data-aula="aula_1_1" data-exercicio="aula_1_1_desafio_mestre" data-titulo="Desafio Mestre: Cartão de Boas-Vindas do Programador"></div>
+      </div>
+
+      <!-- 6. GUIA RÁPIDO DE RESOLUÇÃO DE PROBLEMAS -->
+      <div style="background: var(--color-surface-low); border: 1.5px solid var(--color-surface-container); border-radius: var(--radius-xl); padding: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem;">
+          <span style="font-size: 1.25rem;">🛠️</span>
+          <h3 style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 700; color: var(--color-primary); margin: 0;">
+            6. Guia Rápido de Resolução de Problemas no Laboratório
+          </h3>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+          <!-- Problema 1 -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="color: #b91c1c; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.35rem;">
+              ⚠️ Erro "bash: anaconda3: command not found"
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+              O ambiente do Anaconda ainda não foi carregado na sessão atual do terminal. Execute <code>source /home/cjovem/anaconda3/bin/activate</code> antes de chamar o comando <code>jupyter notebook</code>.
+            </p>
+          </div>
+
+          <!-- Problema 2 -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="color: #b91c1c; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.35rem;">
+              ⚠️ Porta ocupada ou navegador não abre
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+              Se o navegador não abrir automaticamente, observe as mensagens no terminal: copie a URL com o token gerado (começando por <code>http://localhost:8888/?token=...</code>) e cole na barra de endereço.
+            </p>
+          </div>
+
+          <!-- Problema 3 -->
+          <div style="background: var(--color-surface-lowest); border: 1px solid var(--color-surface-container); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="color: #b91c1c; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.35rem;">
+              ⚠️ Teclado sem resposta no Google Colab
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-on-surface-variant); line-height: 1.45; margin: 0;">
+              Se os atalhos de teclado não responderem no tablet, utilize a barra de botões superior (<code>+ Código</code>, <code>+ Texto</code>) e toque duas vezes na célula para forçar a abertura do teclado tátil.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
