@@ -173,6 +173,14 @@ function onUserSessionSuccess(userData) {
     tab.style.display = userData.isProfessor ? (tab.id === 'nav-teacher-mobile' ? 'flex' : 'inline-flex') : 'none';
   });
 
+  // Ativa monitor síncrono da roleta para todos os usuários conectados
+  if (typeof iniciarMonitorSorteioSincrono === 'function') {
+    iniciarMonitorSorteioSincrono();
+  }
+  if (userData.isProfessor && typeof carregarDadosSorteioProfessor === 'function') {
+    carregarDadosSorteioProfessor();
+  }
+
 
   // Atualiza modo de visualização, imagens didáticas e checks da aula ativa
   aplicarModoVisualizacaoAula(AppState.modoVisualizacaoAula || 'explicacoes', false);
@@ -3934,6 +3942,9 @@ function inicializarPythonLab() {
     }
     if (typeof inicializarMonitorInatividadeBarra === 'function') {
       inicializarMonitorInatividadeBarra();
+    }
+    if (typeof iniciarMonitorSorteioSincrono === 'function') {
+      iniciarMonitorSorteioSincrono();
     }
   } catch (err) {
     console.error('Erro na inicialização resiliente do PythonLab:', err);

@@ -12,7 +12,7 @@
   background: rgba(10, 15, 30, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  z-index: 1000;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -403,7 +403,9 @@ const SorteioEngine = {
   countdownIntervalId: null,
   lastHandledSorteioId: null,
   confettiAnimationId: null,
-  bloquearSaida: false
+  bloquearSaida: false,
+  isCheckingStatus: false,
+  storageListenerConfigurado: false
 };
 
 const CORES_ROLETA = [
@@ -638,6 +640,8 @@ function dispararConfettiRoleta() {
 }
 
 function iniciarAnimacaoRoletaSincrona(sorteio) {
+  SorteioEngine.animando = true;
+  SorteioEngine.bloquearSaida = true;
   const participantes = sorteio.participantes || [];
   const numSlices = participantes.length;
   if (numSlices === 0) return;
@@ -722,12 +726,17 @@ function finalizarSorteioVisual(sorteio) {
     nomeVencedor.textContent = sorteio.vencedor ? sorteio.vencedor.nome : 'Estudante Selecionado';
   }
 
-  if (msgVencedor && AppState.user) {
-    const isVencedor = sorteio.vencedor && AppState.user.email && (sorteio.vencedor.email.toLowerCase() === AppState.user.email.toLowerCase());
+  if (msgVencedor) {
+    const userEmail = (AppState.user && AppState.user.email) ? AppState.user.email.toLowerCase() : '';
+    const winnerEmail = (sorteio.vencedor && sorteio.vencedor.email) ? sorteio.vencedor.email.toLowerCase() : '';
+    const isVencedor = userEmail && (winnerEmail === userEmail);
+
     if (isVencedor) {
       msgVencedor.innerHTML = '🎉 <strong>Sensacional! Você é o(a) grande sorteado(a) da rodada!</strong>';
+    } else if (AppState.user && AppState.user.isProfessor) {
+      msgVencedor.innerHTML = `🏆 Sorteado(a): <strong>${sorteio.vencedor ? sorteio.vencedor.nome : 'Estudante'}</strong>`;
     } else {
-      msgVencedor.textContent = '🎉 Parabéns ao estudante selecionado nesta rodada!';
+      msgVencedor.innerHTML = `🎉 O(a) colega <strong>${sorteio.vencedor ? sorteio.vencedor.nome : 'Estudante'}</strong> foi sorteado(a)!`;
     }
   }
 
@@ -756,6 +765,7 @@ function abrirModalRoletaParaSorteio(sorteio) {
 
   // Bloqueia saída durante o sorteio
   SorteioEngine.bloquearSaida = true;
+  SorteioEngine.animando = true;
   const btnFechar = document.getElementById('btn-fechar-roleta');
   if (btnFechar) btnFechar.style.display = 'none';
 
@@ -833,12 +843,22 @@ window.addEventListener('keydown', function(e) {
 });
 
 function verificarStatusSorteioPeriodico() {
+  if (SorteioEngine.bloquearSaida || SorteioEngine.animando) return;
+  if (SorteioEngine.isCheckingStatus) return;
+
   if (typeof google !== 'undefined' && google.script && google.script.run) {
+    SorteioEngine.isCheckingStatus = true;
     google.script.run
-      .withSuccessHandler(onStatusSorteioRecebido)
+      .withSuccessHandler(function(resposta) {
+        SorteioEngine.isCheckingStatus = false;
+        onStatusSorteioRecebido(resposta);
+      })
+      .withFailureHandler(function(err) {
+        SorteioEngine.isCheckingStatus = false;
+      })
       .verificarStatusSorteio();
   } else {
-    // Mock local em dev
+    // Mock local em dev / preview
     const mockAtivo = localStorage.getItem('pythonlab_mock_sorteio_ativo');
     if (mockAtivo) {
       try {
@@ -872,6 +892,27 @@ function onStatusSorteioRecebido(resposta) {
 function iniciarMonitorSorteioSincrono() {
   if (SorteioEngine.pollingIntervalId) clearInterval(SorteioEngine.pollingIntervalId);
   SorteioEngine.pollingIntervalId = setInterval(verificarStatusSorteioPeriodico, 2500);
+
+  // Escuta alterações de storage para sincronização instantânea em abas locais/offline
+  if (!SorteioEngine.storageListenerConfigurado) {
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'pythonlab_mock_sorteio_ativo' && e.newValue) {
+        try {
+          const sorteio = JSON.parse(e.newValue);
+          onStatusSorteioRecebido(sorteio);
+        } catch (err) {}
+      }
+    });
+
+    // Ao focar na aba novamente, faz verificação imediata
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        verificarStatusSorteioPeriodico();
+      }
+    });
+
+    SorteioEngine.storageListenerConfigurado = true;
+  }
 }
 
 /**
@@ -1032,11 +1073,14 @@ function iniciarSorteioPeloProfessor() {
 
   const btn = document.getElementById('btn-iniciar-sorteio-painel');
   if (btn) btn.disabled = true;
+  const btnModal = document.getElementById('btn-sortear-proximo-modal');
+  if (btnModal) btnModal.disabled = true;
 
   if (typeof google !== 'undefined' && google.script && google.script.run) {
     google.script.run
       .withSuccessHandler(res => {
         if (btn) btn.disabled = false;
+        if (btnModal) btnModal.disabled = false;
         if (!res || !res.sucesso) {
           showToast(res ? res.mensagem : 'Erro ao iniciar sorteio', 'error');
           return;
@@ -1045,6 +1089,7 @@ function iniciarSorteioPeloProfessor() {
       })
       .withFailureHandler(err => {
         if (btn) btn.disabled = false;
+        if (btnModal) btnModal.disabled = false;
         showToast('Erro ao iniciar sorteio: ' + err.message, 'error');
       })
       .iniciarSorteioTurma({
@@ -1053,6 +1098,7 @@ function iniciarSorteioPeloProfessor() {
       });
   } else {
     if (btn) btn.disabled = false;
+    if (btnModal) btnModal.disabled = false;
     const res = mockIniciarSorteioTurma({ emailParam, ausentesEmails });
     if (!res.sucesso) {
       showToast(res.mensagem, 'error');
@@ -1063,14 +1109,14 @@ function iniciarSorteioPeloProfessor() {
 }
 
 function confirmarResetarSorteio() {
-  if (!confirm('Deseja resetar o sorteio da turma?\n\nIsso limpará a lista de alunos já sorteados para que todos possam participar novamente.')) {
-    return;
-  }
   const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
   if (typeof google !== 'undefined' && google.script && google.script.run) {
+    if (!confirm('Deseja resetar a rodada de sorteio da turma?\n\nIsso permitirá que todos os alunos possam ser sorteados novamente.')) {
+      return;
+    }
     google.script.run
       .withSuccessHandler(res => {
-        showToast(res.mensagem || 'Sorteio resetado com sucesso!', 'success');
+        showToast(res.mensagem || 'Rodada resetada com sucesso!', 'success');
         carregarDadosSorteioProfessor();
       })
       .withFailureHandler(err => {
@@ -1079,7 +1125,7 @@ function confirmarResetarSorteio() {
       .resetarSorteioTurma(emailParam);
   } else {
     mockResetarSorteioTurma();
-    showToast('Sorteio resetado com sucesso! (Modo Local)', 'success');
+    showToast('Rodada resetada com sucesso! Todos os alunos estão elegíveis novamente.', 'success');
     carregarDadosSorteioProfessor();
   }
 }
