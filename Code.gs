@@ -977,7 +977,8 @@ function setupDatabase(forcarRecriacao) {
       'email_aluno',
       'nome_aluno',
       'data_sorteio',
-      'criado_por'
+      'criado_por',
+      'status_participacao'
     ];
     sheetSorteios.appendRow(headersSorteios);
     sheetSorteios.getRange(1, 1, 1, headersSorteios.length)
@@ -2938,12 +2939,14 @@ function obterDadosSorteioProfessor(emailParam) {
         var emailA = String(dadosSorteios[j][1] || '').trim();
         var nomeA = String(dadosSorteios[j][2] || '').trim();
         var dataS = dadosSorteios[j][3];
+        var statusP = String(dadosSorteios[j][5] || 'Não tentou').trim() || 'Não tentou';
         if (emailA) {
           historico.push({
             idSorteio: idS,
             email: emailA,
             nome: nomeA || formatarNomeDeEmail(emailA),
-            data: dataS ? new Date(dataS).toISOString() : new Date().toISOString()
+            data: dataS ? new Date(dataS).toISOString() : new Date().toISOString(),
+            status: statusP
           });
         }
       }
@@ -3029,6 +3032,7 @@ function iniciarSorteioTurma(params) {
         email: vencedor.email,
         nome: vencedor.nome
       },
+      status: 'Não tentou',
       participantes: elegiveis.map(function(e) { return { email: e.email, nome: e.nome }; }),
       winnerIndex: winnerIndex
     };
@@ -3043,14 +3047,15 @@ function iniciarSorteioTurma(params) {
       Logger.log('Erro no cache de sorteio: ' + errCache.message);
     }
 
-    // Persiste na planilha Google Sheets
+    // Persiste na planilha Google Sheets com status inicial "Não tentou"
     if (sheetSorteios) {
       sheetSorteios.appendRow([
         idSorteio,
         vencedor.email,
         vencedor.nome,
         new Date().toISOString(),
-        criador
+        criador,
+        'Não tentou'
       ]);
     }
 
@@ -3100,5 +3105,42 @@ function verificarStatusSorteio() {
     return { sucesso: true, sorteioAtivo: sorteio };
   } catch (err) {
     return { sucesso: false, sorteioAtivo: null };
+  }
+}
+
+/**
+ * Atualiza o status de participação de um aluno sorteado (Não tentou, Errou, Acertou)
+ */
+function atualizarStatusSorteio(idSorteioOuEmail, novoStatus, emailParam) {
+  try {
+    var ss = ensureDatabase();
+    if (!ss) return { sucesso: false, mensagem: 'Erro ao conectar à planilha.' };
+
+    var sheetSorteios = ss.getSheetByName(CONFIG.SHEET_SORTEIOS);
+    if (!sheetSorteios || sheetSorteios.getLastRow() <= 1) {
+      return { sucesso: false, mensagem: 'Histórico de sorteios vazio.' };
+    }
+
+    var data = sheetSorteios.getDataRange().getValues();
+    var linhaEncontrada = -1;
+
+    for (var i = data.length - 1; i >= 1; i--) {
+      var idRow = String(data[i][0] || '').trim();
+      var emailRow = String(data[i][1] || '').trim().toLowerCase();
+      if (idRow === String(idSorteioOuEmail).trim() || emailRow === String(idSorteioOuEmail).trim().toLowerCase()) {
+        linhaEncontrada = i + 1;
+        break;
+      }
+    }
+
+    if (linhaEncontrada > 0) {
+      sheetSorteios.getRange(linhaEncontrada, 6).setValue(novoStatus);
+      return { sucesso: true, mensagem: 'Participação registrada: ' + novoStatus };
+    }
+
+    return { sucesso: false, mensagem: 'Registro do sorteio não localizado.' };
+  } catch (err) {
+    Logger.log('Erro em atualizarStatusSorteio: ' + err.message);
+    return { sucesso: false, mensagem: 'Erro ao atualizar status: ' + err.message };
   }
 }

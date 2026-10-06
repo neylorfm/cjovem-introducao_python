@@ -18407,6 +18407,70 @@ if (document.readyState === 'loading') {
   border: 1px solid #fde68a;
   margin-bottom: 0.35rem;
 }
+
+/* Botões de avaliação pedagógica no modal de resultado */
+.btn-status-opcao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+.btn-status-opcao:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.btn-status-nao-tentou.active {
+  background: #475569 !important;
+  color: #ffffff !important;
+  border-color: #94a3b8 !important;
+  box-shadow: 0 0 12px rgba(148, 163, 184, 0.4);
+}
+.btn-status-errou.active {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+}
+.btn-status-acertou.active {
+  background: #059669 !important;
+  color: #ffffff !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Select de status no histórico da turma */
+.sorteio-status-select {
+  font-size: 0.76rem;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 0.25rem 0.45rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.sorteio-status-select.status-nao-tentou {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+.sorteio-status-select.status-errou {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+.sorteio-status-select.status-acertou {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
 </style>
 
 <!-- ============================================================================
@@ -18460,6 +18524,25 @@ if (document.readyState === 'loading') {
         <div class="roleta-resultado-msg" id="roleta-resultado-msg">
           🎉 Parabéns! Sua participação foi sorteada pela roleta!
         </div>
+
+        <!-- Seção de Avaliação Pedagógica da Participação (Visível para o Professor) -->
+        <div class="roleta-status-avaliacao-box" id="roleta-status-avaliacao-box" style="display: none; margin: 1.15rem 0 0.85rem; padding: 0.85rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;">
+          <div style="font-size: 0.76rem; font-weight: 700; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.65rem;">
+            🎯 Desempenho / Participação do Estudante:
+          </div>
+          <div style="display: flex; gap: 0.45rem; justify-content: center; flex-wrap: wrap;" id="roleta-status-botoes-grupo">
+            <button type="button" class="btn-status-opcao btn-status-nao-tentou active" data-status="Não tentou" onclick="marcarStatusParticipacao('Não tentou')">
+              ⚪ Não tentou
+            </button>
+            <button type="button" class="btn-status-opcao btn-status-errou" data-status="Errou" onclick="marcarStatusParticipacao('Errou')">
+              ❌ Errou
+            </button>
+            <button type="button" class="btn-status-opcao btn-status-acertou" data-status="Acertou" onclick="marcarStatusParticipacao('Acertou')">
+              ✅ Acertou
+            </button>
+          </div>
+        </div>
+
         <div class="roleta-resultado-actions" id="roleta-resultado-actions">
           <button class="btn btn-secondary" onclick="fecharModalRoleta()">
             Fechar Janela
@@ -18840,6 +18923,16 @@ function finalizarSorteioVisual(sorteio) {
   if (resContainer) resContainer.style.display = 'block';
   if (btnFechar) btnFechar.style.display = 'inline-flex';
 
+  const boxAvaliacao = document.getElementById('roleta-status-avaliacao-box');
+  if (boxAvaliacao) {
+    boxAvaliacao.style.display = (AppState.user && AppState.user.isProfessor) ? 'block' : 'none';
+    const statusAtual = sorteio.status || 'Não tentou';
+    const botoes = document.querySelectorAll('#roleta-status-botoes-grupo .btn-status-opcao');
+    botoes.forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-status') === statusAtual);
+    });
+  }
+
   if (btnSortearProximo) {
     btnSortearProximo.style.display = (AppState.user && AppState.user.isProfessor) ? 'inline-flex' : 'none';
   }
@@ -18865,6 +18958,9 @@ function abrirModalRoletaParaSorteio(sorteio) {
   SorteioEngine.animando = true;
   const btnFechar = document.getElementById('btn-fechar-roleta');
   if (btnFechar) btnFechar.style.display = 'none';
+
+  const boxAvaliacao = document.getElementById('roleta-status-avaliacao-box');
+  if (boxAvaliacao) boxAvaliacao.style.display = 'none';
 
   const resContainer = document.getElementById('roleta-resultado-container');
   if (resContainer) resContainer.style.display = 'none';
@@ -19108,23 +19204,31 @@ function renderizarDadosSorteioProfessor(dados) {
     let htmlHistorico = '';
     SorteioEngine.historicoSorteados.forEach((item, idx) => {
       const dataFormatada = item.data ? new Date(item.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+      const statusItem = item.status || 'Não tentou';
+      const statusClass = getStatusClass(statusItem);
       htmlHistorico += `
         <div class="sorteio-historico-card">
-          <div style="display: flex; align-items: center; gap: 0.65rem;">
-            <div style="background: #f59e0b; color: #ffffff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800;">
+          <div style="display: flex; align-items: center; gap: 0.65rem; flex: 1;">
+            <div style="background: #f59e0b; color: #ffffff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; flex-shrink: 0;">
               ${idx + 1}
             </div>
-            <div>
-              <div style="font-size: 0.88rem; font-weight: 700; color: #78350f;">
+            <div style="min-width: 0;">
+              <div style="font-size: 0.88rem; font-weight: 700; color: #78350f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 ${item.nome}
               </div>
               <div style="font-size: 0.72rem; color: #b45309;">
-                ${item.email}
+                ${dataFormatada ? `às ${dataFormatada}` : 'Rodada atual'}
               </div>
             </div>
           </div>
-          <div style="font-size: 0.75rem; color: #92400e; font-weight: 600;">
-            ${dataFormatada ? `às ${dataFormatada}` : 'Rodada atual'}
+          <div style="display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0;">
+            <select class="sorteio-status-select ${statusClass}"
+              onchange="alterarStatusParticipacaoHistorico('${item.idSorteio || item.email}', this.value)"
+              title="Classificar participação">
+              <option value="Não tentou" ${statusItem === 'Não tentou' ? 'selected' : ''}>⚪ Não tentou</option>
+              <option value="Errou" ${statusItem === 'Errou' ? 'selected' : ''}>❌ Errou</option>
+              <option value="Acertou" ${statusItem === 'Acertou' ? 'selected' : ''}>✅ Acertou</option>
+            </select>
           </div>
         </div>
       `;
@@ -19296,10 +19400,12 @@ function mockIniciarSorteioTurma(params) {
 
   const historico = dados.historico || [];
   historico.push({
+    idSorteio: sorteio.idSorteio,
     email: vencedor.email,
     nome: vencedor.nome,
     data: new Date().toISOString(),
-    indice: historico.length + 1
+    indice: historico.length + 1,
+    status: 'Não tentou'
   });
   localStorage.setItem('pythonlab_sorteio_historico', JSON.stringify(historico));
 
@@ -19310,6 +19416,72 @@ function mockResetarSorteioTurma() {
   localStorage.removeItem('pythonlab_sorteio_historico');
   localStorage.removeItem('pythonlab_mock_sorteio_ativo');
   return { sucesso: true, mensagem: 'Sorteio resetado com sucesso!' };
+}
+
+function mockAtualizarStatusSorteio(idSorteioOuEmail, novoStatus) {
+  let historico = JSON.parse(localStorage.getItem('pythonlab_sorteio_historico') || '[]');
+  let atualizou = false;
+  for (let i = historico.length - 1; i >= 0; i--) {
+    if (historico[i].idSorteio === idSorteioOuEmail || (historico[i].email && historico[i].email.toLowerCase() === String(idSorteioOuEmail).toLowerCase())) {
+      historico[i].status = novoStatus;
+      atualizou = true;
+      break;
+    }
+  }
+  if (atualizou) {
+    localStorage.setItem('pythonlab_sorteio_historico', JSON.stringify(historico));
+  }
+  return { sucesso: true, mensagem: 'Status atualizado com sucesso!' };
+}
+
+function getStatusClass(status) {
+  if (status === 'Acertou') return 'status-acertou';
+  if (status === 'Errou') return 'status-errou';
+  return 'status-nao-tentou';
+}
+
+function marcarStatusParticipacao(status) {
+  if (!SorteioEngine.sorteioAtivo) return;
+  const idSorteio = SorteioEngine.sorteioAtivo.idSorteio;
+  const emailAluno = SorteioEngine.sorteioAtivo.vencedor ? SorteioEngine.sorteioAtivo.vencedor.email : '';
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+
+  SorteioEngine.sorteioAtivo.status = status;
+
+  // Atualiza visual dos botões no modal
+  const botoes = document.querySelectorAll('#roleta-status-botoes-grupo .btn-status-opcao');
+  botoes.forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-status') === status);
+  });
+
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(res => {
+        showToast('Participação registrada: ' + status, 'success');
+        carregarDadosSorteioProfessor();
+      })
+      .atualizarStatusSorteio(idSorteio || emailAluno, status, emailParam);
+  } else {
+    mockAtualizarStatusSorteio(idSorteio || emailAluno, status);
+    showToast('Participação registrada: ' + status, 'success');
+    carregarDadosSorteioProfessor();
+  }
+}
+
+function alterarStatusParticipacaoHistorico(idSorteioOuEmail, status) {
+  const emailParam = (AppState.user && AppState.user.email) ? AppState.user.email : '';
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(res => {
+        showToast('Status atualizado: ' + status, 'success');
+        carregarDadosSorteioProfessor();
+      })
+      .atualizarStatusSorteio(idSorteioOuEmail, status, emailParam);
+  } else {
+    mockAtualizarStatusSorteio(idSorteioOuEmail, status);
+    showToast('Status atualizado: ' + status, 'success');
+    carregarDadosSorteioProfessor();
+  }
 }
 </script>
 
